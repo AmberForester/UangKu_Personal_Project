@@ -11,20 +11,35 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.uangku.ui.theme.UangKuTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.uangku.core.dependencyInjection.AppContainer
+import com.example.uangku.core.navigation.UangKuNavGraph
+import com.example.uangku.feature.category.presentation.CategoryViewModel
+import com.example.uangku.feature.category.presentation.CategoryViewModelFactory
+import com.example.uangku.core.ui.theme.UangKuTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val appContainer =(application as App).appContainer
+
         setContent {
             UangKuTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                val categoryViewModel: CategoryViewModel = viewModel(
+                    factory = CategoryViewModelFactory(
+                        appContainer.categoryUseCase
                     )
-                }
+                )
+
+                val navController = rememberNavController()
+
+                UangKuNavGraph(
+                    navController = navController,
+                    categoryViewModel = categoryViewModel
+                )
             }
         }
     }

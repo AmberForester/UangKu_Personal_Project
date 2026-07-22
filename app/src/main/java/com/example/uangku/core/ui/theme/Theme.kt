@@ -1,4 +1,4 @@
-package com.example.uangku.ui.theme
+package com.example.uangku.core.ui.theme
 
 import android.app.Activity
 import android.os.Build
