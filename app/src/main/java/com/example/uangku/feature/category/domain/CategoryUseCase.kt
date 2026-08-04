@@ -1,5 +1,6 @@
 package com.example.uangku.feature.category.domain
 
+import com.example.uangku.core.domain.Type
 import kotlinx.coroutines.flow.Flow
 
 class CategoryUseCase (

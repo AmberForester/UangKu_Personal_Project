@@ -32,7 +32,6 @@ fun CategoryFormDialog (
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
-
     ) {
         DialogTemplate {
 

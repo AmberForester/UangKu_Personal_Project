@@ -1,5 +1,6 @@
 package com.example.uangku.feature.category.data
 
+import com.example.uangku.core.domain.Type
 import com.example.uangku.feature.category.domain.CategoryRepository
 import com.example.uangku.feature.category.domain.Category
 import kotlinx.coroutines.flow.Flow
@@ -19,8 +20,7 @@ class CategoryRepoImpl(
     }
 
     override suspend fun getCategoryById(id: Long): Category? {
-        return categoryDao.getCategoriesById(id)
-            ?.toDomain()
+        return categoryDao.getCategoriesById(id)?.toDomain()
     }
 
     override suspend fun createCategory(category: Category) {
@@ -34,5 +34,4 @@ class CategoryRepoImpl(
     override suspend fun deleteCategory(category: Category) {
         categoryDao.deleteCategory(category.toEntity())
     }
-
 }

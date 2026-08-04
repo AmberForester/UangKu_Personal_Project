@@ -13,7 +13,7 @@ fun TopAppBar(
 ){
     CenterAlignedTopAppBar(
         title = {
-            Text(text = "Category")
+            Text(text = title)
         }
     )
 }

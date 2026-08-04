@@ -16,5 +16,7 @@ sealed class Destination (
 
     data object Settings : Destination("settings")
 
+    data object TransactionForm : Destination("transaction_form/{id}")
+
 
 }
