@@ -16,9 +16,7 @@ data class TransactionFormState (
     val amount: String = "",
     val date: Date = Date(),
 
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val showDeleteDialog: Boolean = false
 
-){
-
-
-}
+)

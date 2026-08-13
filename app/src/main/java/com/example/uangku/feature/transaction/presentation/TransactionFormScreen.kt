@@ -2,11 +2,14 @@ package com.example.uangku.feature.transaction.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,9 +22,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
+import com.example.uangku.feature.category.presentation.CategoryEvent
+import com.example.uangku.feature.category.presentation.CategoryViewModel
+import com.example.uangku.feature.category.presentation.component.DeleteCategoryDialog
 import com.example.uangku.feature.transaction.presentation.component.FormCategoryDropdown
 import com.example.uangku.feature.transaction.presentation.component.FormDatePicker
 import com.example.uangku.feature.transaction.presentation.component.FormTypeSelector
+import com.example.uangku.feature.transaction.presentation.component.TransactionDeleteDialog
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
 
 @Composable
@@ -115,17 +122,55 @@ fun TransactionFormScreen(
                 minLines = 3
             )
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    viewModel.onEvent(
-                        TransactionFormEvent.OnSave
-                    )
-                    navController.popBackStack()
-                },
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Save")
+                OutlinedButton(
+                    modifier = Modifier,
+                    onClick = {
+                        viewModel.onEvent(
+                            TransactionFormEvent.onDeleteClick
+                        )
+                    },
+                ) {
+                    Text("Delete")
+                }
+                if(state.id == null){
+                    Button(
+                        modifier = Modifier,
+                        onClick = {
+                            viewModel.onEvent(
+                                TransactionFormEvent.OnSave
+                            )
+                            navController.popBackStack()
+                        },
+                    ) {
+                        Text("Save")
+                    }
+                }
             }
         }
+    }
+    ShowDeleteDialog(viewModel, navController)
+}
+
+@Composable
+fun ShowDeleteDialog(
+    viewModel: TransactionFormViewModel,
+    navController: NavController
+) {
+    val state = viewModel.formState.collectAsState().value
+    if(state.showDeleteDialog){
+        TransactionDeleteDialog(
+            title = "Hapus Transaksi",
+            message = "Anda yakin menghapus transaksi ini?",
+            onDismiss = { viewModel.onEvent(TransactionFormEvent.OnDeleteDismiss) },
+            onConfirm = {
+                viewModel.onEvent(TransactionFormEvent.OnDeleteConfirm)
+                navController.popBackStack()
+            }
+        )
     }
 }

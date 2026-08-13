@@ -14,6 +14,8 @@ import com.example.uangku.core.navigation.UangKuNavGraph
 import com.example.uangku.feature.category.presentation.CategoryViewModel
 import com.example.uangku.feature.category.presentation.CategoryViewModelFactory
 import com.example.uangku.core.ui.theme.UangKuTheme
+import com.example.uangku.feature.budget.presentation.BudgetViewModel
+import com.example.uangku.feature.budget.presentation.BudgetViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionViewModel
@@ -44,6 +46,11 @@ class MainActivity : ComponentActivity() {
                         categoryUseCase = appContainer.categoryUseCase
                     )
                 )
+                val budgetViewModel: BudgetViewModel = viewModel(
+                    factory = BudgetViewModelFactory(
+                        budgetUseCase = appContainer.budgetUseCase
+                    )
+                )
 
                 val navController = rememberNavController()
 
@@ -51,7 +58,8 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     categoryViewModel = categoryViewModel,
                     transactionViewModel = transactionViewModel,
-                    transactionFormViewModel = transactionFormViewModel
+                    transactionFormViewModel = transactionFormViewModel,
+                    budgetViewModel = budgetViewModel
                 )
             }
         }

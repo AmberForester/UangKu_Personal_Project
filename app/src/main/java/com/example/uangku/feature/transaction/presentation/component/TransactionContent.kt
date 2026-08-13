@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.uangku.core.domain.Type
+import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.core.ui.component.toDateFormat
 import com.example.uangku.feature.transaction.domain.Transaction
 import com.example.uangku.feature.transaction.presentation.TransactionState
@@ -58,6 +60,13 @@ fun TransactionItem(
     transaction: Transaction,
     onClick: (Transaction) -> Unit
 ) {
+    val amountText =
+        if (transaction.type == Type.INCOME){
+            "+${currencyFormatter(transaction.amount)}"
+        } else{
+            "-${currencyFormatter(transaction.amount)}"
+        }
+
     ListItem(
         modifier = Modifier.clickable { onClick(transaction) },
         headlineContent = {
@@ -70,9 +79,7 @@ fun TransactionItem(
 
         trailingContent = {
             Text(
-                text = NumberFormat
-                .getCurrencyInstance(Locale("id", "ID"))
-                .format(transaction.amount)
+                text = amountText
             )
         }
     )

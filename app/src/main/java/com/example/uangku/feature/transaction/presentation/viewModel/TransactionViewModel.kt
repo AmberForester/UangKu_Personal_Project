@@ -28,22 +28,7 @@ class TransactionViewModel (
                 loadTransactions()
             }
 
-            TransactionEvent.onAddClick -> {
-
-            }
-
-            is TransactionEvent.onEditClick -> {
-            }
-
-            is TransactionEvent.onDeleteClick -> {
-            }
-
-            TransactionEvent.onDeleteConfirm -> {
-            }
-
-            is TransactionEvent.onTypeChange -> {
-
-            }
+            TransactionEvent.onAddClick -> {}
         }
     }
 

@@ -3,6 +3,9 @@ package com.example.uangku.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.uangku.feature.budget.data.BudgetDao
+import com.example.uangku.feature.budget.data.BudgetEntity
+import com.example.uangku.feature.budget.data.BudgetView
 import com.example.uangku.feature.category.data.CategoryDao
 import com.example.uangku.feature.category.data.CategoryEntity
 import com.example.uangku.feature.transaction.data.TransactionDao
@@ -12,10 +15,12 @@ import com.example.uangku.feature.transaction.data.TransactionView
 @Database(
     entities = [
         CategoryEntity::class,
-        TransactionEntity::class
+        TransactionEntity::class,
+        BudgetEntity::class
     ],
     views = [
-        TransactionView::class
+        TransactionView::class,
+        BudgetView::class
             ],
     version = 1,
     exportSchema = false
@@ -27,6 +32,7 @@ import com.example.uangku.feature.transaction.data.TransactionView
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun categoryDao(): CategoryDao
-    abstract fun transcationDao(): TransactionDao
+    abstract fun transactionDao(): TransactionDao
+    abstract fun budgetDao(): BudgetDao
 
 }

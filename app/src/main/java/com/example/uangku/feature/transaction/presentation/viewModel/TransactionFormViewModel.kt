@@ -88,6 +88,26 @@ class TransactionFormViewModel (
                 }
             }
 
+            TransactionFormEvent.onDeleteClick -> {
+                _formState.update {
+                    it.copy(
+                        showDeleteDialog = true
+                    )
+                }
+            }
+
+            TransactionFormEvent.OnDeleteDismiss -> {
+                _formState.update {
+                    it.copy(
+                        showDeleteDialog = false
+                    )
+                }
+            }
+
+            TransactionFormEvent.OnDeleteConfirm -> {
+                deleteTransaction()
+            }
+
         }
     }
 
@@ -172,5 +192,20 @@ class TransactionFormViewModel (
     }
     private fun resetForm() {
         _formState.value = TransactionFormState()
+    }
+
+    private fun deleteTransaction() {
+        viewModelScope.launch {
+            val transaction = Transaction(
+                id = _formState.value.id,
+                date = _formState.value.date,
+                description = _formState.value.description,
+                type = _formState.value.type,
+                amount = _formState.value.amount.toDouble(),
+                categoryId = _formState.value.selectedCategory!!.id!!.toInt(),
+                categoryName = _formState.value.selectedCategory!!.name
+            )
+            transactionUseCase.deleteTransaction(transaction)
+        }
     }
 }

@@ -32,4 +32,10 @@ sealed interface TransactionFormEvent {
 
     data object OnSave: TransactionFormEvent
 
+    data object onDeleteClick: TransactionFormEvent
+
+    data object OnDeleteConfirm : TransactionFormEvent
+
+    data object OnDeleteDismiss : TransactionFormEvent
+
 }

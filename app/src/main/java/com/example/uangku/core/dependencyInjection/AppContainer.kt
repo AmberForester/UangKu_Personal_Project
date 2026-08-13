@@ -3,6 +3,8 @@ package com.example.uangku.core.dependencyInjection
 import android.content.Context
 import androidx.room.Room
 import com.example.uangku.core.database.AppDatabase
+import com.example.uangku.feature.budget.data.BudgetRepoImpl
+import com.example.uangku.feature.budget.domain.BudgetUseCase
 import com.example.uangku.feature.category.data.CategoryRepoImpl
 import com.example.uangku.feature.category.domain.CategoryUseCase
 import com.example.uangku.feature.transaction.data.TransactionRepoImpl
@@ -24,7 +26,12 @@ class AppContainer (
     val categoryUseCase = CategoryUseCase(categoryRepository)
 
     //transaction
-    private val transactionDao = database.transcationDao()
+    private val transactionDao = database.transactionDao()
     private val transactionRepository = TransactionRepoImpl(transactionDao)
     val transactionUseCase = TransactionUseCase(transactionRepository)
+
+    //budget
+    private val budgetDao = database.budgetDao()
+    private val budgetRepository = BudgetRepoImpl(budgetDao)
+    val budgetUseCase = BudgetUseCase(budgetRepository, transactionRepository, categoryRepository)
 }

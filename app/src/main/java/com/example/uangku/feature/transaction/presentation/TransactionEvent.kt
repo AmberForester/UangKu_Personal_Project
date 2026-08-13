@@ -10,18 +10,4 @@ sealed interface TransactionEvent {
 
     data object onAddClick : TransactionEvent
 
-    data class onEditClick(
-        val category: Category
-    ): TransactionEvent
-
-    data class onDeleteClick(
-        val category: Category
-    ): TransactionEvent
-
-    data class onTypeChange(
-        val value: Type
-    ) : TransactionEvent
-
-    data object onDeleteConfirm : TransactionEvent
-
 }

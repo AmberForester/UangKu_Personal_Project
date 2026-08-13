@@ -7,6 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.uangku.feature.budget.presentation.BudgetScreen
+import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.category.presentation.CategoryScreen
 import com.example.uangku.feature.category.presentation.CategoryViewModel
 import com.example.uangku.feature.transaction.presentation.TransactionFormScreen
@@ -20,13 +22,14 @@ fun UangKuNavGraph(
     navController: NavController,
     categoryViewModel: CategoryViewModel,
     transactionViewModel: TransactionViewModel,
-    transactionFormViewModel: TransactionFormViewModel
+    transactionFormViewModel: TransactionFormViewModel,
+    budgetViewModel: BudgetViewModel
 ){
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Destination.Category.route,
+        startDestination = Destination.Transaction.route,
     ) {
         composable(Destination.Category.route) {
             CategoryScreen(
@@ -62,7 +65,10 @@ fun UangKuNavGraph(
         }
 
         composable (Destination.Budget.route) {
-
+           BudgetScreen(
+               viewModel = budgetViewModel,
+               navController = navController
+           )
         }
 
         composable (Destination.Analysis.route) {
