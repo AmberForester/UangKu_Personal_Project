@@ -3,6 +3,7 @@ package com.example.uangku.feature.budget.presentation.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BasicAlertDialog
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.uangku.core.ui.component.DialogTemplate
+import com.example.uangku.core.ui.component.currencyFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,11 +30,15 @@ fun BudgetDialog(
 
     errorMessage: String?,
 
+    availableAmount: Double,
+
     onAmountChange: (String) -> Unit,
 
     onDismiss: () -> Unit,
 
-    onSave: () -> Unit
+    onSave: () -> Unit,
+
+    onReset: () -> Unit
 
 ) {
 
@@ -73,10 +79,22 @@ fun BudgetDialog(
                     }
                 )
 
+                Text(
+                    text = "Maximum budget: ${currencyFormatter(availableAmount)}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
+                    TextButton(
+                        onClick = onReset,
+                    ) {
+                        Text("Reset")
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
 
                     TextButton(
                         onClick = onDismiss

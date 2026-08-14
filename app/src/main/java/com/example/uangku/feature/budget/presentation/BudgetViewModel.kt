@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uangku.feature.budget.domain.Budget
+import com.example.uangku.feature.budget.domain.BudgetSummary
 import com.example.uangku.feature.budget.domain.BudgetUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 class BudgetViewModel(
 
@@ -20,21 +20,15 @@ class BudgetViewModel(
     private val _state = MutableStateFlow(BudgetState())
     val state = _state.asStateFlow()
 
-    fun onEvent(event: BudgetEvent){
-        when(event){
+    fun onEvent(event: BudgetEvent) {
+        when (event) {
 
             BudgetEvent.onScreenOpen -> {
                 loadBudgets()
             }
 
             is BudgetEvent.onItemClick -> {
-                _state.update {
-                    it.copy(
-                        selectedBudget = event.budget,
-                        amount = event.budget.budgetAmount.toInt().toString(),
-                        showDialog = true
-                    )
-                }
+                openDialog(event.budget)
             }
 
             is BudgetEvent.onAmountChange -> {
@@ -49,7 +43,11 @@ class BudgetViewModel(
             BudgetEvent.onDismissDialog -> {
                 _state.update {
                     it.copy(
-                        showDialog = false
+                        showDialog = false,
+                        selectedBudget = null,
+                        amount = "",
+                        errorMessage = null,
+                        availableAmount = 0.0
                     )
                 }
             }
@@ -65,6 +63,10 @@ class BudgetViewModel(
                     )
                 }
             }
+
+            BudgetEvent.onReset -> {
+                resetBudget()
+            }
         }
     }
 
@@ -78,22 +80,28 @@ class BudgetViewModel(
                 }
             }
         }
+
+        viewModelScope.launch {
+            budgetUseCase.getBudgetOverview().collect { overview ->
+                _state.update {
+                    it.copy(
+                        budgetOverview = overview
+                    )
+                }
+            }
+        }
     }
 
-    private fun saveBudget(){
+    private fun saveBudget() {
         viewModelScope.launch {
 
             val selected = state.value.selectedBudget
-
-            val calendar = Calendar.getInstance()
 
             val budget = Budget(
                 id = selected?.budgetId,
                 amount = state.value.amount.toDouble(),
                 categoryId = selected?.categoryId ?: 0,
                 categoryName = selected?.categoryName ?: "",
-                month = calendar.get(Calendar.MONTH) + 1,
-                year = calendar.get(Calendar.YEAR),
             )
 
             Log.d(
@@ -106,7 +114,7 @@ class BudgetViewModel(
                 """.trimIndent()
             )
 
-            try{
+            try {
                 budgetUseCase.saveBudget(budget)
 
                 _state.update {
@@ -123,6 +131,46 @@ class BudgetViewModel(
                         errorMessage = e.message
                     )
                 }
+            }
+        }
+    }
+
+    private fun openDialog(budget: BudgetSummary) {
+        viewModelScope.launch {
+
+            val availableAmount = budgetUseCase.getAvailableAmount(budget.budgetId)
+
+            _state.update {
+                it.copy(
+                    selectedBudget = budget,
+                    amount = budget.budgetAmount.toInt().toString(),
+                    availableAmount = availableAmount,
+                    errorMessage = null,
+                    showDialog = true
+                )
+            }
+        }
+    }
+
+    private fun resetBudget() {
+        viewModelScope.launch {
+
+            val selectedBudget = state.value.selectedBudget
+
+            val budget = Budget(
+                id = selectedBudget?.budgetId,
+                amount = state.value.amount.toDouble(),
+                categoryId = selectedBudget?.categoryId ?: 0,
+                categoryName = selectedBudget?.categoryName ?: ""
+            )
+            budgetUseCase.deleteBudget(budget)
+
+            _state.update {
+                it.copy(
+                    showDialog = false,
+                    selectedBudget = null,
+                    amount = ""
+                )
             }
         }
     }

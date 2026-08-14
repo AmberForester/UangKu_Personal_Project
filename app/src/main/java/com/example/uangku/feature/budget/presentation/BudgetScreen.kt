@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +20,7 @@ import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.budget.presentation.component.BudgetDialog
 import com.example.uangku.feature.budget.presentation.component.BudgetItem
+import com.example.uangku.feature.budget.presentation.component.BudgetOverviewItem
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -56,6 +56,10 @@ fun BudgetScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            item {
+                BudgetOverviewItem(overview = state.budgetOverview)
+            }
+
             items(state.budgets){ budget ->
 
                 Log.d("check category on screen", "categoryId: ${budget.categoryId}")
@@ -92,9 +96,15 @@ fun ShowDialog(
                     BudgetEvent.onDismissDialog
                 )
             },
+            availableAmount = state.availableAmount,
             onSave = {
                 viewModel.onEvent(
                     BudgetEvent.onSaveClick
+                )
+            },
+            onReset = {
+                viewModel.onEvent(
+                    BudgetEvent.onReset
                 )
             }
         )

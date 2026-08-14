@@ -7,12 +7,10 @@ data class BudgetSummary (
     val categoryName: String,
     val budgetAmount: Double,
     val spent: Double,
-//    val remaining: Double,
-//    val progress: Float
 
 ) {
     val remaining: Double
-        get() = (budgetAmount ?: 0.0) - spent
+        get() = budgetAmount - spent
 
     val progress: Float
         get()  {

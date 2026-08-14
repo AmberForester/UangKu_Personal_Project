@@ -1,7 +1,5 @@
 package com.example.uangku.feature.budget.presentation
 
-import com.example.uangku.feature.budget.data.BudgetEntity
-import com.example.uangku.feature.budget.domain.Budget
 import com.example.uangku.feature.budget.domain.BudgetSummary
 
 interface BudgetEvent {
@@ -21,5 +19,7 @@ interface BudgetEvent {
     data object onDismissDialog: BudgetEvent
 
     data object onDismissError : BudgetEvent
+
+    data object onReset: BudgetEvent
 
 }

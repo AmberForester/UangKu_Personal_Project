@@ -8,8 +8,6 @@ fun BudgetView.toDomain(): Budget {
         categoryId = categoryId,
         categoryName = categoryName,
         amount = amount,
-        month = month,
-        year = year,
     )
 }
 
@@ -18,7 +16,5 @@ fun Budget.toEntity(): BudgetEntity {
         id = id,
         amount = amount,
         categoryId = categoryId,
-        month = month!!,
-        year = year!!,
     )
 }

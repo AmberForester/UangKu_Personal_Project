@@ -50,12 +50,12 @@ fun BudgetItem(
                     modifier = Modifier.fillMaxWidth(),
                     progress = { budget.progress },
                     color =
-                        if(budget.progress in 0.5f..0.75f) {
-                            Color.Yellow
-                        } else if (budget.progress in 0.75f.. 0.99f){
-                            Color(0xFFFB6400)
-                        } else if (budget.isOverBudget) {
+                        if (budget.isOverBudget) {
                             Color.Red
+                        } else if (budget.progress >= 0.75f) {
+                            Color(0xFFFB6400)
+                        } else if (budget.progress >= 0.5f) {
+                            Color.Yellow
                         } else {
                             Color.Green
                         }

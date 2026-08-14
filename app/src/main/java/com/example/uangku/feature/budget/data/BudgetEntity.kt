@@ -24,7 +24,4 @@ data class BudgetEntity (
 
     val categoryId: Int,
 
-    val month: Int,
-    val year: Int
-
 )

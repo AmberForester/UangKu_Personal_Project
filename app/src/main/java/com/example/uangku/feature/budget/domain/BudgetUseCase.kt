@@ -4,7 +4,6 @@ import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.component.isSameMonth
 import com.example.uangku.feature.category.domain.CategoryRepository
 import com.example.uangku.feature.transaction.domain.TransactionRepository
-import com.example.uangku.feature.transaction.domain.TransactionUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -107,7 +106,6 @@ class BudgetUseCase (
                 .sumOf { it.amount }
 
             val allocated = budgets
-                .filter { it.month == currentMonth && it.year == currentYear }
                 .sumOf { it.amount ?: 0.0 }
 
             val available = (income - allocated).coerceAtLeast(0.0)
@@ -124,18 +122,11 @@ class BudgetUseCase (
         budgetId: Long? = null
     ): Double {
 
-        val calendar = Calendar.getInstance()
+        val today = Date()
 
-        val currentMonth = calendar.get(Calendar.MONTH) + 1
-        val currentYear = calendar.get(Calendar.YEAR)
+        val transactions = transactionRepository.getTransactions().first()
 
-        val transactions = transactionRepository
-            .getTransactions()
-            .first()
-
-        val budgets = budgetRepository
-            .getBudgets()
-            .first()
+        val budgets = budgetRepository.getBudgets().first()
 
         val totalIncome = transactions
             .filter {
@@ -145,11 +136,7 @@ class BudgetUseCase (
             .sumOf { it.amount }
 
         val totalAllocated = budgets
-            .filter {
-                it.month == currentMonth &&
-                        it.year == currentYear &&
-                        it.id != budgetId
-            }
+            .filter { it.id != budgetId }
             .sumOf {
                 it.amount ?: 0.0
             }

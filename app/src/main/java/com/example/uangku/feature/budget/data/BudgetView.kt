@@ -6,9 +6,7 @@ import androidx.room.DatabaseView
 @DatabaseView(
     value = "SELECT " +
             "b.id, " +
-            "b.month," +
             "b.amount," +
-            "b.year, " +
             "c.id AS categoryId, " +
             "c.name AS categoryName " +
             "FROM categories c " +
@@ -27,7 +25,4 @@ class BudgetView (
 
     val amount: Double?,
 
-    val month: Int?,
-
-    val year: Int?
 )

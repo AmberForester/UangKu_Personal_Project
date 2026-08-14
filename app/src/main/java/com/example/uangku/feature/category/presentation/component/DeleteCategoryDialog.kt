@@ -36,7 +36,11 @@ fun DeleteCategoryDialog (
                 )
 
                 Text(
-                    text = "Are you sure to delete \"$name\"?"
+                    text = "Apakah kamu yakin ingin menghapus kategori \"$name\"?"
+                )
+
+                Text(
+                    text = "Menghapus kategori ini juga akan menghapus budget dan seluruh transaksi yang terkait dengan kategori Makanan. Tindakan ini tidak dapat dibatalkan."
                 )
 
                 Row(
