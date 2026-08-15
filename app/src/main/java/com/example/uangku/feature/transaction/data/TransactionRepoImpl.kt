@@ -4,6 +4,7 @@ import com.example.uangku.feature.transaction.domain.Transaction
 import com.example.uangku.feature.transaction.domain.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Date
 
 class TransactionRepoImpl(
     private val transactionDao: TransactionDao
@@ -13,6 +14,14 @@ class TransactionRepoImpl(
         return transactionDao.getTransactions()
             .map { transaction ->
                 transaction.map { it.toDomain() }
+            }
+    }
+
+    override fun getTransactions(startDate: Date, endDate: Date): Flow<List<Transaction>> {
+        return transactionDao
+            .getTransactions(startDate, endDate)
+            .map { transactions ->
+                transactions.map { it.toDomain() }
             }
     }
 

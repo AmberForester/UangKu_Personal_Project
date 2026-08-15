@@ -127,28 +127,28 @@ fun TransactionFormScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                OutlinedButton(
-                    modifier = Modifier,
-                    onClick = {
-                        viewModel.onEvent(
-                            TransactionFormEvent.onDeleteClick
-                        )
-                    },
-                ) {
-                    Text("Delete")
-                }
-                if(state.id == null){
-                    Button(
+                if(state.id != null) {
+                    OutlinedButton(
                         modifier = Modifier,
                         onClick = {
                             viewModel.onEvent(
-                                TransactionFormEvent.OnSave
+                                TransactionFormEvent.onDeleteClick
                             )
-                            navController.popBackStack()
                         },
                     ) {
-                        Text("Save")
+                        Text("Delete")
                     }
+                }
+                Button(
+                    modifier = Modifier,
+                    onClick = {
+                        viewModel.onEvent(
+                            TransactionFormEvent.OnSave
+                        )
+                        navController.popBackStack()
+                    },
+                ) {
+                    Text("Save")
                 }
             }
         }

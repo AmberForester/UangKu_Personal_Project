@@ -23,8 +23,6 @@ import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.core.ui.component.toDateFormat
 import com.example.uangku.feature.transaction.domain.Transaction
 import com.example.uangku.feature.transaction.presentation.TransactionState
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 fun TransactionContent(

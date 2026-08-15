@@ -10,4 +10,8 @@ sealed interface TransactionEvent {
 
     data object onAddClick : TransactionEvent
 
+    data object onPreviousMonth: TransactionEvent
+
+    data object onNextMonth: TransactionEvent
+
 }

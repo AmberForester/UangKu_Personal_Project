@@ -12,3 +12,16 @@ fun currencyFormatter(
         .format(amount)
 
 }
+
+fun currencyMinimalFormatter(
+    amount: Double
+): String {
+    val formatter = NumberFormat.getCurrencyInstance(
+        Locale("id", "ID")
+    )
+
+    formatter.maximumFractionDigits = 0
+    formatter.minimumFractionDigits = 0
+
+    return formatter.format(amount)
+}

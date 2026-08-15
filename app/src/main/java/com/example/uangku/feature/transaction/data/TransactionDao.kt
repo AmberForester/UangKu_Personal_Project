@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface TransactionDao {
@@ -15,6 +16,16 @@ interface TransactionDao {
             "FROM transaction_view " +
             "ORDER BY date DESC")
     fun getTransactions(): Flow<List<TransactionView>>
+
+    @Query("SELECT * " +
+            "FROM transaction_view " +
+            "WHERE date >= :startDate " +
+            "AND date < :endDate " +
+            "ORDER BY date DESC")
+    fun getTransactions(
+        startDate: Date,
+        endDate: Date
+    ): Flow<List<TransactionView>>
 
     @Query("SELECT * FROM `transaction_view` WHERE id = :id")
     suspend fun getTransactionById(id: Long): TransactionView?

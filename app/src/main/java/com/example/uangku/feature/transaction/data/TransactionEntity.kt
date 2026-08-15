@@ -2,7 +2,6 @@ package com.example.uangku.feature.transaction.data
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.uangku.core.domain.Type
 import com.example.uangku.feature.category.data.CategoryEntity
