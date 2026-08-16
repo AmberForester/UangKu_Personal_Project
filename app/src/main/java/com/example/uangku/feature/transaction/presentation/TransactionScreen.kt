@@ -46,7 +46,7 @@ fun TransactionScreen(
             )
         },
         bottomBar = {
-            UangKuNavigationBar(navController = navController)
+            UangKuNavigationBar(navController = navController, current = "transaction")
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {

@@ -45,7 +45,7 @@ fun BudgetScreen(
             )
         },
         bottomBar = {
-            UangKuNavigationBar(navController = navController)
+            UangKuNavigationBar(navController = navController, current = "budget")
         }
 
     ){ padding ->

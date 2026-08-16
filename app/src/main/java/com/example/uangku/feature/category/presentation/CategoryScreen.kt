@@ -41,7 +41,7 @@ fun CategoryScreen (
             )
         },
         bottomBar = {
-            UangKuNavigationBar(navController = navController)
+            UangKuNavigationBar(navController = navController, current = "category")
         }
     ) { padding ->
         Box(modifier = Modifier.padding(padding)){

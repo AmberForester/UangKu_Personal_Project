@@ -1,86 +1,118 @@
 package com.example.uangku.core.ui.component
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
 fun UangKuNavigationBar(
-    navController: NavController
+    navController: NavController,
+    current: String
 ) {
 
-    val current by remember { mutableStateOf("") }
     Column {
         NavigationBar {
-            Row {
-                NavigationBarItem(
-                    selected = current == "dashboard",
-                    onClick = {
-                        navController.navigate("dashboard")
-                    },
-                    label = {
-                        Text(text = "Dashboard")
-                    },
-                    icon = {},
-                )
-                NavigationBarItem(
-                    selected = current == "transaction",
-                    onClick = {
-                        navController.navigate("transaction")
-                    },
-                    label = {
-                        Text(text = "Transaction")
-                    },
-                    icon = {},
-                )
-                NavigationBarItem(
-                    selected = current == "budget",
-                    onClick = {
-                        navController.navigate("budget")
-                    },
-                    label = {
-                        Text(text = "Budget")
-                    },
-                    icon = {},
-                )
-                NavigationBarItem(
-                    selected = current == "analysis",
-                    onClick = {
-                        navController.navigate("analysis")
-                    },
-                    label = {
-                        Text(text = "Analysis")
-                    },
-                    icon = {},
-                )
-//                NavigationBarItem(
-//                    selected = current == "settings",
-//                    onClick = {
-//                        navController.navigate("settings")
-//                    },
-//                    label = {
-//                        Text(text = "Settings")
-//                    },
-//                    icon = {},
-//                )
-                NavigationBarItem(
-                    selected = current == "category",
-                    onClick = {
-                        navController.navigate("category")
-                    },
-                    label = {
-                        Text(text = "Category (Temp)")
-                    },
-                    icon = {},
-                )
-            }
+            NavigationBarItem(
+
+                selected = current == "dashboard",
+                onClick = {
+                    navController.navigate("dashboard")
+                },
+                label = {
+                    if(current.equals("dashboard", ignoreCase = true))
+                    Text(text = "Dashboard", fontSize = 10.sp)
+                },
+                alwaysShowLabel = true,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Home,
+                        contentDescription = "dashboard Icon",
+                    )
+                },
+
+            )
+            NavigationBarItem(
+                selected = current == "transaction",
+                onClick = {
+                    navController.navigate("transaction")
+                },
+                label = {
+                    if(current.equals("transaction", ignoreCase = true)){
+                        Text(text = "Transaction", fontSize = 10.sp)
+                    }
+                },
+                alwaysShowLabel = true,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.AccountBalanceWallet,
+                        contentDescription = "dashboard Icon",
+                    )
+                },
+            )
+            NavigationBarItem(
+                selected = current == "budget",
+                onClick = {
+                    navController.navigate("budget")
+                },
+                label = {
+                    if(current.equals("budget", ignoreCase = true))
+                    Text(text = "Budget", fontSize = 10.sp)
+                },
+                alwaysShowLabel = true,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Wallet,
+                        contentDescription = "dashboard Icon",
+                    )
+                },
+            )
+            NavigationBarItem(
+                selected = current == "analysis",
+                onClick = {
+                    navController.navigate("analysis")
+                },
+                label = {
+                    if(current.equals("analysis", ignoreCase = true))
+                    Text(text = "Analysis", fontSize = 10.sp)
+                },
+                alwaysShowLabel = true,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Analytics,
+                        contentDescription = "dashboard Icon",
+                    )
+                },
+            )
+
+            NavigationBarItem(
+                selected = current == "category",
+                onClick = {
+                    navController.navigate("category")
+                },
+                alwaysShowLabel = true,
+                label = {
+                    if(current.equals("category", ignoreCase = true))
+                    Text(text = "Category", fontSize = 10.sp)
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Category,
+                        contentDescription = "dashboard Icon",
+                    )
+                },
+            )
+
         }
     }
 }
