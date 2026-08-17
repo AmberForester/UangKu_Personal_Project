@@ -37,4 +37,8 @@ sealed interface CategoryEvent {
 
     data object onDeleteConfirm : CategoryEvent
 
+    data class onSelectedTypeChange(
+        val type: Type
+    ): CategoryEvent
+
 }

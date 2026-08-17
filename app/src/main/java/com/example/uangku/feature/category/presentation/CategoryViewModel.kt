@@ -3,9 +3,9 @@ package com.example.uangku.feature.category.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uangku.feature.category.domain.CategoryUseCase
-import com.example.uangku.feature.category.domain.Category
 import com.example.uangku.core.domain.Type
+import com.example.uangku.feature.category.domain.Category
+import com.example.uangku.feature.category.domain.CategoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -49,11 +49,22 @@ class CategoryViewModel (
                     it.copy(type = event.value)
                 }
 
+            is CategoryEvent.onSelectedTypeChange -> {
+                _state.update {
+                    it.copy(
+                        selectedType = event.type
+                    )
+                }
+                filterCategories()
+            }
+
             CategoryEvent.onSave -> { saveCategory() }
 
             CategoryEvent.onDeleteConfirm -> { deleteCategory() }
 
             CategoryEvent.onScreenOpen -> { loadCategories() }
+
+            CategoryEvent.onSave -> {}
         }
     }
 
@@ -68,7 +79,21 @@ class CategoryViewModel (
                         categories = categories
                     )
                 }
+                filterCategories()
             }
+        }
+    }
+
+    private fun filterCategories() {
+
+        val filtered = _state.value.categories.filter {
+            it.type == _state.value.selectedType
+        }
+
+        _state.update {
+            it.copy(
+                filteredCategory = filtered
+            )
         }
     }
 

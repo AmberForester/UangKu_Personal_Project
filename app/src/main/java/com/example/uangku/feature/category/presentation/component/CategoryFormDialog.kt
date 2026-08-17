@@ -1,5 +1,6 @@
 package com.example.uangku.feature.category.presentation.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,7 +62,9 @@ fun CategoryFormDialog (
                     )
 
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clickable { onTypeChange(Type.EXPENSE) }
                     ) {
                         RadioButton(
                             selected = type == Type.EXPENSE,
@@ -73,7 +76,9 @@ fun CategoryFormDialog (
                     }
 
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clickable { onTypeChange(Type.INCOME) }
                     ) {
                         RadioButton(
                             selected = type == Type.INCOME,

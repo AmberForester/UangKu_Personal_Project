@@ -15,4 +15,7 @@ data class CategoryState (
     val showFormDialog: Boolean = false,
     val showDeleteDialog: Boolean = false,
 
+    val selectedType: Type = Type.EXPENSE,
+    val filteredCategory: List<Category> = emptyList()
+
     )

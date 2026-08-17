@@ -1,6 +1,8 @@
 package com.example.uangku.feature.transaction.presentation.viewModel
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uangku.core.domain.Type
@@ -13,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
+@RequiresApi(Build.VERSION_CODES.O)
 class TransactionFormViewModel (
 
     private val categoryUseCase: CategoryUseCase,

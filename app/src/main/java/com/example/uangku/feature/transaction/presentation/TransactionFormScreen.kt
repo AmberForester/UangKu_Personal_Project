@@ -1,5 +1,7 @@
 package com.example.uangku.feature.transaction.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -31,6 +34,7 @@ import com.example.uangku.feature.transaction.presentation.component.FormTypeSel
 import com.example.uangku.feature.transaction.presentation.component.TransactionDeleteDialog
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TransactionFormScreen(
     id: Long,
@@ -65,11 +69,13 @@ fun TransactionFormScreen(
 
             FormTypeSelector(
                 selectedType = state.type,
+
                 onTypeSelected = {
                     viewModel.onEvent(
                         TransactionFormEvent.OnTypeChange(it)
                     )
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             )
             
             FormDatePicker(
@@ -156,6 +162,7 @@ fun TransactionFormScreen(
     ShowDeleteDialog(viewModel, navController)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowDeleteDialog(
     viewModel: TransactionFormViewModel,

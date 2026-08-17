@@ -6,13 +6,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.uangku.feature.category.domain.Category
 
@@ -23,16 +24,18 @@ fun CategoryItem(
     onDeleteClick: (Category) -> Unit
 ) {
     ListItem(
-        modifier = Modifier.fillMaxWidth().padding(20.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
         headlineContent = {
             Text(
                 text = category.name,
-                color = Color.Black
+                style = MaterialTheme.typography.titleMedium
             )
+
         },
         trailingContent = {
 
-            Row(){
+            Row {
                 IconButton(
                     onClick = {
                         onEditClick(category)
@@ -55,5 +58,9 @@ fun CategoryItem(
                 }
             }
         }
+    )
+    HorizontalDivider(
+        Modifier
+            .padding(horizontal = 10.dp)
     )
 }

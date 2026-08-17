@@ -2,7 +2,9 @@ package com.example.uangku.feature.category.presentation
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -10,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
@@ -17,6 +20,7 @@ import com.example.uangku.feature.category.presentation.component.AddButton
 import com.example.uangku.feature.category.presentation.component.CategoryContent
 import com.example.uangku.feature.category.presentation.component.CategoryFormDialog
 import com.example.uangku.feature.category.presentation.component.DeleteCategoryDialog
+import com.example.uangku.feature.transaction.presentation.component.FormTypeSelector
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -27,7 +31,7 @@ fun CategoryScreen (
     LaunchedEffect(Unit) { viewModel.onEvent(CategoryEvent.onScreenOpen) }
     val state by viewModel.state.collectAsState()
 
-    Log.d("UI", "category = ${state.categories.size}")
+    Log.d("init ", "category = ${state.filteredCategory.size}")
 
     Scaffold (
         topBar = {
@@ -44,7 +48,22 @@ fun CategoryScreen (
             UangKuNavigationBar(navController = navController, current = "category")
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding)){
+        Column(modifier = Modifier
+            .padding(padding)
+        ){
+
+            FormTypeSelector(
+                onTypeSelected = {
+                    viewModel.onEvent(CategoryEvent.onSelectedTypeChange(it))
+                },
+                selectedType = state.selectedType,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+            )
+
+            Spacer(Modifier.padding(20.dp))
+
             CategoryContent(
                 state = state,
                 onEditClick = {

@@ -8,17 +8,19 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import com.example.uangku.core.domain.Type
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormTypeSelector(
     selectedType: Type,
-    onTypeSelected: (Type) -> Unit
+    onTypeSelected: (Type) -> Unit,
+    modifier: Modifier
 ) {
 
     SingleChoiceSegmentedButtonRow(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
     ) {
 
         SegmentedButton(
