@@ -2,7 +2,10 @@ package com.example.uangku.feature.budget.presentation.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.LinearProgressIndicator
@@ -47,7 +50,7 @@ fun BudgetItem(
             } else {
 
                 LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().height(10.dp),
                     progress = { budget.progress },
                     color =
                         if (budget.isOverBudget) {
@@ -61,9 +64,18 @@ fun BudgetItem(
                         }
                 )
 
-                Text(
-                    text = "${currencyFormatter(budget.spent)} / ${currencyFormatter(budget.budgetAmount)}"
-                )
+                Row {
+                    Text(
+                        text = "${currencyFormatter(budget.spent)} / ${currencyFormatter(budget.budgetAmount)}"
+                    )
+
+                    Spacer(Modifier.weight(1f))
+
+                    Text(
+                        text = "${(budget.progress * 100).toInt()}%",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
 
                 if(!budget.isOverBudget){
                     Text(

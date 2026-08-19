@@ -3,8 +3,8 @@ package com.example.uangku.feature.transaction.presentation
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,11 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.uangku.core.navigation.Destination
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
-import com.example.uangku.feature.transaction.domain.TransactionSummary
 import com.example.uangku.feature.transaction.presentation.component.AddTransactionButton
 import com.example.uangku.feature.transaction.presentation.component.MonthSelector
 import com.example.uangku.feature.transaction.presentation.component.ShowTransactionSummary
@@ -65,10 +64,14 @@ fun TransactionScreen(
                 }
             )
 
+            Spacer(Modifier.padding(10.dp))
+
             ShowTransactionSummary(
                 monthlySummary = state.monthlySummary,
                 overallSummary = state.overallSummary
             )
+
+            Spacer(Modifier.padding(20.dp))
 
             TransactionContent(
                 state = state,

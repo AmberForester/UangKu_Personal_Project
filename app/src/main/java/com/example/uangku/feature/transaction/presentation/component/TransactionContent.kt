@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FolderOpen
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.uangku.core.domain.Type
@@ -55,8 +57,10 @@ fun TransactionContent(
 
 @Composable
 fun TransactionItem(
+
     transaction: Transaction,
     onClick: (Transaction) -> Unit
+
 ) {
     val amountText =
         if (transaction.type == Type.INCOME){
@@ -67,12 +71,15 @@ fun TransactionItem(
 
     ListItem(
         modifier = Modifier.clickable { onClick(transaction) },
+
         headlineContent = {
             Text(text = transaction.categoryName)
         },
 
         supportingContent = {
-            Text(transaction.description)
+            if (transaction.description != ""){
+                Text(transaction.description)
+            }
         },
 
         trailingContent = {
@@ -84,7 +91,7 @@ fun TransactionItem(
 }
 
 @Composable
-fun TransactionEmptyState(modifier: Modifier = Modifier) {
+fun TransactionEmptyState() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -119,12 +126,13 @@ fun TransactionEmptyState(modifier: Modifier = Modifier) {
 fun TransactionDateHeader(
     date: String
 ) {
+    HorizontalDivider(Modifier.padding(bottom = 12.dp))
     Text(
         text = date,
+        fontWeight = FontWeight(1000),
         style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(
-            horizontal = 16.dp,
-            vertical = 12.dp
-        )
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+//            .padding(top = 25.dp),
     )
 }

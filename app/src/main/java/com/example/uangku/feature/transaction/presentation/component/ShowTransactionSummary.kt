@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.uangku.core.ui.component.OverviewItem
-import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.feature.transaction.domain.TransactionSummary
 
 @Composable
@@ -19,48 +19,42 @@ fun ShowTransactionSummary(
     monthlySummary: TransactionSummary,
     overallSummary: TransactionSummary
 ) {
+    val size by remember { mutableStateOf(12) }
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
-            .padding(horizontal = 15.dp)
+            .padding(horizontal = 16.dp)
     ) {
-
-        Text(
-            text = "Current Balance",
-            style = MaterialTheme.typography.titleSmall
-        )
-
-        Text(
-            text = currencyFormatter(overallSummary.balance),
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Text(
-            text = "Monthly Summary",
-            style = MaterialTheme.typography.titleSmall
-        )
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
             OverviewItem(
+                title = "Overall",
+                amount = overallSummary.balance,
+                type = "min",
+                size = size
+            )
+
+            OverviewItem(
                 title = "Income",
                 amount = monthlySummary.income,
-                type = "min"
+                type = "min",
+                size = size
             )
 
             OverviewItem(
                 title = "Expense",
                 amount = monthlySummary.expense,
-                type = "min"
+                type = "min",
+                size = size
             )
 
             OverviewItem(
                 title = "Balance",
                 amount = monthlySummary.balance,
-                type = "min"
+                type = "min",
+                size = size
             )
         }
     }
