@@ -3,50 +3,75 @@ package com.example.uangku.feature.transaction.domain
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.uangku.core.domain.Type
+import com.example.uangku.feature.period.domain.FinancialPeriod
+import com.example.uangku.feature.period.domain.PeriodUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import java.time.YearMonth
 import java.time.ZoneId
 import java.util.Date
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 class TransactionUseCase (
-    private val repository: TransactionRepository
+
+    private val repository: TransactionRepository,
+    private val periodUseCase: PeriodUseCase
 ){
 
-    fun getTransactions(): Flow<List<Transaction>> {
+    private fun getTransactions(): Flow<List<Transaction>> {
         return repository.getTransactions()
     }
 
-    fun getTransactions(
+    suspend fun getTransactions(
         month: YearMonth
     ): Flow<List<Transaction>> {
 
         val zoneId = ZoneId.systemDefault()
 
-        val startDate = Date.from(
-            month
-                .atDay(1)
-                .atStartOfDay(zoneId)
-                .toInstant()
-        )
+        return periodUseCase.getPeriodSettings().flatMapLatest { settings ->
 
-        val endDate = Date.from(
-            month
-                .plusMonths(1)
-                .atDay(1)
-                .atStartOfDay(zoneId)
-                .toInstant()
-        )
+            val period = periodUseCase.getFinancialPeriod(
+                date = month.atDay(1),
+                startDay = settings.startDay
+            )
 
-        return repository.getTransactions(
-            startDate = startDate,
-            endDate = endDate
-        )
+            val startDate = Date.from(
+                period.startDate
+                    .atStartOfDay(zoneId)
+                    .toInstant()
+            )
 
+            val endDate = Date.from(
+                period.endDate
+                    .plusDays(1)
+                    .atStartOfDay(zoneId)
+                    .toInstant()
+            )
+
+            repository.getTransactions(
+                startDate = startDate,
+                endDate = endDate
+            )
+        }
     }
 
-    fun getMonthlySummary(
+    fun getFinancialPeriod (
+        month: YearMonth
+    ): Flow<FinancialPeriod> {
+        return periodUseCase
+            .getPeriodSettings()
+            .map { settings ->
+                periodUseCase.getFinancialPeriod(
+                    date = month.atDay(1),
+                    startDay = settings.startDay
+                )
+            }
+    }
+
+    suspend fun getMonthlySummary(
         month: YearMonth
     ): Flow<TransactionSummary> {
 

@@ -17,7 +17,7 @@ import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.transaction.presentation.component.AddTransactionButton
-import com.example.uangku.feature.transaction.presentation.component.MonthSelector
+import com.example.uangku.feature.transaction.presentation.component.PeriodSelector
 import com.example.uangku.feature.transaction.presentation.component.ShowTransactionSummary
 import com.example.uangku.feature.transaction.presentation.component.TransactionContent
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionViewModel
@@ -50,19 +50,21 @@ fun TransactionScreen(
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
 
-            MonthSelector(
-                selectedMonth = state.selectedMonth,
-                onPreviousClick = {
-                    viewModel.onEvent(
-                        TransactionEvent.onPreviousMonth
-                    )
-                },
-                onNextClick = {
-                    viewModel.onEvent(
-                        TransactionEvent.onNextMonth
-                    )
-                }
-            )
+            state.financialPeriod?.let {
+                PeriodSelector(
+                    onPreviousClick = {
+                        viewModel.onEvent(
+                            TransactionEvent.onPreviousMonth
+                        )
+                    },
+                    onNextClick = {
+                        viewModel.onEvent(
+                            TransactionEvent.onNextMonth
+                        )
+                    },
+                    financialPeriod = it
+                )
+            }
 
             Spacer(Modifier.padding(10.dp))
 

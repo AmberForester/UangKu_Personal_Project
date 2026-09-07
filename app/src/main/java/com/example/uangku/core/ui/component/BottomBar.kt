@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Analytics
-import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -96,18 +96,18 @@ fun UangKuNavigationBar(
             )
 
             NavigationBarItem(
-                selected = current == "category",
+                selected = current == "settings",
                 onClick = {
-                    navController.navigate("category")
+                    navController.navigate("settings")
                 },
                 alwaysShowLabel = true,
                 label = {
-                    if(current.equals("category", ignoreCase = true))
-                    Text(text = "Category", fontSize = 10.sp)
+                    if(current.equals("settings", ignoreCase = true))
+                    Text(text = "Settings", fontSize = 10.sp)
                 },
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.Category,
+                        imageVector = Icons.Default.Settings,
                         contentDescription = "dashboard Icon",
                     )
                 },

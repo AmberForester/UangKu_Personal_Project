@@ -49,6 +49,30 @@ class PeriodUseCase (
         )
     }
 
+    suspend fun getFinancialPeriod(
+
+        date: LocalDate,
+        startDay: Int
+
+    ) : FinancialPeriod {
+
+        val startDate = getStartDate(
+            date = date,
+            startDay = startDay
+        )
+
+        val nextPeriodStartDate = getNextPeriodStartDate(
+            startDay = startDay,
+            startDate = startDate
+        )
+
+        return FinancialPeriod(
+            startDate = startDate,
+            endDate = nextPeriodStartDate.minusDays(1)
+        )
+
+    }
+
     private fun getStartDate(
 
         date: LocalDate,

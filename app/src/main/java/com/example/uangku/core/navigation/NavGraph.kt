@@ -1,5 +1,7 @@
 package com.example.uangku.core.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -11,19 +13,24 @@ import com.example.uangku.feature.budget.presentation.BudgetScreen
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.category.presentation.CategoryScreen
 import com.example.uangku.feature.category.presentation.CategoryViewModel
+import com.example.uangku.feature.period.presentation.PeriodViewModel
+import com.example.uangku.feature.settings.presentation.SettingsScreen
 import com.example.uangku.feature.transaction.presentation.TransactionFormScreen
 import com.example.uangku.feature.transaction.presentation.TransactionScreen
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UangKuNavGraph(
+
     navController: NavController,
     categoryViewModel: CategoryViewModel,
     transactionViewModel: TransactionViewModel,
     transactionFormViewModel: TransactionFormViewModel,
-    budgetViewModel: BudgetViewModel
+    budgetViewModel: BudgetViewModel,
+    periodViewModel: PeriodViewModel
 ){
     val navController = rememberNavController()
 
@@ -76,7 +83,10 @@ fun UangKuNavGraph(
         }
 
         composable (Destination.Settings.route) {
-
+            SettingsScreen(
+                navController = navController,
+                periodViewModel = periodViewModel
+            )
         }
     }
 }

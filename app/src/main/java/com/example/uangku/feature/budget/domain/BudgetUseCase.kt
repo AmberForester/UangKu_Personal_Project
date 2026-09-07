@@ -1,20 +1,24 @@
 package com.example.uangku.feature.budget.domain
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.uangku.core.domain.Type
-import com.example.uangku.core.ui.component.isSameMonth
 import com.example.uangku.feature.category.domain.CategoryRepository
+import com.example.uangku.feature.period.domain.PeriodUseCase
 import com.example.uangku.feature.transaction.domain.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import java.util.Calendar
+import java.time.ZoneId
 import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.O)
 class BudgetUseCase (
 
     private val budgetRepository: BudgetRepository,
     private val transactionRepository: TransactionRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val periodUseCase: PeriodUseCase
 
 ){
 
@@ -48,26 +52,46 @@ class BudgetUseCase (
         return budgetRepository.deleteBudget(budget)
     }
 
-    fun getBudgetSummaries(): Flow<List<BudgetSummary>>{
+    suspend fun getBudgetSummaries(): Flow<List<BudgetSummary>>{
 
-        val today = Date()
+        val period = periodUseCase.getFinancialPeriod()
+
+        val startDate = Date.from(
+            period.startDate
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        )
+        val endDate = Date.from(
+            period.endDate
+                .plusDays(1)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        )
 
         return combine(
 
             budgetRepository.getBudgets(),
             transactionRepository.getTransactions(),
-            categoryRepository.getCategories()
-
+            categoryRepository.getCategories(),
 
         ) {
             budgets, transactions, categories ->
 
-            val expenseCategory = categories.filter { category -> category.type == Type.EXPENSE }.mapNotNull { category -> category.id }.toSet()
+            val expenseCategory = categories
+                .filter { category ->
+                    category.type == Type.EXPENSE
+                }.mapNotNull { category ->
+                    category.id
+                }.toSet()
 
-            val spentByCategory = transactions.filter { it.type == Type.EXPENSE && it.date.isSameMonth(today) }
+            val spentByCategory = transactions
+                .filter { transaction ->
+                transaction.type == Type.EXPENSE &&
+                    transaction.date >= startDate &&
+                        transaction.date < endDate
+            }
                 .groupBy { it.categoryId }
-                .mapValues { (_, transactions) -> transactions.sumOf { it.amount }
-                }
+                .mapValues { (_, transactions) -> transactions.sumOf { it.amount } }
 
             budgets
                 .filter { it.categoryId.toLong() in expenseCategory }
@@ -88,21 +112,34 @@ class BudgetUseCase (
         }
     }
 
-    fun getBudgetOverview(): Flow<BudgetOverview> {
+    suspend fun getBudgetOverview(): Flow<BudgetOverview> {
 
-        val calendar = Calendar.getInstance()
-        val currentMonth = calendar.get(Calendar.MONTH) + 1
-        val currentYear = calendar.get(Calendar.YEAR)
+        val period = periodUseCase.getFinancialPeriod()
+
+        val startDate = Date.from(
+            period.startDate
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        )
+        val endDate = Date.from(
+            period.endDate
+                .plusDays(1)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        )
 
         return combine(
 
             budgetRepository.getBudgets(),
-            transactionRepository.getTransactions()
+            transactionRepository.getTransactions(),
 
         ) { budgets, transactions ->
 
             val income = transactions
-                .filter { it.type == Type.INCOME && it.date.isSameMonth(Date()) }
+                .filter { it.type == Type.INCOME &&
+                        it.date >= startDate &&
+                        it.date < endDate
+                }
                 .sumOf { it.amount }
 
             val allocated = budgets
@@ -122,7 +159,19 @@ class BudgetUseCase (
         budgetId: Long? = null
     ): Double {
 
-        val today = Date()
+        val period = periodUseCase.getFinancialPeriod()
+
+        val startDate = Date.from(
+            period.startDate
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        )
+        val endDate = Date.from(
+            period.endDate
+                .plusDays(1)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+        )
 
         val transactions = transactionRepository.getTransactions().first()
 
@@ -131,7 +180,8 @@ class BudgetUseCase (
         val totalIncome = transactions
             .filter {
                 it.type == Type.INCOME &&
-                        it.date.isSameMonth(Date())
+                        it.date >= startDate &&
+                        it.date < endDate
             }
             .sumOf { it.amount }
 
@@ -145,3 +195,11 @@ class BudgetUseCase (
             .coerceAtLeast(0.0)
     }
 }
+
+//@RequiresApi(Build.VERSION_CODES.O)
+//private fun Date.toLocalDate(): LocalDate {
+//
+//    return toInstant()
+//        .atZone(ZoneId.systemDefault())
+//        .toLocalDate()
+//}

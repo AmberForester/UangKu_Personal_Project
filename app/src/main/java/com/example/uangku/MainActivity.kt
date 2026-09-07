@@ -1,9 +1,11 @@
 package com.example.uangku
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,12 +18,16 @@ import com.example.uangku.feature.category.presentation.CategoryViewModelFactory
 import com.example.uangku.core.ui.theme.UangKuTheme
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.budget.presentation.BudgetViewModelFactory
+import com.example.uangku.feature.period.presentation.PeriodViewModel
+import com.example.uangku.feature.period.presentation.PeriodViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionViewModel
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionViewModelFactory
 
+@RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,6 +57,11 @@ class MainActivity : ComponentActivity() {
                         budgetUseCase = appContainer.budgetUseCase
                     )
                 )
+                val periodViewModel: PeriodViewModel = viewModel(
+                    factory = PeriodViewModelFactory(
+                        periodUseCase = appContainer.periodUseCase
+                    )
+                )
 
                 val navController = rememberNavController()
 
@@ -59,7 +70,8 @@ class MainActivity : ComponentActivity() {
                     categoryViewModel = categoryViewModel,
                     transactionViewModel = transactionViewModel,
                     transactionFormViewModel = transactionFormViewModel,
-                    budgetViewModel = budgetViewModel
+                    budgetViewModel = budgetViewModel,
+                    periodViewModel = periodViewModel
                 )
             }
         }

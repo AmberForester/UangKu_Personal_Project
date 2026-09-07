@@ -10,6 +10,9 @@ import com.example.uangku.feature.budget.data.BudgetRepoImpl
 import com.example.uangku.feature.budget.domain.BudgetUseCase
 import com.example.uangku.feature.category.data.CategoryRepoImpl
 import com.example.uangku.feature.category.domain.CategoryUseCase
+import com.example.uangku.feature.period.data.PeriodDataStore
+import com.example.uangku.feature.period.data.PeriodRepositoryImpl
+import com.example.uangku.feature.period.domain.PeriodUseCase
 import com.example.uangku.feature.transaction.data.TransactionRepoImpl
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 
@@ -26,6 +29,11 @@ class AppContainer (
         .addCallback(DatabaseCallback())
         .build()
 
+    //period
+    private val periodDataStore = PeriodDataStore(context)
+    private val periodRepository = PeriodRepositoryImpl(periodDataStore)
+    val periodUseCase = PeriodUseCase(periodRepository)
+
     // category
     private val categoryDao = database.categoryDao()
     private val categoryRepository = CategoryRepoImpl(categoryDao)
@@ -34,10 +42,11 @@ class AppContainer (
     //transaction
     private val transactionDao = database.transactionDao()
     private val transactionRepository = TransactionRepoImpl(transactionDao)
-    val transactionUseCase = TransactionUseCase(transactionRepository)
+    val transactionUseCase = TransactionUseCase(transactionRepository, periodUseCase)
 
     //budget
     private val budgetDao = database.budgetDao()
     private val budgetRepository = BudgetRepoImpl(budgetDao)
-    val budgetUseCase = BudgetUseCase(budgetRepository, transactionRepository, categoryRepository)
+    val budgetUseCase = BudgetUseCase(budgetRepository, transactionRepository, categoryRepository, periodUseCase)
+
 }

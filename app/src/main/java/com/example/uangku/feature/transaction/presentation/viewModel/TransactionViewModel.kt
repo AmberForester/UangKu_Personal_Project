@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 import com.example.uangku.feature.transaction.presentation.TransactionEvent
-import com.example.uangku.feature.transaction.presentation.TransactionFormState
 import com.example.uangku.feature.transaction.presentation.TransactionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +30,7 @@ class TransactionViewModel (
     init {
         observeTransactions()
         observeMonthlySummary()
+        observeFinancialPeriod()
     }
 
     fun onEvent(event: TransactionEvent) {
@@ -99,6 +99,23 @@ class TransactionViewModel (
                     _state.update {
                         it.copy(
                             monthlySummary = summary
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun observeFinancialPeriod() {
+        viewModelScope.launch {
+            state.map { it.selectedMonth }
+                .distinctUntilChanged()
+                .flatMapLatest { month ->
+                    transactionUseCase.getFinancialPeriod(month)
+                }
+                .collect { financialPeriod ->
+                    _state.update {
+                        it.copy(
+                            financialPeriod = financialPeriod
                         )
                     }
                 }

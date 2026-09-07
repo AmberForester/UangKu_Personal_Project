@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
-import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.category.presentation.component.AddButton
 import com.example.uangku.feature.category.presentation.component.CategoryContent
 import com.example.uangku.feature.category.presentation.component.CategoryFormDialog
@@ -35,7 +34,12 @@ fun CategoryScreen (
 
     Scaffold (
         topBar = {
-            TopAppBar(title = "Category")
+
+            TopAppBar(
+                title = "Category",
+                onBackClick = { navController.popBackStack() }
+            )
+
         },
         floatingActionButton = {
             AddButton(
@@ -44,9 +48,7 @@ fun CategoryScreen (
                 }
             )
         },
-        bottomBar = {
-            UangKuNavigationBar(navController = navController, current = "category")
-        }
+
     ) { padding ->
         Column(modifier = Modifier
             .padding(padding)
