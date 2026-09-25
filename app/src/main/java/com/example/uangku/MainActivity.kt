@@ -18,6 +18,8 @@ import com.example.uangku.feature.category.presentation.CategoryViewModelFactory
 import com.example.uangku.core.ui.theme.UangKuTheme
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.budget.presentation.BudgetViewModelFactory
+import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
+import com.example.uangku.feature.dashboard.presentation.DashboardViewModelFactory
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
@@ -63,6 +65,14 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
+                val dashboardViewModel: DashboardViewModel = viewModel(
+                    factory = DashboardViewModelFactory(
+                        periodUseCase = appContainer.periodUseCase,
+                        transactionUseCase = appContainer.transactionUseCase,
+                        budgetUseCase = appContainer.budgetUseCase
+                    )
+                )
+
                 val navController = rememberNavController()
 
                 UangKuNavGraph(
@@ -71,7 +81,8 @@ class MainActivity : ComponentActivity() {
                     transactionViewModel = transactionViewModel,
                     transactionFormViewModel = transactionFormViewModel,
                     budgetViewModel = budgetViewModel,
-                    periodViewModel = periodViewModel
+                    periodViewModel = periodViewModel,
+                    dashboardViewModel = dashboardViewModel
                 )
             }
         }

@@ -13,6 +13,8 @@ import com.example.uangku.feature.budget.presentation.BudgetScreen
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.category.presentation.CategoryScreen
 import com.example.uangku.feature.category.presentation.CategoryViewModel
+import com.example.uangku.feature.dashboard.presentation.DashboardScreen
+import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.settings.presentation.SettingsScreen
 import com.example.uangku.feature.transaction.presentation.TransactionFormScreen
@@ -30,13 +32,16 @@ fun UangKuNavGraph(
     transactionViewModel: TransactionViewModel,
     transactionFormViewModel: TransactionFormViewModel,
     budgetViewModel: BudgetViewModel,
-    periodViewModel: PeriodViewModel
+    periodViewModel: PeriodViewModel,
+    dashboardViewModel: DashboardViewModel
 ){
     val navController = rememberNavController()
 
     NavHost(
+
         navController = navController,
-        startDestination = Destination.Transaction.route,
+        startDestination = Destination.Dashboard.route,
+
     ) {
         composable(Destination.Category.route) {
             CategoryScreen(
@@ -46,7 +51,10 @@ fun UangKuNavGraph(
         }
 
         composable (Destination.Dashboard.route) {
-
+            DashboardScreen(
+                navController = navController,
+                dashboardViewModel = dashboardViewModel
+            )
         }
 
         composable (Destination.Transaction.route) {

@@ -58,6 +58,15 @@ class TransactionUseCase (
         }
     }
 
+    fun getRecentTransactions(limit: Int = 5): Flow<List<Transaction>> {
+
+        return repository.getRecentTransactions(limit)
+            .map { transactions ->
+                transactions.sortedByDescending { it.date }
+            }
+
+    }
+
     fun getFinancialPeriod (
         month: YearMonth
     ): Flow<FinancialPeriod> {

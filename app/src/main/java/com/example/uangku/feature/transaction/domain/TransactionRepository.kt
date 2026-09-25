@@ -12,6 +12,10 @@ interface TransactionRepository {
         endDate: Date
     ): Flow<List<Transaction>>
 
+    fun getRecentTransactions(
+        limit: Int
+    ): Flow<List<Transaction>>
+
     suspend fun getTransactionById(id: Long): Transaction?
 
     suspend fun createTransaction(transaction: Transaction)

@@ -9,6 +9,7 @@ import com.example.uangku.feature.transaction.domain.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.time.ZoneId
 import java.util.Date
 
@@ -87,11 +88,19 @@ class BudgetUseCase (
             val spentByCategory = transactions
                 .filter { transaction ->
                 transaction.type == Type.EXPENSE &&
-                    transaction.date >= startDate &&
+                        transaction.date >= startDate &&
                         transaction.date < endDate
             }
                 .groupBy { it.categoryId }
                 .mapValues { (_, transactions) -> transactions.sumOf { it.amount } }
+
+            val transactionCountByCategory = transactions
+                .filter { transaction ->
+                    transaction.type == Type.EXPENSE &&
+                            transaction.date >= startDate &&
+                            transaction.date < endDate
+                }.groupingBy { it.categoryId }
+                .eachCount()
 
             budgets
                 .filter { it.categoryId.toLong() in expenseCategory }
@@ -101,15 +110,30 @@ class BudgetUseCase (
 
                 val budgetAmount = budget.amount ?: 0.0
 
+                val transactionCount = transactionCountByCategory[budget.categoryId] ?: 0
+
                 BudgetSummary(
                     budgetId = budget.id,
                     categoryId = budget.categoryId,
                     categoryName = budget.categoryName,
                     budgetAmount = budgetAmount,
                     spent = spent,
+                    transactionCount = transactionCount
                 )
             }
         }
+    }
+
+    suspend fun getDashboardBudget(): Flow<List<BudgetSummary>> {
+
+        return getBudgetSummaries()
+            .map { summaries ->
+                summaries
+                    .filter { it.transactionCount > 0 }
+                    .sortedByDescending { it.transactionCount }
+                    .take(3)
+            }
+
     }
 
     suspend fun getBudgetOverview(): Flow<BudgetOverview> {

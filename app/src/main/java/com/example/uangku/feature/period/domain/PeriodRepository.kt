@@ -7,4 +7,5 @@ interface PeriodRepository {
     fun getPeriodSettings(): Flow<PeriodSettings>
 
     suspend fun updateStartDay(startDay: Int)
+
 }

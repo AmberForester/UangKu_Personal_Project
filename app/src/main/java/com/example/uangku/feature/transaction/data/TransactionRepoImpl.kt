@@ -17,6 +17,13 @@ class TransactionRepoImpl(
             }
     }
 
+    override fun getRecentTransactions(limit: Int): Flow<List<Transaction>> {
+        return  transactionDao.getRecentTransactions(limit)
+            .map { transaction ->
+                transaction.map { it.toDomain() }
+            }
+    }
+
     override fun getTransactions(startDate: Date, endDate: Date): Flow<List<Transaction>> {
         return transactionDao
             .getTransactions(startDate, endDate)

@@ -60,7 +60,7 @@ fun BudgetItem(
                         } else if (budget.progress >= 0.5f) {
                             Color.Yellow
                         } else {
-                            Color.Green
+                            Color(0xFF43A047)
                         }
                 )
 

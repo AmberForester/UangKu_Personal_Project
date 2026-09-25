@@ -19,5 +19,4 @@ class PeriodRepositoryImpl (
         dataStore.setPeriodStartDay(startDay)
     }
 
-
 }

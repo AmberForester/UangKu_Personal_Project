@@ -6,4 +6,5 @@ data class FinancialPeriod (
 
     val startDate: LocalDate,
     val endDate: LocalDate
+
 )

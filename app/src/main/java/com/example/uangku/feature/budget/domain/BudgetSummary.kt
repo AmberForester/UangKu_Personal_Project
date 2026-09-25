@@ -7,6 +7,7 @@ data class BudgetSummary (
     val categoryName: String,
     val budgetAmount: Double,
     val spent: Double,
+    val transactionCount: Int
 
 ) {
     val remaining: Double
