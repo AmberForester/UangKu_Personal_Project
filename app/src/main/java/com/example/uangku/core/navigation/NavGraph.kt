@@ -3,12 +3,12 @@ package com.example.uangku.core.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.example.uangku.feature.budget.presentation.BudgetScreen
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.category.presentation.CategoryScreen
@@ -27,13 +27,14 @@ import com.example.uangku.feature.transaction.presentation.viewModel.Transaction
 @Composable
 fun UangKuNavGraph(
 
-    navController: NavController,
     categoryViewModel: CategoryViewModel,
     transactionViewModel: TransactionViewModel,
     transactionFormViewModel: TransactionFormViewModel,
     budgetViewModel: BudgetViewModel,
     periodViewModel: PeriodViewModel,
-    dashboardViewModel: DashboardViewModel
+    dashboardViewModel: DashboardViewModel,
+    backupViewModel: BackupViewModel
+
 ){
     val navController = rememberNavController()
 
@@ -93,7 +94,8 @@ fun UangKuNavGraph(
         composable (Destination.Settings.route) {
             SettingsScreen(
                 navController = navController,
-                periodViewModel = periodViewModel
+                periodViewModel = periodViewModel,
+                backupViewModel = backupViewModel
             )
         }
     }

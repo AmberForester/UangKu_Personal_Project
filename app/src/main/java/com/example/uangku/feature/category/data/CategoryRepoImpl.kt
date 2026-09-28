@@ -1,8 +1,7 @@
 package com.example.uangku.feature.category.data
 
-import com.example.uangku.core.domain.Type
-import com.example.uangku.feature.category.domain.CategoryRepository
 import com.example.uangku.feature.category.domain.Category
+import com.example.uangku.feature.category.domain.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -33,5 +32,16 @@ class CategoryRepoImpl(
 
     override suspend fun deleteCategory(category: Category) {
         categoryDao.deleteCategory(category.toEntity())
+    }
+
+    // backup and restore
+    override suspend fun insertCategories(categories: List<Category>) {
+        categoryDao.insertCategories(
+            categories.map { it.toEntity() }
+        )
+    }
+
+    override suspend fun deleteAllCategories() {
+        categoryDao.deleteAllCategories()
     }
 }

@@ -47,4 +47,14 @@ class TransactionRepoImpl(
     override suspend fun deleteTransaction(transaction: Transaction) {
         return transactionDao.deleteTransaction(transaction.toEntity())
     }
+
+    override suspend fun insertTransactions(transactions: List<Transaction>) {
+        transactionDao.insertTransactions(
+            transactions.map { it.toEntity() }
+        )
+    }
+
+    override suspend fun deleteAllTransactions() {
+        transactionDao.deleteAllTransactions()
+    }
 }

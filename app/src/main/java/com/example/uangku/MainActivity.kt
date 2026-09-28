@@ -6,18 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
 import com.example.uangku.core.navigation.UangKuNavGraph
-import com.example.uangku.feature.category.presentation.CategoryViewModel
-import com.example.uangku.feature.category.presentation.CategoryViewModelFactory
 import com.example.uangku.core.ui.theme.UangKuTheme
+import com.example.uangku.feature.backup.presentation.BackupViewModel
+import com.example.uangku.feature.backup.presentation.BackupViewModelFactory
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.budget.presentation.BudgetViewModelFactory
+import com.example.uangku.feature.category.presentation.CategoryViewModel
+import com.example.uangku.feature.category.presentation.CategoryViewModelFactory
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModelFactory
 import com.example.uangku.feature.period.presentation.PeriodViewModel
@@ -73,34 +70,24 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
-                val navController = rememberNavController()
+                val backupViewModel: BackupViewModel = viewModel(
+                    factory = BackupViewModelFactory(
+                        backupUseCase = appContainer.backupUseCase,
+                        fileManager = appContainer.backupFileManager,
+                        jsonSerializer = appContainer.jsonSerializer
+                    )
+                )
 
                 UangKuNavGraph(
-                    navController = navController,
                     categoryViewModel = categoryViewModel,
                     transactionViewModel = transactionViewModel,
                     transactionFormViewModel = transactionFormViewModel,
                     budgetViewModel = budgetViewModel,
                     periodViewModel = periodViewModel,
-                    dashboardViewModel = dashboardViewModel
+                    dashboardViewModel = dashboardViewModel,
+                    backupViewModel = backupViewModel
                 )
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    UangKuTheme {
-        Greeting("Android")
     }
 }

@@ -1,6 +1,5 @@
 package com.example.uangku.feature.category.domain
 
-import com.example.uangku.core.domain.Type
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
@@ -15,4 +14,7 @@ interface CategoryRepository {
 
     suspend fun deleteCategory(category: Category)
 
+    suspend fun insertCategories(categories: List<Category>)
+
+    suspend fun deleteAllCategories()
 }

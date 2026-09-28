@@ -27,6 +27,14 @@ interface TransactionDao {
         endDate: Date
     ): Flow<List<TransactionView>>
 
+    @Query("SELECT * " +
+            "FROM transaction_view " +
+            "ORDER BY date DESC" +
+            " LIMIT :limit ")
+    fun getRecentTransactions(
+        limit: Int
+    ): Flow<List<TransactionView>>
+
     @Query("SELECT * FROM `transaction_view` WHERE id = :id")
     suspend fun getTransactionById(id: Long): TransactionView?
 
@@ -39,4 +47,12 @@ interface TransactionDao {
     @Delete
     suspend fun deleteTransaction(transaction: TransactionEntity)
 
+    // Back up and restore mechanism
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertTransactions(
+        categories: List<TransactionEntity>
+    )
+
+    @Query("DELETE FROM transactions")
+    suspend fun deleteAllTransactions()
 }

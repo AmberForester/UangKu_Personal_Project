@@ -6,6 +6,10 @@ import androidx.annotation.RequiresApi
 import androidx.room.Room
 import com.example.uangku.core.database.AppDatabase
 import com.example.uangku.core.database.DatabaseCallback
+import com.example.uangku.feature.backup.data.BackupRepositoryImpl
+import com.example.uangku.feature.backup.data.FileManager
+import com.example.uangku.feature.backup.data.JsonSerializer
+import com.example.uangku.feature.backup.domain.BackupUseCase
 import com.example.uangku.feature.budget.data.BudgetRepoImpl
 import com.example.uangku.feature.budget.domain.BudgetUseCase
 import com.example.uangku.feature.category.data.CategoryRepoImpl
@@ -48,5 +52,13 @@ class AppContainer (
     private val budgetDao = database.budgetDao()
     private val budgetRepository = BudgetRepoImpl(budgetDao)
     val budgetUseCase = BudgetUseCase(budgetRepository, transactionRepository, categoryRepository, periodUseCase)
+
+    //restore data
+    val backupFileManager = FileManager(
+        contentResolver = context.contentResolver
+    )
+    private val backUpRepository = BackupRepositoryImpl(database)
+    val backupUseCase = BackupUseCase(backUpRepository)
+    val jsonSerializer = JsonSerializer()
 
 }
