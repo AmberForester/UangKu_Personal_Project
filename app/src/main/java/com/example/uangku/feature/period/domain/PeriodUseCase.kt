@@ -3,8 +3,11 @@ package com.example.uangku.feature.period.domain
 import android.os.Build
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
+import java.time.YearMonth
 import kotlin.math.min
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -25,7 +28,7 @@ class PeriodUseCase (
         repository.updateStartDay(startDay)
     }
 
-    suspend fun getFinancialPeriod(
+    suspend fun getCurrentFinancialPeriod(
         date: LocalDate = LocalDate.now()
     ) : FinancialPeriod {
 
@@ -50,27 +53,49 @@ class PeriodUseCase (
     }
 
     suspend fun getFinancialPeriod(
+        month: YearMonth
+    ): FinancialPeriod {
 
-        date: LocalDate,
+        val periodSettings = getPeriodSettings().first()
+
+        return calculateFinancialPeriod(
+            month = month,
+            startDay = periodSettings.startDay
+        )
+    }
+
+    fun observeFinancialPeriod(
+        month: Flow<YearMonth>
+    ) : Flow<FinancialPeriod> {
+        return combine(
+            month.distinctUntilChanged(),
+            getPeriodSettings()
+        ) { selectedMonth, settings ->
+            calculateFinancialPeriod(
+                month = selectedMonth,
+                startDay = settings.startDay
+            )
+        }
+    }
+
+    private fun calculateFinancialPeriod(
+        month: YearMonth,
         startDay: Int
+    ): FinancialPeriod {
 
-    ) : FinancialPeriod {
-
-        val startDate = getStartDate(
-            date = date,
-            startDay = startDay
+        val startDate = month.atDay(
+            min(startDay, month.lengthOfMonth())
         )
 
         val nextPeriodStartDate = getNextPeriodStartDate(
-            startDay = startDay,
-            startDate = startDate
+            startDate = startDate,
+            startDay = startDay
         )
 
         return FinancialPeriod(
             startDate = startDate,
             endDate = nextPeriodStartDate.minusDays(1)
         )
-
     }
 
     private fun getStartDate(

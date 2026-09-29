@@ -5,15 +5,12 @@ import androidx.annotation.RequiresApi
 import com.example.uangku.core.domain.Type
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import com.example.uangku.feature.period.domain.PeriodUseCase
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import java.time.YearMonth
 import java.time.ZoneId
 import java.util.Date
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 class TransactionUseCase (
 
@@ -25,37 +22,38 @@ class TransactionUseCase (
         return repository.getTransactions()
     }
 
-    suspend fun getTransactions(
-        month: YearMonth
+    fun getTransactions(
+        period: FinancialPeriod
     ): Flow<List<Transaction>> {
 
         val zoneId = ZoneId.systemDefault()
 
-        return periodUseCase.getPeriodSettings().flatMapLatest { settings ->
+        val startDate = Date.from(
+            period.startDate
+                .atStartOfDay(zoneId)
+                .toInstant()
+        )
 
-            val period = periodUseCase.getFinancialPeriod(
-                date = month.atDay(1),
-                startDay = settings.startDay
-            )
+        val endDate = Date.from(
+            period.endDate
+                .plusDays(1)
+                .atStartOfDay(zoneId)
+                .toInstant()
+        )
 
-            val startDate = Date.from(
-                period.startDate
-                    .atStartOfDay(zoneId)
-                    .toInstant()
-            )
+        return repository.getTransactions(
+            startDate = startDate,
+            endDate = endDate
+        )
+    }
 
-            val endDate = Date.from(
-                period.endDate
-                    .plusDays(1)
-                    .atStartOfDay(zoneId)
-                    .toInstant()
-            )
+    suspend fun getTransactions(
+        month: YearMonth
+    ): Flow<List<Transaction>> {
 
-            repository.getTransactions(
-                startDate = startDate,
-                endDate = endDate
-            )
-        }
+        val period = periodUseCase.getFinancialPeriod(month)
+
+        return getTransactions(period)
     }
 
     fun getRecentTransactions(limit: Int = 5): Flow<List<Transaction>> {
@@ -67,25 +65,22 @@ class TransactionUseCase (
 
     }
 
-    fun getFinancialPeriod (
-        month: YearMonth
-    ): Flow<FinancialPeriod> {
-        return periodUseCase
-            .getPeriodSettings()
-            .map { settings ->
-                periodUseCase.getFinancialPeriod(
-                    date = month.atDay(1),
-                    startDay = settings.startDay
-                )
-            }
-    }
-
     suspend fun getMonthlySummary(
         month: YearMonth
     ): Flow<TransactionSummary> {
 
-        return getTransactions(month)
+        val period = periodUseCase.getFinancialPeriod(month)
+
+        return getMonthlySummary(period)
+    }
+
+    fun getMonthlySummary(
+        period: FinancialPeriod
+    ): Flow<TransactionSummary> {
+
+        return getTransactions(period)
             .map { transactions ->
+
                 val income = transactions
                     .filter { it.type == Type.INCOME }
                     .sumOf { it.amount }
@@ -100,7 +95,6 @@ class TransactionUseCase (
                     balance = income - expense
                 )
             }
-
     }
 
     fun getOverallSummary(): Flow<TransactionSummary> {

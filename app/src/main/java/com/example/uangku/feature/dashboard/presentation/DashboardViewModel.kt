@@ -1,6 +1,7 @@
 package com.example.uangku.feature.dashboard.presentation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,6 +35,7 @@ class DashboardViewModel(
                 loadMonthlySummary()
                 loadBudgetSummaries()
                 loadRecentTransactions()
+                Log.d("this month", _state.value.month.toString())
             }
         }
     }
@@ -42,7 +44,7 @@ class DashboardViewModel(
 
         viewModelScope.launch {
 
-            val period = periodUseCase.getFinancialPeriod()
+            val period = periodUseCase.getCurrentFinancialPeriod()
 
             _state.update {
                 it.copy(
@@ -50,7 +52,6 @@ class DashboardViewModel(
                 )
             }
         }
-
     }
 
     private fun loadMonthlySummary() {

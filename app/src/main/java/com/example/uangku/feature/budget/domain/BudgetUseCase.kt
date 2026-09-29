@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.uangku.core.domain.Type
 import com.example.uangku.feature.category.domain.CategoryRepository
+import com.example.uangku.feature.period.domain.FinancialPeriod
 import com.example.uangku.feature.period.domain.PeriodUseCase
 import com.example.uangku.feature.transaction.domain.TransactionRepository
 import kotlinx.coroutines.flow.Flow
@@ -55,19 +56,9 @@ class BudgetUseCase (
 
     suspend fun getBudgetSummaries(): Flow<List<BudgetSummary>>{
 
-        val period = periodUseCase.getFinancialPeriod()
+        val period = periodUseCase.getCurrentFinancialPeriod()
 
-        val startDate = Date.from(
-            period.startDate
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-        )
-        val endDate = Date.from(
-            period.endDate
-                .plusDays(1)
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-        )
+        val (startDate, endDate) = getPeriodDateRange(period)
 
         return combine(
 
@@ -138,19 +129,9 @@ class BudgetUseCase (
 
     suspend fun getBudgetOverview(): Flow<BudgetOverview> {
 
-        val period = periodUseCase.getFinancialPeriod()
+        val period = periodUseCase.getCurrentFinancialPeriod()
 
-        val startDate = Date.from(
-            period.startDate
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-        )
-        val endDate = Date.from(
-            period.endDate
-                .plusDays(1)
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-        )
+        val (startDate, endDate) = getPeriodDateRange(period)
 
         return combine(
 
@@ -183,19 +164,9 @@ class BudgetUseCase (
         budgetId: Long? = null
     ): Double {
 
-        val period = periodUseCase.getFinancialPeriod()
+        val period = periodUseCase.getCurrentFinancialPeriod()
 
-        val startDate = Date.from(
-            period.startDate
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-        )
-        val endDate = Date.from(
-            period.endDate
-                .plusDays(1)
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant()
-        )
+        val (startDate, endDate) = getPeriodDateRange(period)
 
         val transactions = transactionRepository.getTransactions().first()
 
@@ -218,12 +189,26 @@ class BudgetUseCase (
         return (totalIncome - totalAllocated)
             .coerceAtLeast(0.0)
     }
-}
 
-//@RequiresApi(Build.VERSION_CODES.O)
-//private fun Date.toLocalDate(): LocalDate {
-//
-//    return toInstant()
-//        .atZone(ZoneId.systemDefault())
-//        .toLocalDate()
-//}
+    private fun getPeriodDateRange(
+        period: FinancialPeriod
+    ): Pair<Date, Date> {
+
+        val zoneId = ZoneId.systemDefault()
+
+        val startDate = Date.from(
+            period.startDate
+                .atStartOfDay(zoneId)
+                .toInstant()
+        )
+
+        val endDate = Date.from(
+            period.endDate
+                .plusDays(1)
+                .atStartOfDay(zoneId)
+                .toInstant()
+        )
+
+        return startDate to endDate
+    }
+}

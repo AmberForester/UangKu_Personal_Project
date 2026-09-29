@@ -58,7 +58,7 @@ class PeriodViewModel (
 
     private fun loadFinancialPeriod() {
         viewModelScope.launch {
-            val financialPeriod = periodUseCase.getFinancialPeriod()
+            val financialPeriod = periodUseCase.getCurrentFinancialPeriod()
 
             _state.update {
                 it.copy(

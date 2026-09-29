@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.uangku.feature.period.domain.PeriodUseCase
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 import com.example.uangku.feature.transaction.presentation.TransactionEvent
 import com.example.uangku.feature.transaction.presentation.TransactionState
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class TransactionViewModel (
 
     private val transactionUseCase: TransactionUseCase,
+    private val periodUseCase: PeriodUseCase
 
 ) : ViewModel() {
 
@@ -53,37 +55,20 @@ class TransactionViewModel (
         }
     }
 
-    private fun loadTransactions() {
-        viewModelScope.launch {
-
-            val state = state.value
-
-            transactionUseCase.getTransactions(state.selectedMonth).collect { transactions ->
-                _state.update {
-                    it.copy(
-                        transactions = transactions
-                    )
-                }
-            }
-        }
-    }
-
     private fun observeTransactions(){
         viewModelScope.launch {
-            state
-                .map { it.selectedMonth }
-                .distinctUntilChanged()
-                .flatMapLatest { month ->
-                    transactionUseCase.getTransactions(month)
+            periodUseCase.observeFinancialPeriod(
+                state.map { it.selectedMonth }
+            )
+                .flatMapLatest { period ->
+                    transactionUseCase.getTransactions(period)
                 }
                 .collect { transactions ->
-
                     _state.update {
                         it.copy(
                             transactions = transactions
                         )
                     }
-
                 }
         }
     }
@@ -103,19 +88,32 @@ class TransactionViewModel (
                     }
                 }
         }
+        viewModelScope.launch {
+            periodUseCase.observeFinancialPeriod(
+                state.map { it.selectedMonth }
+            )
+                .flatMapLatest { period ->
+                    transactionUseCase.getMonthlySummary(period)
+                }
+                .collect { summary ->
+                    _state.update {
+                        it.copy(
+                            monthlySummary = summary
+                        )
+                    }
+                }
+        }
     }
 
     private fun observeFinancialPeriod() {
         viewModelScope.launch {
-            state.map { it.selectedMonth }
-                .distinctUntilChanged()
-                .flatMapLatest { month ->
-                    transactionUseCase.getFinancialPeriod(month)
-                }
-                .collect { financialPeriod ->
+            periodUseCase.observeFinancialPeriod(
+                state.map { it.selectedMonth }
+            )
+                .collect { period ->
                     _state.update {
                         it.copy(
-                            financialPeriod = financialPeriod
+                            financialPeriod = period
                         )
                     }
                 }
