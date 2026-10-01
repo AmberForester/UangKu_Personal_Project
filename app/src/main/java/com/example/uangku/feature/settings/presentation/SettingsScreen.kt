@@ -45,6 +45,7 @@ fun SettingsScreen(
     navController: NavController,
     periodViewModel: PeriodViewModel,
     backupViewModel: BackupViewModel
+    backupViewModel: BackupViewModel,
 
 ) {
     val context = LocalContext.current
@@ -53,28 +54,54 @@ fun SettingsScreen(
     var showPeriodDialog by remember { mutableStateOf(false) }
     var showRestoreConfirmationDialog by remember { mutableStateOf(false) }
 
-    val exportLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument(
-            "application/json"
-        )
-    ) { uri ->
-        Log.d("BACK UP JSON: ", "launcher activated")
-        if (uri != null) {
-            backupViewModel.onEvent(
-                BackupEvent.ExportFile(uri)
-            )
-        }
-    }
+//    val exportLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.CreateDocument(
+//            "application/json"
+//        )
+//    ) { uri ->
+//        Log.d("BACK UP JSON: ", "launcher activated")
+//        if (uri != null) {
+//            backupViewModel.onEvent(
+//                BackupEvent.ExportFile(uri)
+//            )
+//        }
+//    }
+    val exportLauncher = exportLauncher(backupViewModel)
 
-    val importLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        if(uri != null){
-            backupViewModel.onEvent(
-                BackupEvent.ImportFile(uri)
-            )
-        }
-    }
+//    val importLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.OpenDocument()
+//    ) { uri ->
+//        if(uri != null){
+//            backupViewModel.onEvent(
+//                BackupEvent.ImportFile(uri)
+//            )
+//        }
+//    }
+    val importLauncher = importLauncher(backupViewModel)
+
+//    val googleDriveAuthorizationLauncher =
+//        rememberLauncherForActivityResult(
+//            contract = ActivityResultContracts.StartIntentSenderForResult()
+//        ) { activityResult ->
+//            try {
+//                val authorizationResult =
+//                    Identity.getAuthorizationClient(context)
+//                        .getAuthorizationResultFromIntent(activityResult.data)
+//
+//                Toast.makeText(
+//                    context,
+//                    "Google Drive berhasil terhubung!",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            } catch (e: ApiException) {
+//                Toast.makeText(
+//                    context,
+//                    "Gagal menghubungkan Google Drive",
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            }
+//        }
+    val googleDriveAuthorizationLauncher = googleDriveAuthLauncher(context)
 
     LaunchedEffect(Unit) {
         periodViewModel.onEvent(PeriodEvent.onScreenOpen)
@@ -83,9 +110,7 @@ fun SettingsScreen(
             when(effect){
 
                 BackupEffect.LaunchExportFilePicker -> {
-                    exportLauncher.launch(
-                        "UangKu_backup.json"
-                    )
+                    exportLauncher.launch("UangKu_backup.json")
                 }
 
                 BackupEffect.LaunchImportFilePicker -> {

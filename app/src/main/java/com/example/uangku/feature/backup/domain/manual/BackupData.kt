@@ -1,4 +1,4 @@
-package com.example.uangku.feature.backup.domain
+package com.example.uangku.feature.backup.domain.manual
 
 import com.example.uangku.feature.category.domain.Category
 import com.example.uangku.feature.transaction.domain.Transaction

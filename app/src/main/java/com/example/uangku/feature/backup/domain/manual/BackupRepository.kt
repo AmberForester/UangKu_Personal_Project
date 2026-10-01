@@ -1,4 +1,4 @@
-package com.example.uangku.feature.backup.domain
+package com.example.uangku.feature.backup.domain.manual
 
 interface BackupRepository {
 

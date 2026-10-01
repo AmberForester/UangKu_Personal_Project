@@ -1,13 +1,14 @@
-package com.example.uangku.feature.backup.data
+package com.example.uangku.feature.backup.data.manual
 
 import android.content.ContentResolver
 import android.net.Uri
+import com.example.uangku.feature.backup.domain.FileManager
 
-class FileManager(
+class FileManagerImpl(
     private val contentResolver: ContentResolver
-) {
+) : FileManager {
 
-    fun write(uri: Uri, content: String) {
+    override fun write(uri: Uri, content: String) {
         contentResolver.openOutputStream(uri)?.use { outputStream ->
             outputStream.write(content.toByteArray())
         } ?: throw IllegalStateException(
@@ -15,7 +16,7 @@ class FileManager(
         )
     }
 
-    fun read(uri: Uri): String {
+    override fun read(uri: Uri): String {
         return contentResolver.openInputStream(uri)?.use { inputStream ->
             inputStream.bufferedReader().use { reader ->
                 reader.readText()

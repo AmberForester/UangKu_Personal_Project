@@ -54,11 +54,13 @@ class AppContainer (
     val budgetUseCase = BudgetUseCase(budgetRepository, transactionRepository, categoryRepository, periodUseCase)
 
     //restore data
-    val backupFileManager = FileManager(
+    val backupFileManager = FileManagerImpl(
         contentResolver = context.contentResolver
     )
     private val backUpRepository = BackupRepositoryImpl(database)
     val backupUseCase = BackupUseCase(backUpRepository)
     val jsonSerializer = JsonSerializer()
+    val jsonSerializer = JsonSerializerImpl()
+    val backupUseCase = BackupUseCase(backUpRepository, jsonSerializer, backupFileManager )
 
 }

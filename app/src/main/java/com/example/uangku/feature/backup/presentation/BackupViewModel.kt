@@ -1,12 +1,13 @@
 package com.example.uangku.feature.backup.presentation
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uangku.feature.backup.data.FileManager
-import com.example.uangku.feature.backup.data.JsonSerializer
-import com.example.uangku.feature.backup.domain.BackupUseCase
+import com.example.uangku.feature.backup.domain.automatic.AutoBackupSettingsUseCase
+import com.example.uangku.feature.backup.domain.manual.BackupUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -85,7 +86,7 @@ class BackupViewModel (
 
                 val backupData = backupUseCase.getBackupData()
 
-                val json = jsonSerializer.toJson(backupData)
+                val json = backupUseCase.convertToJson(backupData)
 
                 _state.update {
                     it.copy(
@@ -109,7 +110,7 @@ class BackupViewModel (
             try {
                 val json = _state.value.exportJson ?: return@launch
 
-                fileManager.write(uri = uri, content = json)
+                backupUseCase.write(content = json, uri = uri)
 
                 _state.update {
                     it.copy(
@@ -140,14 +141,9 @@ class BackupViewModel (
     private fun importBackup(uri: Uri) {
         viewModelScope.launch {
             try {
-                val json = fileManager.read(uri)
+                val json = backupUseCase.read(uri)
 
-                val data = jsonSerializer.fromJson(json)
-
-                Log.d(
-                    "IMPORT JSON",
-                    "json parsed successfully: $json"
-                )
+                val data = backupUseCase.convertFromJson(json)
 
                 _state.update {
                     it.copy(
@@ -158,7 +154,7 @@ class BackupViewModel (
             } catch (e: Exception){
                 _state.update {
                     it.copy(
-                        exportJson = null,
+                        bufferRestore = null,
                         message = "Import Gagal!"
                     )
                 }
