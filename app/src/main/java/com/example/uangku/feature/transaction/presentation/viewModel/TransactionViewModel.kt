@@ -30,6 +30,7 @@ class TransactionViewModel (
     val state = _state.asStateFlow()
 
     init {
+        initializeSelectedMonth()
         observeTransactions()
         observeMonthlySummary()
         observeFinancialPeriod()
@@ -51,6 +52,16 @@ class TransactionViewModel (
 
             TransactionEvent.onPreviousMonth -> {
                 previousMonth()
+            }
+        }
+    }
+
+    private fun initializeSelectedMonth(){
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    selectedMonth = periodUseCase.getCurrentPeriodMonth()
+                )
             }
         }
     }

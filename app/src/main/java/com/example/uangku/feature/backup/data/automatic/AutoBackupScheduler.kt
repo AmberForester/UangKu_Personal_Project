@@ -22,7 +22,7 @@ class AutoBackupScheduler(
 
     companion object {
         private const val WORK_NAME = "automatic_backup"
-        private const val BACKUP_HOUR = 2
+        private const val BACKUP_HOUR = 14
     }
 
     fun scheduleNext(
@@ -72,15 +72,18 @@ class AutoBackupScheduler(
         val now = LocalDateTime.now()
         val backupTime = LocalTime.of(
             BACKUP_HOUR,
-            0
+            15
         )
 
         return when (frequency) {
 
             BackupFrequency.DAILY -> {
-                now
-                    .plusDays(1)
-                    .with(backupTime)
+                val targetToday = now.with(backupTime)
+                if(now.isBefore(targetToday)) {
+                    targetToday
+                } else {
+                    targetToday.plusDays(1)
+                }
             }
 
             BackupFrequency.WEEKLY -> {

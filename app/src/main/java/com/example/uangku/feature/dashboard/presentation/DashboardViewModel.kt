@@ -32,7 +32,6 @@ class DashboardViewModel(
 
             DashboardEvent.onScreenOpen -> {
                 loadFinancialPeriod()
-                loadMonthlySummary()
                 loadBudgetSummaries()
                 loadRecentTransactions()
                 Log.d("this month", _state.value.month.toString())
@@ -45,12 +44,16 @@ class DashboardViewModel(
         viewModelScope.launch {
 
             val period = periodUseCase.getCurrentFinancialPeriod()
+            val currentMonth = periodUseCase.getCurrentPeriodMonth()
 
             _state.update {
                 it.copy(
-                    financialPeriod = period
+                    financialPeriod = period,
+                    month = currentMonth
                 )
             }
+
+            loadMonthlySummary()
         }
     }
 

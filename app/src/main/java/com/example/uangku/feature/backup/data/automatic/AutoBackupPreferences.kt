@@ -3,6 +3,7 @@ package com.example.uangku.feature.backup.data.automatic
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.uangku.feature.backup.domain.automatic.AutoBackupSettings
@@ -24,6 +25,9 @@ class AutoBackupPreferences(
 
         private val FREQUENCY_KEY =
             stringPreferencesKey("auto_backup_frequency")
+
+        private val LAST_BACKUP_TIMESTAMP_KEY =
+            longPreferencesKey("last_backup_timestamp")
     }
 
     val settings: Flow<AutoBackupSettings> =
@@ -41,7 +45,8 @@ class AutoBackupPreferences(
 
             AutoBackupSettings(
                 enabled = preferences[ENABLED_KEY] ?: false,
-                frequency = frequency
+                frequency = frequency,
+                lastBackupTimestamp = preferences[LAST_BACKUP_TIMESTAMP_KEY]
             )
         }
 
@@ -56,6 +61,12 @@ class AutoBackupPreferences(
     ) {
         context.autoBackupDataStore.edit { preferences ->
             preferences[FREQUENCY_KEY] = frequency.name
+        }
+    }
+
+    suspend fun setLastBackupTimestamp(timestamp: Long) {
+        context.autoBackupDataStore.edit { preferences ->
+            preferences[LAST_BACKUP_TIMESTAMP_KEY] = timestamp
         }
     }
 }

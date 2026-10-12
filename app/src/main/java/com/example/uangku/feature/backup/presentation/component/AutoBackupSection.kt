@@ -26,6 +26,10 @@ import androidx.compose.ui.unit.sp
 import com.example.uangku.feature.backup.domain.automatic.BackupFrequency
 import com.example.uangku.feature.backup.presentation.BackupEvent
 import com.example.uangku.feature.backup.presentation.BackupState
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun AutoBackupSection(
@@ -88,6 +92,11 @@ fun AutoBackupSection(
                             "Tidak aktif"
                         },
                         style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = formatLastBackupTime(state.autoBackupSettings.lastBackupTimestamp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -161,5 +170,33 @@ private fun BackupFrequency.toDisplayName(): String {
         BackupFrequency.DAILY -> "Harian"
         BackupFrequency.WEEKLY -> "Mingguan"
         BackupFrequency.MONTHLY -> "Bulanan"
+    }
+}
+
+private fun formatLastBackupTime(timestamp: Long?): String {
+    if (timestamp == null || timestamp == 0L) {
+        return "Belum pernah dicadangkan"
+    }
+
+    val backupCal = Calendar.getInstance().apply { timeInMillis = timestamp }
+    val nowCal = Calendar.getInstance()
+
+    val isToday = backupCal.get(Calendar.YEAR) == nowCal.get(Calendar.YEAR) &&
+            backupCal.get(Calendar.DAY_OF_YEAR) == nowCal.get(Calendar.DAY_OF_YEAR)
+
+    nowCal.add(Calendar.DAY_OF_YEAR, -1)
+    val isYesterday = backupCal.get(Calendar.YEAR) == nowCal.get(Calendar.YEAR) &&
+            backupCal.get(Calendar.DAY_OF_YEAR) == nowCal.get(Calendar.DAY_OF_YEAR)
+
+    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val timeStr = timeFormat.format(Date(timestamp))
+
+    return when {
+        isToday -> "Terakhir dicadangkan: Hari ini, $timeStr"
+        isYesterday -> "Terakhir dicadangkan: Kemarin, $timeStr"
+        else -> {
+            val fullFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+            "Terakhir dicadangkan: ${fullFormat.format(Date(timestamp))}"
+        }
     }
 }

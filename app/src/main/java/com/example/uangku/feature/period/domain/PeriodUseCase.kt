@@ -52,6 +52,13 @@ class PeriodUseCase (
         )
     }
 
+    suspend fun getCurrentPeriodMonth(
+        date: LocalDate = LocalDate.now()
+    ) : YearMonth {
+        val currentPeriod = getCurrentFinancialPeriod(date)
+        return YearMonth.from(currentPeriod.startDate)
+    }
+
     suspend fun getFinancialPeriod(
         month: YearMonth
     ): FinancialPeriod {

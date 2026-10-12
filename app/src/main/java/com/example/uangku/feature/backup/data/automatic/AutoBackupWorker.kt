@@ -42,6 +42,7 @@ class AutoBackupWorker(
 
             Log.d(TAG, "Memulai proses auto-backup ke Google Drive...")
             autoBackupUseCase()
+            autoBackupPreferences.setLastBackupTimestamp(System.currentTimeMillis())
             Log.i(TAG, "Auto-backup berhasil diunggah ke Google Drive.")
 
             Result.success()
