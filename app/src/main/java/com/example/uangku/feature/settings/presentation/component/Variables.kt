@@ -56,22 +56,24 @@ fun importLauncher (
 
 @Composable
 fun googleDriveAuthLauncher(
-    context: Context
+    context: Context,
+    onAuthorizationCompleted: () -> Unit
 ): ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult> {
+
     val googleDriveAuthorizationLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartIntentSenderForResult()
         ) { activityResult ->
+
             try {
                 val authorizationResult =
                     Identity.getAuthorizationClient(context)
-                        .getAuthorizationResultFromIntent(activityResult.data)
+                        .getAuthorizationResultFromIntent(
+                            activityResult.data
+                        )
 
-                Toast.makeText(
-                    context,
-                    "Google Drive berhasil terhubung!",
-                    Toast.LENGTH_LONG
-                ).show()
+                onAuthorizationCompleted()
+
             } catch (e: ApiException) {
                 Toast.makeText(
                     context,
@@ -80,5 +82,6 @@ fun googleDriveAuthLauncher(
                 ).show()
             }
         }
+
     return googleDriveAuthorizationLauncher
 }

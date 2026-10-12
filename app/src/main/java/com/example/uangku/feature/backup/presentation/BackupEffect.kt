@@ -6,4 +6,6 @@ sealed interface BackupEffect {
 
     data object  LaunchImportFilePicker: BackupEffect
 
+    data object RequestGoogleDriveAuthorization: BackupEffect
+
 }

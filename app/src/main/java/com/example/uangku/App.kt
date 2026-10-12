@@ -3,9 +3,10 @@ package com.example.uangku
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.uangku.core.dependencyInjection.AppContainer
+import androidx.work.Configuration
+import com.example.uangku.core.dependency_Injection.AppContainer
 
-class App: Application() {
+class App: Application(), Configuration.Provider {
 
     lateinit var appContainer: AppContainer
         private set
@@ -15,4 +16,11 @@ class App: Application() {
         super.onCreate()
         appContainer = AppContainer(this)
     }
+
+    override val workManagerConfiguration: Configuration
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = Configuration.Builder()
+            .setWorkerFactory(
+                appContainer.autoBackupWorkerFactory
+            ).build()
 }

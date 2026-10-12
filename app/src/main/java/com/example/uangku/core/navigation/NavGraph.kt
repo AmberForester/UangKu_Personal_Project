@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.uangku.feature.analysis.presentation.AnalysisScreen
+import com.example.uangku.feature.google_drive.data.GoogleDriveAuth
 import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.example.uangku.feature.budget.presentation.BudgetScreen
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
@@ -34,7 +35,8 @@ fun UangKuNavGraph(
     budgetViewModel: BudgetViewModel,
     periodViewModel: PeriodViewModel,
     dashboardViewModel: DashboardViewModel,
-    backupViewModel: BackupViewModel
+    backupViewModel: BackupViewModel,
+    googleDriveAuth: GoogleDriveAuth
 
 ){
     val navController = rememberNavController()
@@ -98,7 +100,8 @@ fun UangKuNavGraph(
             SettingsScreen(
                 navController = navController,
                 periodViewModel = periodViewModel,
-                backupViewModel = backupViewModel
+                backupViewModel = backupViewModel,
+                googleDriveAuth = googleDriveAuth
             )
         }
     }

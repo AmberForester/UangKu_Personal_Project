@@ -74,8 +74,8 @@ class MainActivity : ComponentActivity() {
                 val backupViewModel: BackupViewModel = viewModel(
                     factory = BackupViewModelFactory(
                         backupUseCase = appContainer.backupUseCase,
-                        fileManager = appContainer.backupFileManager,
-                        jsonSerializer = appContainer.jsonSerializer
+                        autoBackupSettingsUseCase = appContainer.autoBackupSettingsUseCase,
+                        googleDriveUseCase = appContainer.googleDriveUseCase
                     )
                 )
 
@@ -86,7 +86,8 @@ class MainActivity : ComponentActivity() {
                     budgetViewModel = budgetViewModel,
                     periodViewModel = periodViewModel,
                     dashboardViewModel = dashboardViewModel,
-                    backupViewModel = backupViewModel
+                    backupViewModel = backupViewModel,
+                    googleDriveAuth = appContainer.googleDriveAuth
                 )
             }
         }

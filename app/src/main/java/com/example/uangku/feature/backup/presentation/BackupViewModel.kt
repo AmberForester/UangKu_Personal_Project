@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uangku.feature.backup.domain.automatic.AutoBackupSettingsUseCase
 import com.example.uangku.feature.backup.domain.manual.BackupUseCase
+import com.example.uangku.feature.google_drive.domain.GoogleDriveUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -15,11 +16,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 class BackupViewModel (
 
     private val backupUseCase: BackupUseCase,
-    private val jsonSerializer: JsonSerializer,
-    private val fileManager: FileManager
+    private val googleDriveUseCase: GoogleDriveUseCase,
+    private val autoBackupSettingsUseCase: AutoBackupSettingsUseCase
 
 ) : ViewModel() {
 
@@ -28,6 +30,11 @@ class BackupViewModel (
 
     private val _effect = MutableSharedFlow<BackupEffect>()
     val effect = _effect.asSharedFlow()
+
+    init {
+        observeAutoBackupSettings()
+        checkGoogleDriveAuthorization()
+    }
 
     fun onEvent(event: BackupEvent){
         when(event) {
@@ -68,6 +75,30 @@ class BackupViewModel (
                         message = null
                     )
                 }
+            }
+
+            BackupEvent.ConnectGoogleDrive -> {
+                requestGoogleDriveAuthorization()
+            }
+
+            BackupEvent.DisconnectGoogleDrive -> {
+                disconnectGoogleDrive()
+            }
+
+            is BackupEvent.EnableAutoBackup -> {
+                viewModelScope.launch {
+                    autoBackupSettingsUseCase.setEnabled(event.enable)
+                }
+            }
+
+            is BackupEvent.SetAutoBackupFrequency -> {
+                viewModelScope.launch {
+                    autoBackupSettingsUseCase.setFrequency(event.frequency)
+                }
+            }
+
+            BackupEvent.CheckAuth -> {
+                checkGoogleDriveAuthorization()
             }
 
         }
@@ -186,4 +217,60 @@ class BackupViewModel (
             }
         }
     }
+
+    private fun requestGoogleDriveAuthorization() {
+        viewModelScope.launch {
+            _effect.emit(BackupEffect.RequestGoogleDriveAuthorization)
+        }
+    }
+
+    private fun observeAutoBackupSettings() {
+        viewModelScope.launch {
+            autoBackupSettingsUseCase.settings
+                .collect {settings ->
+                    _state.update {
+                        it.copy(
+                            autoBackupSettings = settings
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun checkGoogleDriveAuthorization() {
+        viewModelScope.launch {
+            val isAuthorized = googleDriveUseCase.isAuthorized()
+
+            _state.update {
+                it.copy(
+                    isGoogleDriveAuthorized = isAuthorized
+                )
+            }
+        }
+    }
+
+    private fun disconnectGoogleDrive() {
+        viewModelScope.launch {
+            try {
+                googleDriveUseCase.disconnect()
+                _state.update {
+                    it.copy(
+                        isGoogleDriveAuthorized = false,
+                        message = "Google Drive terputus"
+                    )
+                }
+                if(_state.value.autoBackupSettings.enabled){
+                    autoBackupSettingsUseCase.setEnabled(false)
+                }
+            } catch (e: Exception){
+                Log.e("GOOGLE_DRIVE", "disconnect gagal", e)
+                _state.update {
+                    it.copy(
+                        message = "Gagal memutus koneksi Google Drive"
+                    )
+                }
+            }
+        }
+    }
+
 }

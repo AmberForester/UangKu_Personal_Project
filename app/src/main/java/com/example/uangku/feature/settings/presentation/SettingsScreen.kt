@@ -1,11 +1,11 @@
 package com.example.uangku.feature.settings.presentation
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.IntentSenderRequest
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Backup
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Scaffold
@@ -29,13 +30,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
+import com.example.uangku.feature.google_drive.data.GoogleDriveAuth
 import com.example.uangku.feature.backup.presentation.BackupEffect
 import com.example.uangku.feature.backup.presentation.BackupEvent
 import com.example.uangku.feature.backup.presentation.BackupViewModel
+import com.example.uangku.feature.backup.presentation.component.AutoBackupSection
 import com.example.uangku.feature.backup.presentation.component.RestoreDialog
 import com.example.uangku.feature.period.presentation.PeriodDialog
 import com.example.uangku.feature.period.presentation.PeriodEvent
 import com.example.uangku.feature.period.presentation.PeriodViewModel
+import com.example.uangku.feature.settings.presentation.component.SettingsItem
+import com.example.uangku.feature.settings.presentation.component.exportLauncher
+import com.example.uangku.feature.settings.presentation.component.googleDriveAuthLauncher
+import com.example.uangku.feature.settings.presentation.component.importLauncher
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -44,8 +51,8 @@ fun SettingsScreen(
 
     navController: NavController,
     periodViewModel: PeriodViewModel,
-    backupViewModel: BackupViewModel
     backupViewModel: BackupViewModel,
+    googleDriveAuth: GoogleDriveAuth
 
 ) {
     val context = LocalContext.current
@@ -53,6 +60,7 @@ fun SettingsScreen(
     val backupState by backupViewModel.state.collectAsState()
     var showPeriodDialog by remember { mutableStateOf(false) }
     var showRestoreConfirmationDialog by remember { mutableStateOf(false) }
+    val activity = context as Activity
 
 //    val exportLauncher = rememberLauncherForActivityResult(
 //        contract = ActivityResultContracts.CreateDocument(
@@ -101,7 +109,12 @@ fun SettingsScreen(
 //                ).show()
 //            }
 //        }
-    val googleDriveAuthorizationLauncher = googleDriveAuthLauncher(context)
+    val googleDriveAuthorizationLauncher = googleDriveAuthLauncher(
+        context = context,
+        onAuthorizationCompleted = {
+            backupViewModel.onEvent(BackupEvent.CheckAuth)
+        }
+    )
 
     LaunchedEffect(Unit) {
         periodViewModel.onEvent(PeriodEvent.onScreenOpen)
@@ -114,8 +127,43 @@ fun SettingsScreen(
                 }
 
                 BackupEffect.LaunchImportFilePicker -> {
-                    importLauncher.launch(
-                        arrayOf("application/json")
+                    importLauncher.launch(arrayOf("application/json"))
+                }
+
+                BackupEffect.RequestGoogleDriveAuthorization -> {
+                    googleDriveAuth.authorize(
+                        activity = activity,
+                        onSuccess = { authorizationResult ->
+
+                            Log.d(
+                                "GOOGLE_DRIVE",
+                                "Granted scopes = ${authorizationResult.grantedScopes}"
+                            )
+
+                            if (authorizationResult.hasResolution()) {
+
+                                val pendingIntent =
+                                    authorizationResult.pendingIntent
+
+                                if (pendingIntent != null) {
+                                    googleDriveAuthorizationLauncher.launch(
+                                        IntentSenderRequest.Builder(
+                                            pendingIntent.intentSender
+                                        ).build()
+                                    )
+                                }
+
+                            } else {
+                                backupViewModel.onEvent(BackupEvent.CheckAuth)
+                            }
+                        },
+                        onFailure = { exception ->
+                            Toast.makeText(
+                                context,
+                                "Authorization gagal",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     )
                 }
             }
@@ -178,6 +226,28 @@ fun SettingsScreen(
                 description = "",
                 icon = Icons.Default.Restore,
                 onClick = { backupViewModel.onEvent(BackupEvent.PrepareImport) }
+            )
+
+            SettingsItem(
+                title = "Google Drive",
+                description = if (backupState.isGoogleDriveAuthorized) {
+                    "Terhubung"
+                } else {
+                    "Belum terhubung"
+                },
+                icon = Icons.Default.Cloud,
+                onClick = {
+                    if (backupState.isGoogleDriveAuthorized) {
+                        backupViewModel.onEvent(BackupEvent.DisconnectGoogleDrive)
+                    } else {
+                        backupViewModel.onEvent(BackupEvent.ConnectGoogleDrive)
+                    }
+                }
+            )
+
+            AutoBackupSection(
+                state = backupState,
+                onEvent = backupViewModel::onEvent
             )
         }
         ShowPeriodDialog(
