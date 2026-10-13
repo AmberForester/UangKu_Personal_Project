@@ -1,5 +1,8 @@
 package com.example.uangku.feature.dashboard.presentation.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,120 +10,227 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.example.uangku.core.ui.component.currencyFormatter
+import com.example.uangku.core.ui.component.currencyMinimalFormatter
+import com.example.uangku.core.ui.theme.cardSkyBlueEnd
+import com.example.uangku.core.ui.theme.cardSkyBlueStart
+import com.example.uangku.core.ui.theme.generalRed
+import com.example.uangku.core.ui.theme.successGreen
+import com.example.uangku.feature.period.domain.FinancialPeriod
 import com.example.uangku.feature.transaction.domain.TransactionSummary
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SummaryCard(
-    summary: TransactionSummary
+    summary: TransactionSummary,
+    financialPeriod: FinancialPeriod? = null,
+    modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        shape = RoundedCornerShape(20.dp),
+    var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        // Kartu Utama
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 14.dp), // Memberikan ruang agar badge bisa mengambang di atas bibir kartu
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+            Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = "Balance",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.height(5.dp))
-                Text(
-                    text = currencyFormatter(summary.balance),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-
-            HorizontalDivider(
-                color = Color.Gray,
-                modifier = Modifier.padding(vertical = 10.dp)
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
-                Box (
-                    Modifier.weight(1f),
-                    contentAlignment = Alignment.Center
-                ){
-                    SummaryItem(
-                        title = "Income",
-                        amount = summary.income
+                // Bagian Atas: Biru Muda Gradien (Total Saldo & Toggle Mata)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                        .background(
+                            Brush.linearGradient(
+                                colors = listOf(
+                                    cardSkyBlueStart,
+                                    cardSkyBlueEnd
+                                )
+                            )
+                        )
+                ) {
+                    // Efek aksen lengkungan cahaya di latar belakang kanan atas
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .align(Alignment.TopEnd)
+                            .offset(x = 20.dp, y = (-10).dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.25f))
                     )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 18.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Total Saldo",
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize = 14.sp
+                                ),
+                                color = Color(0xFF334155),
+                                fontWeight = FontWeight.Normal
+                            )
+
+                            Spacer(Modifier.height(4.dp))
+
+                            Text(
+                                text = if (isBalanceVisible) {
+                                    currencyFormatter(summary.balance)
+                                } else {
+                                    "••••••••"
+                                },
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontSize = 24.sp
+                                ),
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF0F172A)
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { isBalanceVisible = !isBalanceVisible },
+                            modifier = Modifier.size(36.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isBalanceVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                contentDescription = if (isBalanceVisible) "Sembunyikan Saldo" else "Tampilkan Saldo",
+                                tint = Color(0xFF334155),
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
                 }
 
-                VerticalDivider(modifier = Modifier.height(50.dp))
+                // Bagian Bawah: Putih (Pemasukan Bulanan & Pengeluaran Bulanan)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                        .padding(horizontal = 20.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Kolom Pemasukan Bulanan
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Pemasukan",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp
+                            ),
+                            color = Color(0xFF64748B)
+                        )
 
-                Box (
-                    Modifier.weight(1f),
-                    contentAlignment = Alignment.Center
-                ){
-                    SummaryItem(
-                        title = "Expense",
-                        amount = summary.expense
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = if (isBalanceVisible) {
+                                "+${currencyMinimalFormatter(summary.income)}"
+                            } else {
+                                "+••••"
+                            },
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontSize = 15.sp
+                            ),
+                            fontWeight = FontWeight.SemiBold,
+                            color = successGreen
+                        )
+                    }
+
+                    // Garis Pemisah Vertikal
+                    VerticalDivider(
+                        modifier = Modifier
+                            .height(36.dp)
+                            .padding(horizontal = 12.dp),
+                        color = Color(0xFFE2E8F0)
                     )
-                }
 
-//                SummaryItem(
-//                    title = "Income",
-//                    amount = summary.income
-//                )
-//                Spacer(Modifier.weight(1f))
-//                VerticalDivider(modifier = Modifier.height(50.dp))
-//                Spacer(Modifier.weight(1f))
-//
-//                SummaryItem(
-//                    title = "Expense",
-//                    amount = summary.expense
-//                )
+                    // Kolom Pengeluaran Bulanan
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = "Pengeluaran",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp
+                            ),
+                            color = Color(0xFF64748B)
+                        )
+
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = if (isBalanceVisible) {
+                                "-${currencyMinimalFormatter(summary.expense)}"
+                            } else {
+                                "-••••"
+                            },
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontSize = 15.sp
+                            ),
+                            fontWeight = FontWeight.SemiBold,
+                            color = generalRed
+                        )
+                    }
+                }
             }
         }
-    }
-}
 
-@Composable
-private fun SummaryItem(
-    title: String,
-    amount: Double
-) {
-    Column (
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Text(
-            text = currencyFormatter(amount),
-            style = MaterialTheme.typography.bodyMedium
-        )
+        // Badge Periode Mengambang di Bibir Atas Kartu (Rata Kiri)
+        if (financialPeriod != null) {
+            PeriodBadge(
+                financialPeriod = financialPeriod,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 16.dp)
+                    .zIndex(1f)
+            )
+        }
     }
 }
