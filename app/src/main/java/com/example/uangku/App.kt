@@ -14,13 +14,21 @@ class App: Application(), Configuration.Provider {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(){
         super.onCreate()
-        appContainer = AppContainer(this)
+        ensureAppContainer()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun ensureAppContainer(): AppContainer {
+        if (!::appContainer.isInitialized) {
+            appContainer = AppContainer(this)
+        }
+        return appContainer
     }
 
     override val workManagerConfiguration: Configuration
         @RequiresApi(Build.VERSION_CODES.O)
         get() = Configuration.Builder()
             .setWorkerFactory(
-                appContainer.autoBackupWorkerFactory
+                ensureAppContainer().autoBackupWorkerFactory
             ).build()
 }

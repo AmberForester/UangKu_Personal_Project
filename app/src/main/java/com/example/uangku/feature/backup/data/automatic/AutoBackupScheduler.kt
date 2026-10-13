@@ -22,7 +22,8 @@ class AutoBackupScheduler(
 
     companion object {
         private const val WORK_NAME = "automatic_backup"
-        private const val BACKUP_HOUR = 14
+        private const val BACKUP_HOUR = 2
+        private const val BACKUP_MINUTE = 0
     }
 
     fun scheduleNext(
@@ -54,7 +55,7 @@ class AutoBackupScheduler(
             .getInstance(context)
             .enqueueUniqueWork(
                 WORK_NAME,
-                ExistingWorkPolicy.APPEND_OR_REPLACE,
+                ExistingWorkPolicy.REPLACE,
                 workRequest
             )
     }
@@ -72,7 +73,7 @@ class AutoBackupScheduler(
         val now = LocalDateTime.now()
         val backupTime = LocalTime.of(
             BACKUP_HOUR,
-            15
+            BACKUP_MINUTE
         )
 
         return when (frequency) {
