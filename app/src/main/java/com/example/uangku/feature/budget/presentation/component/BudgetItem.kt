@@ -1,6 +1,9 @@
 package com.example.uangku.feature.budget.presentation.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,18 +11,42 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.uangku.core.ui.component.currencyFormatter
+import androidx.compose.ui.unit.sp
+import com.example.uangku.core.ui.component.currencyMinimalFormatter
+import com.example.uangku.core.ui.theme.brandSkyBlue
+import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.budgetGreenBg
+import com.example.uangku.core.ui.theme.budgetGreenText
+import com.example.uangku.core.ui.theme.budgetOrangeBg
+import com.example.uangku.core.ui.theme.budgetOrangeText
+import com.example.uangku.core.ui.theme.budgetRedBg
+import com.example.uangku.core.ui.theme.budgetRedText
+import com.example.uangku.core.ui.theme.budgetTrackColor
+import com.example.uangku.core.ui.theme.budgetYellowBg
+import com.example.uangku.core.ui.theme.budgetYellowText
 import com.example.uangku.feature.budget.domain.BudgetSummary
 
 @Composable
@@ -27,110 +54,193 @@ fun BudgetItem(
     budget: BudgetSummary,
     onEditClick: (BudgetSummary) -> Unit
 ) {
+    fun formatWithSpace(amount: Double): String {
+        val formatted = currencyMinimalFormatter(amount)
+        return if (formatted.startsWith("Rp") && !formatted.startsWith("Rp ")) {
+            formatted.replaceFirst("Rp", "Rp ")
+        } else {
+            formatted
+        }
+    }
+
+    val progressColor = when {
+        budget.isOverBudget -> budgetRedText
+        budget.progress >= 0.75f -> budgetOrangeText
+        budget.progress >= 0.5f -> budgetYellowText
+        else -> budgetGreenText
+    }
+
+    val boxBgColor = when {
+        budget.isOverBudget -> budgetRedBg
+        budget.progress >= 0.75f -> budgetOrangeBg
+        budget.progress >= 0.5f -> budgetYellowBg
+        else -> budgetGreenBg
+    }
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = budgetBorderColor,
+                shape = RoundedCornerShape(18.dp)
+            ),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 5.dp),
+                .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
+            // Header Baris: Kategori & Aksi/Badge
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = budget.categoryName,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 16.sp
+                    ),
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
+                )
 
-            Text(
-                text = budget.categoryName,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
+                if (budget.budgetAmount > 0.0) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Badge Persentase
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(boxBgColor)
+                                .padding(horizontal = 8.dp, vertical = 3.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "${(budget.progress * 100).toInt()}%",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = progressColor
+                            )
+                        }
 
-            if(budget.budgetAmount == 0.0) {
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
+                        Spacer(Modifier.width(6.dp))
+
+                        // Tombol Edit Ikon Kecil
+                        IconButton(
+                            onClick = { onEditClick(budget) },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Anggaran",
+                                tint = Color(0xFF64748B),
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            if (budget.budgetAmount == 0.0) {
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "No Budget",
-                        style = MaterialTheme.typography.bodySmall
+                        text = "Belum ada anggaran bulanan",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 12.5.sp
+                        ),
+                        color = Color(0xFF64748B)
                     )
-                    TextButton(
+
+                    OutlinedButton(
                         onClick = { onEditClick(budget) },
-                        contentPadding = PaddingValues(0.dp),
-                        modifier = Modifier.height(30.dp)
-                        ) {
+                        shape = RoundedCornerShape(20.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = brandSkyBlue
+                        ),
+                        border = androidx.compose.foundation.BorderStroke(
+                            width = 1.dp,
+                            color = brandSkyBlue.copy(alpha = 0.5f)
+                        ),
+                        modifier = Modifier.height(34.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
                         Text(
-                            text = "Set Budget",
-                            style = MaterialTheme.typography.titleSmall
+                            text = "Atur",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
-
             } else {
+                Spacer(modifier = Modifier.height(12.dp))
 
+                // Progress Bar Halus
                 LinearProgressIndicator(
+                    progress = { budget.progress },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(10.dp),
-                    progress = { budget.progress },
-                    color =
-                        if (budget.isOverBudget) {
-                            Color.Red
-                        } else if (budget.progress >= 0.75f) {
-                            Color(0xFFFB6400)
-                        } else if (budget.progress >= 0.5f) {
-                            Color.Yellow
-                        } else {
-                            Color(0xFF43A047)
-                        }
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp)),
+                    color = progressColor,
+                    trackColor = budgetTrackColor
                 )
 
-                Row (
-                    modifier = Modifier
-                        .padding(vertical = 8.dp)
-                ){
-                    Text(
-                        text = "${currencyFormatter(budget.spent)} / ${currencyFormatter(budget.budgetAmount)}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                Spacer(modifier = Modifier.height(10.dp))
 
-                    Spacer(Modifier.weight(1f))
-
-                    Text(
-                        text = "${(budget.progress * 100).toInt()}%",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-
-                if(!budget.isOverBudget){
-                    Text(
-                        text = "Remaining ${currencyFormatter(budget.remaining)}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                } else {
-                    Text(
-                        text = "Over Budget ${currencyFormatter(budget.remaining)}",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-
-                TextButton(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .height(30.dp)
-                        .padding(bottom = 8.dp),
-                    onClick = { onEditClick(budget) },
-                    contentPadding = PaddingValues(0.dp),
-
+                // Baris Info: Terpakai / Total di kiri, Sisa / Overbudget di kanan
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Edit",
-                        style = MaterialTheme.typography.titleSmall
+                        text = "${formatWithSpace(budget.spent)} / ${formatWithSpace(budget.budgetAmount)}",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 12.sp
+                        ),
+                        color = Color(0xFF64748B),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
+                    val remainingText = if (budget.isOverBudget) {
+                        "Lebih ${formatWithSpace(-budget.remaining)}"
+                    } else {
+                        "Sisa ${formatWithSpace(budget.remaining)}"
+                    }
+
+                    Text(
+                        text = remainingText,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 12.sp
+                        ),
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (budget.isOverBudget) budgetRedText else Color(0xFF334155),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
