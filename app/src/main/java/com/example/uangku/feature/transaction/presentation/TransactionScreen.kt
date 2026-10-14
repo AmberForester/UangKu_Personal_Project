@@ -5,7 +5,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,13 +36,14 @@ fun TransactionScreen(
     val state by viewModel.state.collectAsState()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(title = "Transaction")
         },
         floatingActionButton = {
             AddTransactionButton(
                 onClick = {
-                    TransactionEvent.onAddClick
+                    viewModel.onEvent(TransactionEvent.onAddClick)
                     navController.navigate("transaction_form/-1")
                 }
             )
@@ -48,7 +52,12 @@ fun TransactionScreen(
             UangKuNavigationBar(navController = navController, current = "transaction")
         }
     ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Spacer(Modifier.height(8.dp))
 
             state.financialPeriod?.let {
                 PeriodSelector(
@@ -66,14 +75,14 @@ fun TransactionScreen(
                 )
             }
 
-            Spacer(Modifier.padding(10.dp))
+            Spacer(Modifier.height(14.dp))
 
             ShowTransactionSummary(
                 monthlySummary = state.monthlySummary,
                 overallSummary = state.overallSummary
             )
 
-            Spacer(Modifier.padding(20.dp))
+            Spacer(Modifier.height(16.dp))
 
             TransactionContent(
                 state = state,
@@ -84,9 +93,3 @@ fun TransactionScreen(
         }
     }
 }
-
-
-
-
-
-

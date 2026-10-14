@@ -51,13 +51,13 @@ fun TransactionDeleteDialog(
                     TextButton(
                         onClick = onDismiss
                     ) {
-                        Text("Cancel")
+                        Text("Batal", color = androidx.compose.ui.graphics.Color(0xFF64748B))
                     }
 
                     TextButton(
                         onClick = onConfirm
                     ) {
-                        Text("Delete")
+                        Text("Hapus", color = com.example.uangku.core.ui.theme.generalRed, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                     }
 
                 }

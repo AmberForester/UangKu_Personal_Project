@@ -2,83 +2,120 @@ package com.example.uangku.feature.transaction.presentation.component
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.uangku.core.ui.theme.brandSkyBlue
+import com.example.uangku.core.ui.theme.budgetBorderColor
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PeriodSelector (
-
+fun PeriodSelector(
     financialPeriod: FinancialPeriod,
     onPreviousClick: () -> Unit,
     onNextClick: () -> Unit
-
 ) {
-    val yearFormat = DateTimeFormatter.ofPattern(
-        "yyyy",
-        Locale("id", "ID")
-    )
+    val yearFormat = DateTimeFormatter.ofPattern("yyyy", Locale("id", "ID"))
+    val periodFormat = DateTimeFormatter.ofPattern("d MMM", Locale("id", "ID"))
+    val startYear = financialPeriod.startDate.format(yearFormat)
+    val endYear = financialPeriod.endDate.format(yearFormat)
+    val yearText = if (startYear == endYear) startYear else "$startYear - $endYear"
 
-    val periodFormat = DateTimeFormatter.ofPattern(
-        "d MMM",
-        Locale("id", "ID")
-    )
-
-    Column (
+    Card(
         modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Text(
-            text = financialPeriod.startDate.format(yearFormat),
-            style = MaterialTheme.typography.titleSmall
-        )
-
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .border(
+                width = 1.dp,
+                color = budgetBorderColor,
+                shape = RoundedCornerShape(20.dp)
+            ),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-
-            IconButton(
-                onClick = onPreviousClick
+            Surface(
+                shape = CircleShape,
+                color = Color(0xFFF1F5F9),
+                modifier = Modifier.size(34.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.ChevronLeft,
-                    contentDescription = "Previous period"
+                IconButton(
+                    onClick = onPreviousClick,
+                    modifier = Modifier.size(34.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ChevronLeft,
+                        contentDescription = "Previous period",
+                        tint = brandSkyBlue,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                Text(
+                    text = "${financialPeriod.startDate.format(periodFormat)} - ${financialPeriod.endDate.format(periodFormat)} $yearText",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 14.sp
+                    ),
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0F172A)
                 )
             }
 
-            Text(
-                text = "${financialPeriod.startDate.format(periodFormat)} - " +
-                        "${financialPeriod.endDate.format(periodFormat)}",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            IconButton(
-                onClick = onNextClick
+            Surface(
+                shape = CircleShape,
+                color = Color(0xFFF1F5F9),
+                modifier = Modifier.size(34.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = "Next period"
-                )
+                IconButton(
+                    onClick = onNextClick,
+                    modifier = Modifier.size(34.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = "Next period",
+                        tint = brandSkyBlue,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
     }
-
 }
