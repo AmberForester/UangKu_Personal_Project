@@ -1,19 +1,26 @@
 package com.example.uangku.feature.category.presentation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.feature.category.presentation.component.AddButton
 import com.example.uangku.feature.category.presentation.component.CategoryContent
@@ -23,23 +30,20 @@ import com.example.uangku.feature.transaction.presentation.component.FormTypeSel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CategoryScreen (
+fun CategoryScreen(
     viewModel: CategoryViewModel,
     navController: NavController
 ) {
     LaunchedEffect(Unit) { viewModel.onEvent(CategoryEvent.onScreenOpen) }
     val state by viewModel.state.collectAsState()
 
-    Log.d("init ", "category = ${state.filteredCategory.size}")
-
-    Scaffold (
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-
             TopAppBar(
-                title = "Category",
+                title = "Kategori Transaksi",
                 onBackClick = { navController.popBackStack() }
             )
-
         },
         floatingActionButton = {
             AddButton(
@@ -47,12 +51,14 @@ fun CategoryScreen (
                     viewModel.onEvent(CategoryEvent.onAddClick)
                 }
             )
-        },
-
+        }
     ) { padding ->
-        Column(modifier = Modifier
-            .padding(padding)
-        ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Spacer(Modifier.height(8.dp))
 
             FormTypeSelector(
                 onTypeSelected = {
@@ -61,10 +67,20 @@ fun CategoryScreen (
                 selectedType = state.selectedType,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 20.dp)
             )
 
-            Spacer(Modifier.padding(20.dp))
+            Spacer(Modifier.height(14.dp))
+
+            // Subtitle info total kategori
+            val typeLabel = if (state.selectedType == Type.EXPENSE) "Pengeluaran" else "Pemasukan"
+            Text(
+                text = "${state.filteredCategory.size} Kategori $typeLabel",
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.5.sp),
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF64748B),
+                modifier = Modifier.padding(start = 24.dp, bottom = 8.dp)
+            )
 
             CategoryContent(
                 state = state,
@@ -77,18 +93,19 @@ fun CategoryScreen (
             )
         }
     }
+
     ShowFormDialog(viewModel)
     ShowDeleteDialog(viewModel)
 }
 
 @Composable
-fun ShowFormDialog (viewModel: CategoryViewModel) {
+fun ShowFormDialog(viewModel: CategoryViewModel) {
     val state = viewModel.state
     val uiState = state.collectAsState().value
-    if(uiState.showFormDialog){
+    if (uiState.showFormDialog) {
         CategoryFormDialog(
-            title = (if (uiState.selectedCategory == null) "Tambah Kategori" else "Edit Kategori" ).toString(),
-            confirmButtonText = "Save",
+            title = if (uiState.selectedCategory == null) "Tambah Kategori" else "Edit Kategori",
+            confirmButtonText = "Simpan",
             name = uiState.name,
             type = uiState.type,
             onNameChange = {
@@ -98,16 +115,16 @@ fun ShowFormDialog (viewModel: CategoryViewModel) {
                 viewModel.onEvent(CategoryEvent.onTypeChange(it))
             },
             onDismiss = { viewModel.onEvent(CategoryEvent.onDismissFormDialog) },
-            onConfirm = { viewModel.onEvent(CategoryEvent.onSave)}
+            onConfirm = { viewModel.onEvent(CategoryEvent.onSave) }
         )
     }
 }
 
 @Composable
-fun ShowDeleteDialog (viewModel: CategoryViewModel) {
+fun ShowDeleteDialog(viewModel: CategoryViewModel) {
     val state = viewModel.state
     val uiState = state.collectAsState().value
-    if(uiState.showDeleteDialog){
+    if (uiState.showDeleteDialog) {
         DeleteCategoryDialog(
             name = uiState.name,
             onDismiss = { viewModel.onEvent(CategoryEvent.onDismissDeleteDialog) },
@@ -115,6 +132,3 @@ fun ShowDeleteDialog (viewModel: CategoryViewModel) {
         )
     }
 }
-
-
-

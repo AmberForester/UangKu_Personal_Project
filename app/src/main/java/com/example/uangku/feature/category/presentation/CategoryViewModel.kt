@@ -63,8 +63,6 @@ class CategoryViewModel (
             CategoryEvent.onDeleteConfirm -> { deleteCategory() }
 
             CategoryEvent.onScreenOpen -> { loadCategories() }
-
-            CategoryEvent.onSave -> {}
         }
     }
 
