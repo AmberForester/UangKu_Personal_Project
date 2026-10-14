@@ -1,8 +1,8 @@
 package com.example.uangku.feature.backup.data.automatic
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import android.content.Context
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
@@ -22,18 +22,47 @@ class AutoBackupScheduler(
 
     companion object {
         private const val WORK_NAME = "automatic_backup"
-        private const val BACKUP_HOUR = 2
-        private const val BACKUP_MINUTE = 0
+        private const val BACKUP_HOUR = 8
+        private const val BACKUP_MINUTE = 45
+        private const val FALLBACK_HOUR = 7
+        private const val FALLBACK_MINUTE = 0
     }
 
     fun scheduleNext(
         frequency: BackupFrequency
     ) {
         val nextRun = calculateNextRun(frequency)
+        enqueueWork(nextRun)
+    }
 
+    /**
+     * Menjadwalkan percobaan cadangan pagi hari (pukul 07:00)
+     * jika eksekusi dini hari (pukul 02:00) gagal karena Doze Mode / jaringan mati.
+     */
+    fun scheduleMorningFallback() {
+        val now = LocalDateTime.now()
+        val morningTarget = now.with(LocalTime.of(FALLBACK_HOUR, FALLBACK_MINUTE))
+
+        val nextRun = if (now.isBefore(morningTarget)) {
+            morningTarget
+        } else {
+            // Jika jam 7 pagi sudah lewat, tetap tunda sedikit (30 menit) agar tidak membebani sistem
+            now.plusMinutes(30)
+        }
+
+        enqueueWork(nextRun)
+    }
+
+    fun cancel() {
+        WorkManager
+            .getInstance(context)
+            .cancelUniqueWork(WORK_NAME)
+    }
+
+    private fun enqueueWork(targetTime: LocalDateTime) {
         val delay = Duration.between(
             LocalDateTime.now(),
-            nextRun
+            targetTime
         ).toMillis()
 
         val constraints = Constraints.Builder()
@@ -60,12 +89,6 @@ class AutoBackupScheduler(
             )
     }
 
-    fun cancel() {
-        WorkManager
-            .getInstance(context)
-            .cancelUniqueWork(WORK_NAME)
-    }
-
     private fun calculateNextRun(
         frequency: BackupFrequency
     ): LocalDateTime {
@@ -80,7 +103,7 @@ class AutoBackupScheduler(
 
             BackupFrequency.DAILY -> {
                 val targetToday = now.with(backupTime)
-                if(now.isBefore(targetToday)) {
+                if (now.isBefore(targetToday)) {
                     targetToday
                 } else {
                     targetToday.plusDays(1)

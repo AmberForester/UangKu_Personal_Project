@@ -29,6 +29,7 @@ class AutoBackupWorker(
     override suspend fun doWork(): Result {
         var isEnabled = false
         var frequency = BackupFrequency.DAILY
+        var isSuccess = false
 
         return try {
             val settings = autoBackupPreferences.settings.first()
@@ -45,6 +46,7 @@ class AutoBackupWorker(
             autoBackupPreferences.setLastBackupTimestamp(System.currentTimeMillis())
             Log.i(TAG, "Auto-backup berhasil diunggah ke Google Drive.")
 
+            isSuccess = true
             Result.success()
 
         } catch (e: Exception) {
@@ -52,10 +54,16 @@ class AutoBackupWorker(
             Result.failure()
 
         } finally {
-            // Pastikan jadwal berikutnya tetap terpasang agar rantai auto-backup tidak putus
             if (isEnabled) {
-                Log.d(TAG, "Menjadwalkan auto-backup berikutnya (frekuensi: $frequency).")
-                autoBackupScheduler.scheduleNext(frequency = frequency)
+                if (isSuccess) {
+                    // Berhasil: Jadwalkan untuk siklus normal berikutnya (misal: besok pukul 02:00)
+                    Log.d(TAG, "Menjadwalkan auto-backup normal berikutnya (frekuensi: $frequency).")
+                    autoBackupScheduler.scheduleNext(frequency = frequency)
+                } else {
+                    // Gagal di malam hari: Jadwalkan fallback pagi hari pukul 07:00
+                    Log.w(TAG, "Gagal di malam hari, mengalihkan percobaan berikutnya ke pukul 07:00 pagi.")
+                    autoBackupScheduler.scheduleMorningFallback()
+                }
             }
         }
     }

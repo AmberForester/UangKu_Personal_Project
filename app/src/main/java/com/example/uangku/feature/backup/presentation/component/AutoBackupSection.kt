@@ -23,9 +23,14 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,6 +50,9 @@ fun AutoBackupSection(
     state: BackupState,
     onEvent: (BackupEvent) -> Unit
 ) {
+    val context = LocalContext.current
+    var showBatteryDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -113,7 +121,15 @@ fun AutoBackupSection(
                 Switch(
                     checked = state.autoBackupSettings.enabled,
                     onCheckedChange = { enabled ->
-                        onEvent(BackupEvent.EnableAutoBackup(enable = enabled))
+                        if (enabled) {
+                            if (!isBatteryOptimizationIgnored(context)) {
+                                showBatteryDialog = true
+                            } else {
+                                onEvent(BackupEvent.EnableAutoBackup(enable = true))
+                            }
+                        } else {
+                            onEvent(BackupEvent.EnableAutoBackup(enable = false))
+                        }
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
@@ -187,6 +203,20 @@ fun AutoBackupSection(
                 }
             }
         }
+    }
+
+    if (showBatteryDialog) {
+        BatteryOptimizationDialog(
+            onDismiss = {
+                showBatteryDialog = false
+                // Tetap aktifkan jika pengguna memilih nanti saja
+                onEvent(BackupEvent.EnableAutoBackup(enable = true))
+            },
+            onConfirm = {
+                showBatteryDialog = false
+                onEvent(BackupEvent.EnableAutoBackup(enable = true))
+            }
+        )
     }
 }
 
