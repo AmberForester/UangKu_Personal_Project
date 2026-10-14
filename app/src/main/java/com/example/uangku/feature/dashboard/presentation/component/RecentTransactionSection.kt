@@ -54,7 +54,7 @@ fun RecentTransactionSection(
             .padding(horizontal = 20.dp)
     ) {
         SectionHeader(
-            title = "Recent Transaction",
+            title = "Transaksi Terbaru",
             onSeeAllClick = onSeeAllClick
         )
 

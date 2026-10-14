@@ -58,7 +58,7 @@ fun PreviewBudgetSection(
                 .padding(horizontal = 20.dp)
         ) {
             SectionHeader(
-                title = "Preview Budget",
+                title = "Ringkasan Anggaran",
                 onSeeAllClick = onSeeAllClick
             )
         }
@@ -66,12 +66,34 @@ fun PreviewBudgetSection(
         Spacer(Modifier.height(8.dp))
 
         if (activeBudgets.isEmpty()) {
-            Text(
-                text = "Belum ada budget",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .border(
+                        width = 1.dp,
+                        color = budgetBorderColor,
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Belum ada budget diatur",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF64748B)
+                    )
+                }
+            }
         } else {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),

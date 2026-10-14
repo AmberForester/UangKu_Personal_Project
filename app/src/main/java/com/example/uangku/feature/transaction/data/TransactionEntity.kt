@@ -17,6 +17,9 @@ import java.util.Date
             onDelete = ForeignKey.CASCADE
         )
     ],
+    indices = [
+        androidx.room.Index(value = ["categoryId"])
+    ]
 )
 data class TransactionEntity (
 

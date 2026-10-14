@@ -1,18 +1,38 @@
 package com.example.uangku.feature.transaction.presentation.component
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.uangku.core.ui.component.DialogTemplate
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
+import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.generalRed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,50 +42,110 @@ fun TransactionDeleteDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-
     BasicAlertDialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
     ) {
-
-        DialogTemplate {
-
+        Surface(
+            shape = RoundedCornerShape(24.dp),
+            color = Color.White,
+            border = BorderStroke(1.dp, budgetBorderColor),
+            shadowElevation = 8.dp
+        ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(22.dp)
             ) {
+                // Header Icon & Title
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = CircleShape,
+                        color = Color(0xFFFEE2E2),
+                        modifier = Modifier.size(46.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = generalRed,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
 
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineSmall
-                )
+                    Spacer(Modifier.width(14.dp))
+
+                    Column {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF0F172A)
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            text = "Tindakan ini tidak dapat dibatalkan",
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                            color = Color(0xFF64748B)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(16.dp))
 
                 Text(
                     text = message,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 13.5.sp,
+                        lineHeight = 20.sp
+                    ),
+                    color = Color(0xFF334155)
                 )
 
+                Spacer(Modifier.height(22.dp))
+
+                // Tombol Aksi
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Spacer(Modifier.weight(1f))
 
                     TextButton(
-                        onClick = onDismiss
+                        onClick = onDismiss,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.padding(end = 8.dp)
                     ) {
-                        Text("Batal", color = androidx.compose.ui.graphics.Color(0xFF64748B))
+                        Text(
+                            text = "Batal",
+                            color = Color(0xFF64748B),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 14.sp
+                        )
                     }
 
-                    TextButton(
-                        onClick = onConfirm
+                    Button(
+                        onClick = onConfirm,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = generalRed,
+                            contentColor = Color.White
+                        )
                     ) {
-                        Text("Hapus", color = com.example.uangku.core.ui.theme.generalRed, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                        Text(
+                            text = "Hapus",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
                     }
-
                 }
-
             }
-
         }
-
     }
-
 }

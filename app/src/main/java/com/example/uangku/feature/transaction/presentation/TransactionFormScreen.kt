@@ -40,11 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.uangku.core.domain.Type
+import com.example.uangku.core.ui.component.ThousandsSeparatorVisualTransformation
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.theme.brandSkyBlue
 import com.example.uangku.core.ui.theme.budgetBorderColor
@@ -148,6 +150,7 @@ fun TransactionFormScreen(
                                 }
                             },
                             singleLine = true,
+                            visualTransformation = ThousandsSeparatorVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             textStyle = MaterialTheme.typography.headlineMedium.copy(
                                 fontSize = 28.sp,
@@ -218,6 +221,9 @@ fun TransactionFormScreen(
                         placeholder = { Text("Contoh: Makan siang, bensin, bonus") },
                         shape = RoundedCornerShape(14.dp),
                         minLines = 3,
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = brandSkyBlue,
                             unfocusedBorderColor = budgetBorderColor,

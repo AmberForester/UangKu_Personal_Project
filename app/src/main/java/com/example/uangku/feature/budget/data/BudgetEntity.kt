@@ -15,6 +15,9 @@ import com.example.uangku.feature.category.data.CategoryEntity
             onDelete = ForeignKey.CASCADE
         )
     ],
+    indices = [
+        androidx.room.Index(value = ["categoryId"])
+    ]
 )
 data class BudgetEntity (
 
