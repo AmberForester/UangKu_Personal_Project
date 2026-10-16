@@ -22,8 +22,8 @@ class AutoBackupScheduler(
 
     companion object {
         private const val WORK_NAME = "automatic_backup"
-        private const val BACKUP_HOUR = 8
-        private const val BACKUP_MINUTE = 45
+        private const val BACKUP_HOUR = 2
+        private const val BACKUP_MINUTE = 0
         private const val FALLBACK_HOUR = 7
         private const val FALLBACK_MINUTE = 0
     }
