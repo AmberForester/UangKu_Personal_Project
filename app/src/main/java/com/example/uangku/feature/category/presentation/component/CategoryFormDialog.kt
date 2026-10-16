@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.example.uangku.core.domain.Type
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.transaction.presentation.component.FormTypeSelector
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,7 +67,7 @@ fun CategoryFormDialog(
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = Color.White,
-            border = BorderStroke(1.dp, budgetBorderColor),
+            border = BorderStroke(1.dp, secondaryBgSkyBlue),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -88,7 +88,7 @@ fun CategoryFormDialog(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Outlined.Label,
                                 contentDescription = null,
-                                tint = brandSkyBlue,
+                                tint = mainSkyBlue,
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -126,11 +126,11 @@ fun CategoryFormDialog(
                         capitalization = KeyboardCapitalization.Words
                     ),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = brandSkyBlue,
-                        unfocusedBorderColor = budgetBorderColor,
+                        focusedBorderColor = mainSkyBlue,
+                        unfocusedBorderColor = secondaryBgSkyBlue,
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
-                        focusedLabelColor = brandSkyBlue,
+                        focusedLabelColor = mainSkyBlue,
                         unfocusedLabelColor = Color(0xFF64748B)
                     )
                 )
@@ -179,7 +179,7 @@ fun CategoryFormDialog(
                         enabled = name.isNotBlank(),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = brandSkyBlue,
+                            containerColor = mainSkyBlue,
                             contentColor = Color.White,
                             disabledContainerColor = Color(0xFFCBD5E1),
                             disabledContentColor = Color.White

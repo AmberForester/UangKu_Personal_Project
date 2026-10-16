@@ -10,37 +10,32 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
+// Sky Blue Design System (Tailwind Sky Scale)
+val mainSkyBlue = Color(0xFF0284C7)           // Sky 600 - Warna utama (tombol, ikon aktif, nominal)
+val lightSkyBlue = Color(0xFF7DD3FA)          // Sky 300 - Awal gradien kartu hero
+val secondaryLightSkyBlue = Color(0xFFBAE6FD) // Sky 200 - Akhir gradien kartu & indikator navigasi
+val secondaryBgSkyBlue = Color(0xFFE0F2FE)    // Sky 100 - Border kartu, background icon avatar, track bar
+val mainBgSkyBlue = Color(0xFFF0F9FF)         // Sky 50  - Latar belakang utama seluruh layar
+
+// Alias untuk kompatibilitas ke belakang (backward compatibility)
+val secondarySkyBlue = mainSkyBlue
+val tertiaryLightSkyBlue = secondaryLightSkyBlue
+
+// Green
+val GreenComponent = Color(0xFF2E7D32)
 val successGreen = Color(0xFF43A047)
+val greenBg = Color(0xFFE8F5E9)
+
+// Alias kompatibilitas
+val activeGreen = GreenComponent
+
+// Orange
+val lightOrangeComponent = Color(0xFFF57F17)
+val lightOrangeBg = Color(0xFFFFFDE7)
+val orangeComponent = Color(0xFFFB6400)
+val orangeBg = Color(0xFFFFF3E0)
+
+// Red
+val redComponent = Color(0xFFD32F2F)
 val generalRed = Color(0xFFE53935)
-
-// Background Halaman (Biru Langit Sangat Tipis & Lembut)
-val skyBackgroundLight = Color(0xFFF0F9FF) // Sky 50
-
-// Tema Utama Aplikasi (Sky Blue Brand)
-val brandSkyBlue = Color(0xFF0284C7)
-val brandSkyBlueLight = Color(0xFFBAE6FD)
-
-// Tema Kartu Dashboard & Periode
-val cardSkyBlueStart = Color(0xFF7DD3FA)
-val cardSkyBlueEnd = Color(0xFFB8E6FD)
-val periodBadgeBg = Color(0xFFFFFFFF)
-val periodBadgeText = Color(0xFF0284C7)
-val periodActiveGreen = Color(0xFF2E7D32)
-val activeGreen = Color(0xFF2E7D32) // Alias kompatibilitas
-val periodActiveGreenBg = Color(0xFFE8F5E9)
-
-// Tema Budget Card & Progress Bar
-val budgetTrackColor = Color(0xFFE0F2FE)
-val budgetBorderColor = Color(0xFFE0F2FE)
-
-val budgetGreenText = Color(0xFF2E7D32)
-val budgetGreenBg = Color(0xFFE8F5E9)
-
-val budgetYellowText = Color(0xFFF57F17)
-val budgetYellowBg = Color(0xFFFFFDE7)
-
-val budgetOrangeText = Color(0xFFFB6400)
-val budgetOrangeBg = Color(0xFFFFF3E0)
-
-val budgetRedText = Color(0xFFD32F2F)
-val budgetRedBg = Color(0xFFFFEBEE)
+val redBg = Color(0xFFFFEBEE)

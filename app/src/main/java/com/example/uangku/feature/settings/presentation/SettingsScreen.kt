@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Info
@@ -46,12 +47,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.greenBg
+import com.example.uangku.core.ui.theme.GreenComponent
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
+import com.example.uangku.core.ui.theme.redBg
+import com.example.uangku.core.ui.theme.redComponent
 import com.example.uangku.feature.backup.presentation.BackupEffect
 import com.example.uangku.feature.backup.presentation.BackupEvent
 import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.example.uangku.feature.backup.presentation.component.AutoBackupSection
+import com.example.uangku.feature.backup.presentation.component.DisconnectGoogleDriveDialog
 import com.example.uangku.feature.backup.presentation.component.RestoreDialog
 import com.example.uangku.feature.google_drive.data.GoogleDriveAuth
 import com.example.uangku.feature.period.presentation.PeriodDialog
@@ -76,6 +82,7 @@ fun SettingsScreen(
     val backupState by backupViewModel.state.collectAsState()
     var showPeriodDialog by remember { mutableStateOf(false) }
     var showRestoreConfirmationDialog by remember { mutableStateOf(false) }
+    var showDisconnectDriveDialog by remember { mutableStateOf(false) }
     val activity = context as Activity
 
     val exportLauncher = exportLauncher(backupViewModel)
@@ -156,7 +163,7 @@ fun SettingsScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(title = "Settings")
+            TopAppBar(title = "Pengaturan")
         },
         bottomBar = {
             UangKuNavigationBar(navController = navController, current = "settings")
@@ -177,7 +184,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = budgetBorderColor,
+                        color = secondaryBgSkyBlue,
                         shape = RoundedCornerShape(18.dp)
                     ),
                 shape = RoundedCornerShape(18.dp),
@@ -191,7 +198,7 @@ fun SettingsScreen(
                         trailingText = "Tgl ${periodState.selectedStartDay}",
                         icon = Icons.Default.DateRange,
                         iconBgColor = Color(0xFFE0F2FE),
-                        iconTintColor = brandSkyBlue,
+                        iconTintColor = mainSkyBlue,
                         onClick = { showPeriodDialog = true }
                     )
 
@@ -223,7 +230,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = budgetBorderColor,
+                        color = secondaryBgSkyBlue,
                         shape = RoundedCornerShape(18.dp)
                     ),
                 shape = RoundedCornerShape(18.dp),
@@ -238,12 +245,24 @@ fun SettingsScreen(
                         } else {
                             "Belum terhubung"
                         },
-                        icon = Icons.Default.Cloud,
-                        iconBgColor = Color(0xFFE8F5E9),
-                        iconTintColor = Color(0xFF2E7D32),
+                        icon = if (backupState.isGoogleDriveAuthorized){
+                            Icons.Default.Cloud
+                        } else {
+                            Icons.Default.CloudOff
+                        },
+                        iconBgColor = if (backupState.isGoogleDriveAuthorized) {
+                            greenBg
+                        } else {
+                            redBg
+                        },
+                        iconTintColor = if (backupState.isGoogleDriveAuthorized) {
+                            GreenComponent
+                        } else {
+                            redComponent
+                        },
                         onClick = {
                             if (backupState.isGoogleDriveAuthorized) {
-                                backupViewModel.onEvent(BackupEvent.DisconnectGoogleDrive)
+                                showDisconnectDriveDialog = true
                             } else {
                                 backupViewModel.onEvent(BackupEvent.ConnectGoogleDrive)
                             }
@@ -300,7 +319,7 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = budgetBorderColor,
+                        color = secondaryBgSkyBlue,
                         shape = RoundedCornerShape(18.dp)
                     ),
                 shape = RoundedCornerShape(18.dp),
@@ -341,6 +360,16 @@ fun SettingsScreen(
                 backupViewModel.onEvent(BackupEvent.Restore)
             }
         )
+
+        if (showDisconnectDriveDialog) {
+            DisconnectGoogleDriveDialog(
+                onDismiss = { showDisconnectDriveDialog = false },
+                onConfirm = {
+                    showDisconnectDriveDialog = false
+                    backupViewModel.onEvent(BackupEvent.DisconnectGoogleDrive)
+                }
+            )
+        }
     }
 }
 

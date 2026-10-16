@@ -36,17 +36,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
-import com.example.uangku.core.ui.theme.budgetGreenBg
-import com.example.uangku.core.ui.theme.budgetGreenText
-import com.example.uangku.core.ui.theme.budgetOrangeBg
-import com.example.uangku.core.ui.theme.budgetOrangeText
-import com.example.uangku.core.ui.theme.budgetRedBg
-import com.example.uangku.core.ui.theme.budgetRedText
-import com.example.uangku.core.ui.theme.budgetTrackColor
-import com.example.uangku.core.ui.theme.budgetYellowBg
-import com.example.uangku.core.ui.theme.budgetYellowText
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.greenBg
+import com.example.uangku.core.ui.theme.GreenComponent
+import com.example.uangku.core.ui.theme.orangeBg
+import com.example.uangku.core.ui.theme.orangeComponent
+import com.example.uangku.core.ui.theme.redBg
+import com.example.uangku.core.ui.theme.redComponent
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
+import com.example.uangku.core.ui.theme.lightOrangeBg
+import com.example.uangku.core.ui.theme.lightOrangeComponent
 import com.example.uangku.feature.budget.domain.BudgetSummary
 
 @Composable
@@ -64,17 +63,17 @@ fun BudgetItem(
     }
 
     val progressColor = when {
-        budget.isOverBudget -> budgetRedText
-        budget.progress >= 0.75f -> budgetOrangeText
-        budget.progress >= 0.5f -> budgetYellowText
-        else -> budgetGreenText
+        budget.isOverBudget -> redComponent
+        budget.progress >= 0.75f -> orangeComponent
+        budget.progress >= 0.5f -> lightOrangeComponent
+        else -> GreenComponent
     }
 
     val boxBgColor = when {
-        budget.isOverBudget -> budgetRedBg
-        budget.progress >= 0.75f -> budgetOrangeBg
-        budget.progress >= 0.5f -> budgetYellowBg
-        else -> budgetGreenBg
+        budget.isOverBudget -> redBg
+        budget.progress >= 0.75f -> orangeBg
+        budget.progress >= 0.5f -> lightOrangeBg
+        else -> greenBg
     }
 
     Card(
@@ -82,7 +81,7 @@ fun BudgetItem(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = budgetBorderColor,
+                color = secondaryBgSkyBlue,
                 shape = RoundedCornerShape(18.dp)
             ),
         shape = RoundedCornerShape(18.dp),
@@ -173,11 +172,11 @@ fun BudgetItem(
                         shape = RoundedCornerShape(20.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = brandSkyBlue
+                            contentColor = mainSkyBlue
                         ),
                         border = androidx.compose.foundation.BorderStroke(
                             width = 1.dp,
-                            color = brandSkyBlue.copy(alpha = 0.5f)
+                            color = mainSkyBlue.copy(alpha = 0.5f)
                         ),
                         modifier = Modifier.height(34.dp)
                     ) {
@@ -205,7 +204,7 @@ fun BudgetItem(
                         .height(8.dp)
                         .clip(RoundedCornerShape(4.dp)),
                     color = progressColor,
-                    trackColor = budgetTrackColor
+                    trackColor = secondaryBgSkyBlue
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -238,7 +237,7 @@ fun BudgetItem(
                             fontSize = 12.sp
                         ),
                         fontWeight = FontWeight.SemiBold,
-                        color = if (budget.isOverBudget) budgetRedText else Color(0xFF334155),
+                        color = if (budget.isOverBudget) redComponent else Color(0xFF334155),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

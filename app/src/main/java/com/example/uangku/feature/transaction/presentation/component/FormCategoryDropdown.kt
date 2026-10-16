@@ -34,8 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.category.domain.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,16 +65,16 @@ fun FormCategoryDropdown(
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.Label,
                     contentDescription = null,
-                    tint = if (selectedCategory != null) brandSkyBlue else Color(0xFF94A3B8),
+                    tint = if (selectedCategory != null) mainSkyBlue else Color(0xFF94A3B8),
                     modifier = Modifier.size(20.dp)
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = brandSkyBlue,
-                unfocusedBorderColor = budgetBorderColor,
+                focusedBorderColor = mainSkyBlue,
+                unfocusedBorderColor = secondaryBgSkyBlue,
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
-                focusedLabelColor = brandSkyBlue,
+                focusedLabelColor = mainSkyBlue,
                 unfocusedLabelColor = Color(0xFF64748B)
             ),
             trailingIcon = {
@@ -87,7 +87,7 @@ fun FormCategoryDropdown(
             onDismissRequest = { expanded = false },
             shape = RoundedCornerShape(16.dp),
             containerColor = Color.White,
-            border = BorderStroke(1.dp, budgetBorderColor),
+            border = BorderStroke(1.dp, secondaryBgSkyBlue),
             shadowElevation = 6.dp
         ) {
             if (categories.isEmpty()) {
@@ -122,7 +122,7 @@ fun FormCategoryDropdown(
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Outlined.Label,
                                         contentDescription = null,
-                                        tint = if (isSelected) brandSkyBlue else Color(0xFF64748B),
+                                        tint = if (isSelected) mainSkyBlue else Color(0xFF64748B),
                                         modifier = Modifier.size(16.dp)
                                     )
                                 }
@@ -141,7 +141,7 @@ fun FormCategoryDropdown(
                                 Icon(
                                     imageVector = Icons.Default.Check,
                                     contentDescription = "Selected",
-                                    tint = brandSkyBlue,
+                                    tint = mainSkyBlue,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }

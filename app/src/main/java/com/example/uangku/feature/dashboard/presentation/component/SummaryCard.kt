@@ -41,9 +41,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.cardSkyBlueEnd
-import com.example.uangku.core.ui.theme.cardSkyBlueStart
+import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
+import com.example.uangku.core.ui.theme.lightSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
+import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import com.example.uangku.feature.transaction.domain.TransactionSummary
@@ -84,8 +85,8 @@ fun SummaryCard(
                         .background(
                             Brush.linearGradient(
                                 colors = listOf(
-                                    cardSkyBlueStart,
-                                    cardSkyBlueEnd
+                                    mainSkyBlue.copy(0.7f),
+                                    secondaryLightSkyBlue
                                 )
                             )
                         )

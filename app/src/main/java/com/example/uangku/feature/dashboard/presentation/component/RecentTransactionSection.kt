@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.domain.Transaction
@@ -65,7 +65,7 @@ fun RecentTransactionSection(
                 .fillMaxWidth()
                 .border(
                     width = 1.dp,
-                    color = budgetBorderColor,
+                    color = secondaryBgSkyBlue,
                     shape = RoundedCornerShape(20.dp)
                 ),
             shape = RoundedCornerShape(20.dp),

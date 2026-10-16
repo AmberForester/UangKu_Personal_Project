@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 
@@ -43,7 +43,7 @@ fun FormTypeSelector(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = budgetBorderColor,
+                color = secondaryBgSkyBlue,
                 shape = RoundedCornerShape(18.dp)
             ),
         shape = RoundedCornerShape(18.dp),

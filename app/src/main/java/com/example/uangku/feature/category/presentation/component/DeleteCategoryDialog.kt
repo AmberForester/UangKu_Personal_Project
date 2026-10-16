@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +49,7 @@ fun DeleteCategoryDialog(
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = Color.White,
-            border = BorderStroke(1.dp, budgetBorderColor),
+            border = BorderStroke(1.dp, secondaryBgSkyBlue),
             shadowElevation = 8.dp
         ) {
             Column(

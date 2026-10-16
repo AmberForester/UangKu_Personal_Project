@@ -28,8 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -53,7 +53,7 @@ fun PeriodSelector(
             .padding(horizontal = 20.dp)
             .border(
                 width = 1.dp,
-                color = budgetBorderColor,
+                color = secondaryBgSkyBlue,
                 shape = RoundedCornerShape(20.dp)
             ),
         shape = RoundedCornerShape(20.dp),
@@ -79,7 +79,7 @@ fun PeriodSelector(
                     Icon(
                         imageVector = Icons.Default.ChevronLeft,
                         contentDescription = "Previous period",
-                        tint = brandSkyBlue,
+                        tint = mainSkyBlue,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -111,7 +111,7 @@ fun PeriodSelector(
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = "Next period",
-                        tint = brandSkyBlue,
+                        tint = mainSkyBlue,
                         modifier = Modifier.size(20.dp)
                     )
                 }

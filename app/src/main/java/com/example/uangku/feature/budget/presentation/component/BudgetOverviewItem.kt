@@ -29,10 +29,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
-import com.example.uangku.core.ui.theme.cardSkyBlueEnd
-import com.example.uangku.core.ui.theme.cardSkyBlueStart
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
+import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
+import com.example.uangku.core.ui.theme.lightSkyBlue
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.budget.domain.BudgetOverview
 
@@ -66,7 +66,7 @@ fun BudgetOverviewItem(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = budgetBorderColor,
+                color = secondaryBgSkyBlue,
                 shape = RoundedCornerShape(20.dp)
             ),
         shape = RoundedCornerShape(20.dp),
@@ -86,8 +86,8 @@ fun BudgetOverviewItem(
                     .background(
                         Brush.linearGradient(
                             colors = listOf(
-                                cardSkyBlueStart,
-                                cardSkyBlueEnd
+                                lightSkyBlue,
+                                secondaryLightSkyBlue
                             )
                         )
                     )
@@ -135,7 +135,7 @@ fun BudgetOverviewItem(
                             .fillMaxWidth()
                             .height(6.dp)
                             .clip(RoundedCornerShape(3.dp)),
-                        color = brandSkyBlue,
+                        color = mainSkyBlue,
                         trackColor = Color.White.copy(alpha = 0.5f)
                     )
 

@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.brandSkyBlueLight
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
 
 @Composable
 fun UangKuNavigationBar(
@@ -38,11 +38,11 @@ fun UangKuNavigationBar(
             tonalElevation = 0.dp
         ) {
             val itemColors = NavigationBarItemDefaults.colors(
-                selectedIconColor = brandSkyBlue,
-                selectedTextColor = brandSkyBlue,
+                selectedIconColor = mainSkyBlue,
+                selectedTextColor = mainSkyBlue,
                 unselectedIconColor = Color(0xFF94A3B8),
                 unselectedTextColor = Color(0xFF94A3B8),
-                indicatorColor = brandSkyBlueLight.copy(alpha = 0.45f)
+                indicatorColor = secondaryLightSkyBlue.copy(alpha = 0.45f)
             )
 
             NavigationBarItem(
@@ -52,7 +52,7 @@ fun UangKuNavigationBar(
                 label = {
                     if (current.equals("dashboard", ignoreCase = true)) {
                         Text(
-                            text = "Dashboard",
+                            text = "Beranda",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -62,7 +62,7 @@ fun UangKuNavigationBar(
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Home,
-                        contentDescription = "Dashboard Icon"
+                        contentDescription = "Beranda"
                     )
                 }
             )
@@ -74,7 +74,7 @@ fun UangKuNavigationBar(
                 label = {
                     if (current.equals("transaction", ignoreCase = true)) {
                         Text(
-                            text = "Transaction",
+                            text = "Transaksi",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -84,7 +84,7 @@ fun UangKuNavigationBar(
                 icon = {
                     Icon(
                         imageVector = Icons.Default.AccountBalanceWallet,
-                        contentDescription = "Transaction Icon"
+                        contentDescription = "Transaksi"
                     )
                 }
             )
@@ -96,7 +96,7 @@ fun UangKuNavigationBar(
                 label = {
                     if (current.equals("budget", ignoreCase = true)) {
                         Text(
-                            text = "Budget",
+                            text = "Anggaran",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -106,7 +106,7 @@ fun UangKuNavigationBar(
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Wallet,
-                        contentDescription = "Budget Icon"
+                        contentDescription = "Anggaran"
                     )
                 }
             )
@@ -118,7 +118,7 @@ fun UangKuNavigationBar(
                 label = {
                     if (current.equals("analysis", ignoreCase = true)) {
                         Text(
-                            text = "Analysis",
+                            text = "Analisis",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -128,7 +128,7 @@ fun UangKuNavigationBar(
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Analytics,
-                        contentDescription = "Analysis Icon"
+                        contentDescription = "Analisis"
                     )
                 }
             )
@@ -140,7 +140,7 @@ fun UangKuNavigationBar(
                 label = {
                     if (current.equals("settings", ignoreCase = true)) {
                         Text(
-                            text = "Settings",
+                            text = "Pengaturan",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -150,7 +150,7 @@ fun UangKuNavigationBar(
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Settings,
-                        contentDescription = "Settings Icon"
+                        contentDescription = "Pengaturan"
                     )
                 }
             )

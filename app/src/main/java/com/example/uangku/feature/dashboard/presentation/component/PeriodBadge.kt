@@ -21,12 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.activeGreen
-import com.example.uangku.core.ui.theme.periodBadgeBg
-import com.example.uangku.core.ui.theme.periodBadgeText
+import com.example.uangku.core.ui.theme.GreenComponent
+import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -49,7 +49,7 @@ fun PeriodBadge(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(50),
-        color = periodBadgeBg,
+        color = Color.White,
         shadowElevation = 3.dp
     ) {
         Row(
@@ -59,7 +59,7 @@ fun PeriodBadge(
             Icon(
                 imageVector = Icons.Default.DateRange,
                 contentDescription = "Periode Keuangan",
-                tint = periodBadgeText,
+                tint = mainSkyBlue,
                 modifier = Modifier.size(15.dp)
             )
 
@@ -91,7 +91,7 @@ fun PeriodBadge(
                     fontSize = 11.sp
                 ),
                 fontWeight = FontWeight.Bold,
-                color = activeGreen
+                color = GreenComponent
             )
         }
     }

@@ -37,8 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 
 fun isBatteryOptimizationIgnored(context: Context): Boolean {
     val powerManager = context.getSystemService(Context.POWER_SERVICE) as? PowerManager
@@ -79,7 +79,7 @@ fun BatteryOptimizationDialog(
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = Color.White,
-            border = BorderStroke(1.dp, budgetBorderColor),
+            border = BorderStroke(1.dp, secondaryBgSkyBlue),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -98,7 +98,7 @@ fun BatteryOptimizationDialog(
                             Icon(
                                 imageVector = Icons.Outlined.BatteryAlert,
                                 contentDescription = null,
-                                tint = brandSkyBlue,
+                                tint = mainSkyBlue,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -141,7 +141,7 @@ fun BatteryOptimizationDialog(
                     Text(
                         text = "💡 Pilih 'Jangan batasi' atau 'Izinkan' saat dialog sistem muncul.",
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                        color = brandSkyBlue,
+                        color = mainSkyBlue,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(10.dp)
                     )
@@ -175,7 +175,7 @@ fun BatteryOptimizationDialog(
                         },
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = brandSkyBlue,
+                            containerColor = mainSkyBlue,
                             contentColor = Color.White
                         )
                     ) {

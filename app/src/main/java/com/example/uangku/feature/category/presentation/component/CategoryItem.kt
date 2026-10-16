@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
-import com.example.uangku.core.ui.theme.brandSkyBlue
+import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.category.domain.Category
@@ -84,7 +84,7 @@ fun CategoryItem(
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit Kategori",
-                    tint = brandSkyBlue,
+                    tint = mainSkyBlue,
                     modifier = Modifier.size(17.dp)
                 )
             }

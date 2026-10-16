@@ -31,8 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +53,7 @@ fun RestoreDialog(
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = Color.White,
-            border = BorderStroke(1.dp, budgetBorderColor),
+            border = BorderStroke(1.dp, secondaryBgSkyBlue),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -74,7 +74,7 @@ fun RestoreDialog(
                             Icon(
                                 imageVector = Icons.Default.Restore,
                                 contentDescription = null,
-                                tint = brandSkyBlue,
+                                tint = mainSkyBlue,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -144,7 +144,7 @@ fun RestoreDialog(
                         onClick = onConfirm,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = brandSkyBlue,
+                            containerColor = mainSkyBlue,
                             contentColor = Color.White
                         )
                     ) {

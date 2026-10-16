@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.example.uangku.core.ui.component.ThousandsSeparatorVisualTransformation
 import com.example.uangku.core.ui.component.currencyFormatter
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +63,7 @@ fun BudgetDialog(
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = Color.White,
-            border = BorderStroke(1.dp, budgetBorderColor),
+            border = BorderStroke(1.dp, secondaryBgSkyBlue),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -84,7 +84,7 @@ fun BudgetDialog(
                             Icon(
                                 imageVector = Icons.Outlined.AccountBalanceWallet,
                                 contentDescription = null,
-                                tint = brandSkyBlue,
+                                tint = mainSkyBlue,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -127,7 +127,7 @@ fun BudgetDialog(
                         Text(
                             text = "Rp ",
                             fontWeight = FontWeight.Bold,
-                            color = brandSkyBlue
+                            color = mainSkyBlue
                         )
                     },
                     shape = RoundedCornerShape(14.dp),
@@ -143,11 +143,11 @@ fun BudgetDialog(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = brandSkyBlue,
-                        unfocusedBorderColor = budgetBorderColor,
+                        focusedBorderColor = mainSkyBlue,
+                        unfocusedBorderColor = secondaryBgSkyBlue,
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White,
-                        focusedLabelColor = brandSkyBlue,
+                        focusedLabelColor = mainSkyBlue,
                         unfocusedLabelColor = Color(0xFF64748B),
                         errorBorderColor = generalRed,
                         errorLabelColor = generalRed,
@@ -168,7 +168,7 @@ fun BudgetDialog(
                         text = "💡 Maksimal alokasi tersedia: ${currencyFormatter(availableAmount)}",
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                         fontWeight = FontWeight.Medium,
-                        color = brandSkyBlue,
+                        color = mainSkyBlue,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
                     )
                 }
@@ -212,7 +212,7 @@ fun BudgetDialog(
                         enabled = errorMessage == null && amount.isNotBlank() && (amount.toDoubleOrNull() ?: 0.0) >= 0.0,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = brandSkyBlue,
+                            containerColor = mainSkyBlue,
                             contentColor = Color.White,
                             disabledContainerColor = Color(0xFFCBD5E1),
                             disabledContentColor = Color.White

@@ -42,7 +42,7 @@ fun BudgetScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = "Budget"
+                title = "Anggaran"
             )
         },
         bottomBar = {

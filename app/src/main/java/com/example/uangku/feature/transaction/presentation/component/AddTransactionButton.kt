@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.uangku.core.ui.theme.brandSkyBlue
+import com.example.uangku.core.ui.theme.mainSkyBlue
 
 @Composable
 fun AddTransactionButton(
@@ -20,7 +20,7 @@ fun AddTransactionButton(
     FloatingActionButton(
         onClick = onClick,
         shape = CircleShape,
-        containerColor = brandSkyBlue,
+        containerColor = mainSkyBlue,
         contentColor = Color.White,
         elevation = FloatingActionButtonDefaults.elevation(
             defaultElevation = 4.dp,

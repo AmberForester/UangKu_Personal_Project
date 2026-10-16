@@ -48,8 +48,8 @@ import androidx.navigation.NavController
 import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.component.ThousandsSeparatorVisualTransformation
 import com.example.uangku.core.ui.component.TopAppBar
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.presentation.component.FormCategoryDropdown
@@ -73,7 +73,7 @@ fun TransactionFormScreen(
         )
     }
 
-    val title = if (id.toInt() == -1) "Tambah Transaksi" else "Edit Transaksi"
+    val title = if (id.toInt() == -1) "Tambah Transaksi" else "Ubah Transaksi"
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -107,7 +107,7 @@ fun TransactionFormScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = budgetBorderColor,
+                        color = secondaryBgSkyBlue,
                         shape = RoundedCornerShape(20.dp)
                     ),
                 shape = RoundedCornerShape(20.dp),
@@ -183,7 +183,7 @@ fun TransactionFormScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = budgetBorderColor,
+                        color = secondaryBgSkyBlue,
                         shape = RoundedCornerShape(20.dp)
                     ),
                 shape = RoundedCornerShape(20.dp),
@@ -225,11 +225,11 @@ fun TransactionFormScreen(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = brandSkyBlue,
-                            unfocusedBorderColor = budgetBorderColor,
+                            focusedBorderColor = mainSkyBlue,
+                            unfocusedBorderColor = secondaryBgSkyBlue,
                             focusedContainerColor = Color.White,
                             unfocusedContainerColor = Color.White,
-                            focusedLabelColor = brandSkyBlue,
+                            focusedLabelColor = mainSkyBlue,
                             unfocusedLabelColor = Color(0xFF64748B)
                         )
                     )
@@ -255,7 +255,7 @@ fun TransactionFormScreen(
                 enabled = isSaveEnabled,
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = brandSkyBlue,
+                    containerColor = mainSkyBlue,
                     contentColor = Color.White,
                     disabledContainerColor = Color(0xFFCBD5E1),
                     disabledContentColor = Color.White

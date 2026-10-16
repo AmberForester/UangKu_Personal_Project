@@ -41,7 +41,7 @@ fun DashboardScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = "Dashboard"
+                title = "Beranda"
             )
         },
         bottomBar = {

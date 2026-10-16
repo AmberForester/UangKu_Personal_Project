@@ -30,8 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -57,18 +57,18 @@ fun FormDatePicker(
             label = { Text("Tanggal Transaksi") },
             shape = RoundedCornerShape(14.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = brandSkyBlue,
-                unfocusedBorderColor = budgetBorderColor,
+                focusedBorderColor = mainSkyBlue,
+                unfocusedBorderColor = secondaryBgSkyBlue,
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
-                focusedLabelColor = brandSkyBlue,
+                focusedLabelColor = mainSkyBlue,
                 unfocusedLabelColor = Color(0xFF64748B)
             ),
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.DateRange,
                     contentDescription = null,
-                    tint = brandSkyBlue
+                    tint = mainSkyBlue
                 )
             }
         )
@@ -92,16 +92,16 @@ fun FormDatePicker(
             headlineContentColor = Color(0xFF0F172A),
             weekdayContentColor = Color(0xFF64748B),
             subheadContentColor = Color(0xFF0F172A),
-            navigationContentColor = brandSkyBlue,
+            navigationContentColor = mainSkyBlue,
             yearContentColor = Color(0xFF0F172A),
-            currentYearContentColor = brandSkyBlue,
+            currentYearContentColor = mainSkyBlue,
             selectedYearContentColor = Color.White,
-            selectedYearContainerColor = brandSkyBlue,
+            selectedYearContainerColor = mainSkyBlue,
             dayContentColor = Color(0xFF0F172A),
             selectedDayContentColor = Color.White,
-            selectedDayContainerColor = brandSkyBlue,
-            todayContentColor = brandSkyBlue,
-            todayDateBorderColor = brandSkyBlue,
+            selectedDayContainerColor = mainSkyBlue,
+            todayContentColor = mainSkyBlue,
+            todayDateBorderColor = mainSkyBlue,
             dividerColor = Color(0xFFF1F5F9)
         )
 
@@ -109,7 +109,7 @@ fun FormDatePicker(
             modifier = Modifier
                 .border(
                     width = 1.dp,
-                    color = budgetBorderColor,
+                    color = secondaryBgSkyBlue,
                     shape = RoundedCornerShape(24.dp)
                 ),
             shape = RoundedCornerShape(24.dp),
@@ -125,7 +125,7 @@ fun FormDatePicker(
                     },
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = brandSkyBlue,
+                        containerColor = mainSkyBlue,
                         contentColor = Color.White
                     ),
                     modifier = Modifier.padding(end = 12.dp, bottom = 8.dp)

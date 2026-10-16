@@ -31,8 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.category.domain.Category
 import com.example.uangku.feature.category.presentation.CategoryState
 
@@ -55,7 +55,7 @@ fun CategoryContent(
                         .fillMaxWidth()
                         .border(
                             width = 1.dp,
-                            color = budgetBorderColor,
+                            color = secondaryBgSkyBlue,
                             shape = RoundedCornerShape(20.dp)
                         ),
                     shape = RoundedCornerShape(20.dp),
@@ -109,7 +109,7 @@ fun CategoryEmptyState() {
                 Icon(
                     imageVector = Icons.Outlined.FolderOpen,
                     contentDescription = null,
-                    tint = brandSkyBlue,
+                    tint = mainSkyBlue,
                     modifier = Modifier.size(36.dp)
                 )
             }

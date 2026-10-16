@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.domain.TransactionSummary
@@ -48,7 +48,7 @@ fun ShowTransactionSummary(
             .padding(horizontal = 20.dp)
             .border(
                 width = 1.dp,
-                color = budgetBorderColor,
+                color = secondaryBgSkyBlue,
                 shape = RoundedCornerShape(20.dp)
             ),
         shape = RoundedCornerShape(20.dp),
@@ -88,10 +88,10 @@ fun ShowTransactionSummary(
                             color = Color(0xFFE0F2FE)
                         ) {
                             Text(
-                                text = "Overall",
+                                text = "Total",
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = brandSkyBlue,
+                                color = mainSkyBlue,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             )
                         }
@@ -222,7 +222,7 @@ fun ShowTransactionSummary(
                             fontSize = 13.sp
                         ),
                         fontWeight = FontWeight.Bold,
-                        color = if (monthlySummary.balance >= 0) brandSkyBlue else generalRed,
+                        color = if (monthlySummary.balance >= 0) mainSkyBlue else generalRed,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

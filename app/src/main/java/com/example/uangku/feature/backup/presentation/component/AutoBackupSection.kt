@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.brandSkyBlue
+import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.backup.domain.automatic.BackupFrequency
@@ -72,7 +72,7 @@ fun AutoBackupSection(
                     Icon(
                         imageVector = Icons.Default.Sync,
                         contentDescription = null,
-                        tint = brandSkyBlue,
+                        tint = mainSkyBlue,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -133,7 +133,7 @@ fun AutoBackupSection(
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
-                        checkedTrackColor = brandSkyBlue,
+                        checkedTrackColor = mainSkyBlue,
                         uncheckedThumbColor = Color.White,
                         uncheckedTrackColor = Color(0xFFCBD5E1)
                     )
@@ -179,7 +179,7 @@ fun AutoBackupSection(
                                 onEvent(BackupEvent.SetAutoBackupFrequency(frequency = frequency))
                             },
                             colors = RadioButtonDefaults.colors(
-                                selectedColor = brandSkyBlue,
+                                selectedColor = mainSkyBlue,
                                 unselectedColor = Color(0xFF94A3B8)
                             )
                         )

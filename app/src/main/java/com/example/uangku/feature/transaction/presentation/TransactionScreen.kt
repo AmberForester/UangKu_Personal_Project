@@ -38,7 +38,7 @@ fun TransactionScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(title = "Transaction")
+            TopAppBar(title = "Transaksi")
         },
         floatingActionButton = {
             AddTransactionButton(

@@ -41,8 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.example.uangku.core.ui.theme.brandSkyBlue
-import com.example.uangku.core.ui.theme.budgetBorderColor
+import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +65,7 @@ fun PeriodDialog(
         Surface(
             shape = RoundedCornerShape(24.dp),
             color = Color.White,
-            border = BorderStroke(1.dp, budgetBorderColor),
+            border = BorderStroke(1.dp, secondaryBgSkyBlue),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -84,7 +84,7 @@ fun PeriodDialog(
                         Icon(
                             imageVector = Icons.Outlined.DateRange,
                             contentDescription = null,
-                            tint = brandSkyBlue,
+                            tint = mainSkyBlue,
                             modifier = Modifier.size(26.dp)
                         )
                     }
@@ -125,7 +125,7 @@ fun PeriodDialog(
 
                         Surface(
                             shape = CircleShape,
-                            color = if (isSelected) brandSkyBlue else Color(0xFFF8FAFC),
+                            color = if (isSelected) mainSkyBlue else Color(0xFFF8FAFC),
                             modifier = Modifier
                                 .aspectRatio(1f)
                                 .clickable { selected = date }
@@ -159,7 +159,7 @@ fun PeriodDialog(
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                         fontWeight = FontWeight.Medium,
                         fontSize = 12.sp,
-                        color = brandSkyBlue,
+                        color = mainSkyBlue,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                     )
@@ -190,7 +190,7 @@ fun PeriodDialog(
                         onClick = { onConfirmDialog(selected) },
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = brandSkyBlue,
+                            containerColor = mainSkyBlue,
                             contentColor = Color.White
                         )
                     ) {
