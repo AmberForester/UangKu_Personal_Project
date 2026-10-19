@@ -1,5 +1,7 @@
 package com.example.uangku.feature.transaction.presentation.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.outlined.FolderOpen
+import androidx.compose.material.icons.outlined.SearchOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -51,17 +56,22 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TransactionContent(
     state: TransactionState,
+    onResetFilter: () -> Unit = {},
     onClick: (Transaction) -> Unit
 ) {
-    val groupedByDate = state.transactions.groupBy {
+    val itemsToDisplay = state.filteredTransactions
+    val groupedByDate = itemsToDisplay.groupBy {
         it.date.toDateFormat()
     }
 
     if (state.transactions.isEmpty()) {
         TransactionEmptyState()
+    } else if (itemsToDisplay.isEmpty()) {
+        TransactionFilterEmptyState(onResetFilter = onResetFilter)
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -281,5 +291,74 @@ fun TransactionEmptyState() {
             color = Color(0xFF64748B),
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@Composable
+fun TransactionFilterEmptyState(
+    onResetFilter: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp, vertical = 48.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(
+            shape = CircleShape,
+            color = Color(0xFFE0F2FE),
+            modifier = Modifier.size(72.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.SearchOff,
+                    contentDescription = null,
+                    tint = mainSkyBlue,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = "Tidak Ada Transaksi yang Cocok",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontSize = 16.sp
+            ),
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF0F172A)
+        )
+
+        Spacer(Modifier.height(6.dp))
+
+        Text(
+            text = "Tidak ditemukan transaksi untuk kata kunci atau kategori yang sedang dipilih.",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 13.sp
+            ),
+            color = Color(0xFF64748B),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(18.dp))
+
+        Button(
+            onClick = onResetFilter,
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = mainSkyBlue,
+                contentColor = Color.White
+            )
+        ) {
+            Text(
+                text = "Hapus Filter",
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.5.sp
+            )
+        }
     }
 }

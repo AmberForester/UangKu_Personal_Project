@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.uangku.feature.category.domain.CategoryUseCase
 import com.example.uangku.feature.period.domain.PeriodUseCase
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 import com.example.uangku.feature.transaction.presentation.TransactionEvent
@@ -22,7 +23,8 @@ import kotlinx.coroutines.launch
 class TransactionViewModel (
 
     private val transactionUseCase: TransactionUseCase,
-    private val periodUseCase: PeriodUseCase
+    private val periodUseCase: PeriodUseCase,
+    private val categoryUseCase: CategoryUseCase
 
 ) : ViewModel() {
 
@@ -34,6 +36,7 @@ class TransactionViewModel (
         observeTransactions()
         observeMonthlySummary()
         observeFinancialPeriod()
+        observeCategories()
     }
 
     fun onEvent(event: TransactionEvent) {
@@ -52,6 +55,50 @@ class TransactionViewModel (
 
             TransactionEvent.onPreviousMonth -> {
                 previousMonth()
+            }
+
+            is TransactionEvent.onSearchQueryChange -> {
+                _state.update { it.copy(searchQuery = event.query) }
+            }
+
+            TransactionEvent.onClearSearch -> {
+                _state.update { it.copy(searchQuery = "") }
+            }
+
+            is TransactionEvent.onCategoryFilterSelect -> {
+                _state.update {
+                    it.copy(
+                        selectedCategory = event.category,
+                        isFilterSheetVisible = false
+                    )
+                }
+            }
+
+            TransactionEvent.onOpenFilterSheet -> {
+                _state.update { it.copy(isFilterSheetVisible = true) }
+            }
+
+            TransactionEvent.onDismissFilterSheet -> {
+                _state.update { it.copy(isFilterSheetVisible = false) }
+            }
+
+            TransactionEvent.onResetFilter -> {
+                _state.update {
+                    it.copy(
+                        searchQuery = "",
+                        selectedCategory = null
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeCategories() {
+        viewModelScope.launch {
+            categoryUseCase.getCategories().collect { categories ->
+                _state.update {
+                    it.copy(categories = categories)
+                }
             }
         }
     }
