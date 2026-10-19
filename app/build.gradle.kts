@@ -50,6 +50,21 @@ android {
 
         }
     }
+
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("stable") {
+            dimension = "environment"
+        }
+
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
+    }
+
 }
 
 dependencies {
