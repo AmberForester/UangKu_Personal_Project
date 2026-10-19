@@ -34,14 +34,6 @@ class BudgetUseCase (
 
     suspend fun saveBudget(budget: Budget){
 
-        val available = getAvailableAmount( budgetId = budget.id)
-
-        if((budget.amount ?: 0.0) > available){
-            throw IllegalArgumentException(
-                "Budget melebihi dana yang tersedia"
-            )
-        }
-
         if(budget.id == null){
             budgetRepository.createBudget(budget)
         } else {

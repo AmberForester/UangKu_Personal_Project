@@ -150,27 +150,46 @@ fun BudgetDialog(
                         focusedLabelColor = mainSkyBlue,
                         unfocusedLabelColor = Color(0xFF64748B),
                         errorBorderColor = generalRed,
-                        errorLabelColor = generalRed,
-                        errorContainerColor = Color.White
                     )
                 )
 
                 Spacer(Modifier.height(8.dp))
+                val currentInput = amount.toDoubleOrNull() ?: 0.0
+                val isExceeding = currentInput > availableAmount
 
-                // 3. Banner Info Batas Anggaran
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFFF0F9FF),
-                    border = BorderStroke(1.dp, Color(0xFFBAE6FD)),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "💡 Maksimal alokasi tersedia: ${currencyFormatter(availableAmount)}",
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                        fontWeight = FontWeight.Medium,
-                        color = mainSkyBlue,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
-                    )
+                if(isExceeding){
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color(0xFFFFF7ED), // Oranye pastel lembut
+                        border = BorderStroke(1.dp, Color(0xFFFED7AA)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "⚠️ Alokasi melebihi pemasukan bulan ini (Tersedia: ${currencyFormatter(availableAmount)}). Tetap tersimpan sebagai rencana anggaran.",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp,
+                                lineHeight = 17.sp
+                            ),
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xFFC2410C), // Teks oranye gelap
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
+                        )
+                    }
+                } else {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color(0xFFF0F9FF),
+                        border = BorderStroke(1.dp, Color(0xFFBAE6FD)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "💡 Maksimal alokasi tersedia: ${currencyFormatter(availableAmount)}",
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                            fontWeight = FontWeight.Medium,
+                            color = mainSkyBlue,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(22.dp))
@@ -209,7 +228,7 @@ fun BudgetDialog(
 
                     Button(
                         onClick = onSave,
-                        enabled = errorMessage == null && amount.isNotBlank() && (amount.toDoubleOrNull() ?: 0.0) >= 0.0,
+                        enabled = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = mainSkyBlue,

@@ -28,11 +28,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.component.currencyMinimalFormatter
+import com.example.uangku.core.ui.component.currencyFormatter
+import com.example.uangku.core.ui.theme.lightSkyBlue
 import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.redComponent
 import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
-import com.example.uangku.core.ui.theme.lightSkyBlue
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.budget.domain.BudgetOverview
 
@@ -40,18 +41,12 @@ import com.example.uangku.feature.budget.domain.BudgetOverview
 fun BudgetOverviewItem(
     overview: BudgetOverview
 ) {
-    fun formatWithSpace(amount: Double): String {
-        val formatted = currencyMinimalFormatter(amount)
-        return if (formatted.startsWith("Rp") && !formatted.startsWith("Rp ")) {
-            formatted.replaceFirst("Rp", "Rp ")
-        } else {
-            formatted
-        }
-    }
 
     val allocationProgress = if (overview.income > 0) {
         (overview.allocated / overview.income).coerceIn(0.0, 1.0).toFloat()
-    } else {
+    } else if (overview.allocated > 0) {
+        1.0f
+    }else {
         0f
     }
 
@@ -59,6 +54,15 @@ fun BudgetOverviewItem(
         ((overview.allocated / overview.income) * 100).toInt()
     } else {
         0
+    }
+
+    val allocationText = when {
+        overview.income == 0.0 && overview.allocated > 0 ->
+            "Teralokasi ${currencyFormatter(overview.allocated)} (Belum ada pemasukan)"
+        overview.allocated  > overview.income ->
+            "Teralokasi $allocationPercent% dari total pemasukan (Melebihi pemasukan)"
+        else ->
+            "Teralokasi $allocationPercent% dari total pemasukan"
     }
 
     Card(
@@ -118,7 +122,7 @@ fun BudgetOverviewItem(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = formatWithSpace(overview.available),
+                        text = currencyFormatter(overview.available),
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontSize = 24.sp
                         ),
@@ -135,14 +139,18 @@ fun BudgetOverviewItem(
                             .fillMaxWidth()
                             .height(6.dp)
                             .clip(RoundedCornerShape(3.dp)),
-                        color = mainSkyBlue,
+                        color = if (overview.allocated > overview.income) {
+                            redComponent
+                        } else {
+                            mainSkyBlue
+                        },
                         trackColor = Color.White.copy(alpha = 0.5f)
                     )
 
                     Spacer(Modifier.height(6.dp))
 
                     Text(
-                        text = "Teralokasi $allocationPercent% dari total pemasukan",
+                        text = allocationText,
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontSize = 11.5.sp
                         ),
@@ -175,7 +183,7 @@ fun BudgetOverviewItem(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = "+${formatWithSpace(overview.income)}",
+                        text = "+${currencyFormatter(overview.income)}",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontSize = 15.sp
                         ),
@@ -207,7 +215,7 @@ fun BudgetOverviewItem(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = formatWithSpace(overview.allocated),
+                        text = currencyFormatter(overview.allocated),
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontSize = 15.sp
                         ),
