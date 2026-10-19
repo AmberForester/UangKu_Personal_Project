@@ -1,7 +1,9 @@
 package com.example.uangku.feature.budget.presentation
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +25,7 @@ import com.example.uangku.feature.budget.presentation.component.BudgetDialog
 import com.example.uangku.feature.budget.presentation.component.BudgetItem
 import com.example.uangku.feature.budget.presentation.component.BudgetOverviewItem
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BudgetScreen(
@@ -75,6 +78,7 @@ fun BudgetScreen(
     ShowDialog(viewModel)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowDialog(
     viewModel: BudgetViewModel
@@ -82,9 +86,9 @@ fun ShowDialog(
     val state = viewModel.state.collectAsState().value
     val selected = state.selectedBudget
     Log.d("check category on dialog", "categoryId: ${selected?.categoryId}")
-    if(state.showDialog){
+    if(state.showDialog && selected != null){
         BudgetDialog(
-            categoryName = selected!!.categoryName,
+            categoryName = selected.categoryName,
             amount = state.amount,
             onAmountChange = {
                 viewModel.onEvent(

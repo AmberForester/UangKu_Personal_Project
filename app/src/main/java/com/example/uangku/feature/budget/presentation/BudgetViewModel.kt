@@ -102,7 +102,7 @@ class BudgetViewModel(
 
             val budget = Budget(
                 id = selected?.budgetId,
-                amount = state.value.amount.toDouble(),
+                amount = state.value.amount.toDoubleOrNull() ?: 0.0,
                 categoryId = selected?.categoryId ?: 0,
                 categoryName = selected?.categoryName ?: "",
             )
@@ -162,7 +162,7 @@ class BudgetViewModel(
 
             val budget = Budget(
                 id = selectedBudget?.budgetId,
-                amount = state.value.amount.toDouble(),
+                amount = state.value.amount.toDoubleOrNull() ?: 0.0,
                 categoryId = selectedBudget?.categoryId ?: 0,
                 categoryName = selectedBudget?.categoryName ?: ""
             )

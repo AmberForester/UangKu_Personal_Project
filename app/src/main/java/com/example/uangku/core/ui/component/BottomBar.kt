@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
 
@@ -27,6 +28,18 @@ fun UangKuNavigationBar(
     navController: NavController,
     current: String
 ) {
+    val navigateToTab: (String) -> Unit = { route ->
+        if (!current.equals(route, ignoreCase = true)) {
+            navController.navigate(route) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
+
     Column {
         HorizontalDivider(
             color = Color(0xFFE2E8F0),
@@ -47,7 +60,7 @@ fun UangKuNavigationBar(
 
             NavigationBarItem(
                 selected = current.equals("dashboard", ignoreCase = true),
-                onClick = { navController.navigate("dashboard") },
+                onClick = { navigateToTab("dashboard") },
                 colors = itemColors,
                 label = {
                     if (current.equals("dashboard", ignoreCase = true)) {
@@ -69,7 +82,7 @@ fun UangKuNavigationBar(
 
             NavigationBarItem(
                 selected = current.equals("transaction", ignoreCase = true),
-                onClick = { navController.navigate("transaction") },
+                onClick = { navigateToTab("transaction") },
                 colors = itemColors,
                 label = {
                     if (current.equals("transaction", ignoreCase = true)) {
@@ -91,7 +104,7 @@ fun UangKuNavigationBar(
 
             NavigationBarItem(
                 selected = current.equals("budget", ignoreCase = true),
-                onClick = { navController.navigate("budget") },
+                onClick = { navigateToTab("budget") },
                 colors = itemColors,
                 label = {
                     if (current.equals("budget", ignoreCase = true)) {
@@ -113,7 +126,7 @@ fun UangKuNavigationBar(
 
             NavigationBarItem(
                 selected = current.equals("analysis", ignoreCase = true),
-                onClick = { navController.navigate("analysis") },
+                onClick = { navigateToTab("analysis") },
                 colors = itemColors,
                 label = {
                     if (current.equals("analysis", ignoreCase = true)) {
@@ -135,7 +148,7 @@ fun UangKuNavigationBar(
 
             NavigationBarItem(
                 selected = current.equals("settings", ignoreCase = true),
-                onClick = { navController.navigate("settings") },
+                onClick = { navigateToTab("settings") },
                 colors = itemColors,
                 label = {
                     if (current.equals("settings", ignoreCase = true)) {

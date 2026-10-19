@@ -112,7 +112,7 @@ class TransactionFormViewModel (
 
         }
     }
-
+    
     private fun loadTransaction(id: Long) {
         viewModelScope.launch {
             val transaction = transactionUseCase.getTransactionById(id) ?: return@launch
@@ -166,13 +166,14 @@ class TransactionFormViewModel (
 
     private fun createTransaction(){
         viewModelScope.launch {
+            val selectedCat = _formState.value.selectedCategory
             val transaction = Transaction(
                 date = _formState.value.date,
                 description = _formState.value.description,
                 type = _formState.value.type,
-                amount = _formState.value.amount.toDouble(),
-                categoryId = _formState.value.selectedCategory!!.id!!.toInt(),
-                categoryName = _formState.value.selectedCategory!!.name
+                amount = _formState.value.amount.toDoubleOrNull() ?: 0.0,
+                categoryId = selectedCat?.id?.toInt() ?: 0,
+                categoryName = selectedCat?.name ?: ""
             )
             transactionUseCase.createTransaction(transaction)
         }
@@ -180,14 +181,15 @@ class TransactionFormViewModel (
 
     private fun editTransaction() {
         viewModelScope.launch {
+            val selectedCat = _formState.value.selectedCategory
             val transaction = Transaction(
                 id = _formState.value.id,
                 date = _formState.value.date,
                 description = _formState.value.description,
                 type = _formState.value.type,
-                amount = _formState.value.amount.toDouble(),
-                categoryId = _formState.value.selectedCategory!!.id!!.toInt(),
-                categoryName = _formState.value.selectedCategory!!.name
+                amount = _formState.value.amount.toDoubleOrNull() ?: 0.0,
+                categoryId = selectedCat?.id?.toInt() ?: 0,
+                categoryName = selectedCat?.name ?: ""
             )
             transactionUseCase.updateTransaction(transaction)
         }
@@ -198,14 +200,15 @@ class TransactionFormViewModel (
 
     private fun deleteTransaction() {
         viewModelScope.launch {
+            val selectedCat = _formState.value.selectedCategory
             val transaction = Transaction(
                 id = _formState.value.id,
                 date = _formState.value.date,
                 description = _formState.value.description,
                 type = _formState.value.type,
-                amount = _formState.value.amount.toDouble(),
-                categoryId = _formState.value.selectedCategory!!.id!!.toInt(),
-                categoryName = _formState.value.selectedCategory!!.name
+                amount = _formState.value.amount.toDoubleOrNull() ?: 0.0,
+                categoryId = selectedCat?.id?.toInt() ?: 0,
+                categoryName = selectedCat?.name ?: ""
             )
             transactionUseCase.deleteTransaction(transaction)
         }
