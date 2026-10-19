@@ -20,9 +20,11 @@ import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.transaction.presentation.component.AddTransactionButton
+import com.example.uangku.feature.transaction.presentation.component.CategoryFilterBottomSheet
 import com.example.uangku.feature.transaction.presentation.component.PeriodSelector
 import com.example.uangku.feature.transaction.presentation.component.ShowTransactionSummary
 import com.example.uangku.feature.transaction.presentation.component.TransactionContent
+import com.example.uangku.feature.transaction.presentation.component.TransactionSearchBar
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -59,6 +61,27 @@ fun TransactionScreen(
         ) {
             Spacer(Modifier.height(8.dp))
 
+            // 1. Bar Pencarian dan Tombol Filter Kategori (Berdampingan)
+            TransactionSearchBar(
+                searchQuery = state.searchQuery,
+                onSearchQueryChange = {
+                    viewModel.onEvent(TransactionEvent.onSearchQueryChange(it))
+                },
+                onClearSearch = {
+                    viewModel.onEvent(TransactionEvent.onClearSearch)
+                },
+                selectedCategory = state.selectedCategory,
+                onOpenFilter = {
+                    viewModel.onEvent(TransactionEvent.onOpenFilterSheet)
+                },
+                onClearCategoryFilter = {
+                    viewModel.onEvent(TransactionEvent.onCategoryFilterSelect(null))
+                }
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            // 2. Pemilih Periode Bulanan
             state.financialPeriod?.let {
                 PeriodSelector(
                     onPreviousClick = {
@@ -77,6 +100,7 @@ fun TransactionScreen(
 
             Spacer(Modifier.height(14.dp))
 
+            // 3. Ringkasan Keuangan Bulanan (Tetap utuh, tidak terfilter)
             ShowTransactionSummary(
                 monthlySummary = state.monthlySummary,
                 overallSummary = state.overallSummary
@@ -84,11 +108,29 @@ fun TransactionScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            // 4. Daftar Transaksi (Mengikuti Filter & Pencarian)
             TransactionContent(
                 state = state,
+                onResetFilter = {
+                    viewModel.onEvent(TransactionEvent.onResetFilter)
+                },
                 onClick = { transaction ->
                     navController.navigate("transaction_form/${transaction.id}")
                 },
+            )
+        }
+
+        // 5. Modal Bottom Sheet Filter Kategori
+        if (state.isFilterSheetVisible) {
+            CategoryFilterBottomSheet(
+                categories = state.categories,
+                selectedCategory = state.selectedCategory,
+                onSelectCategory = {
+                    viewModel.onEvent(TransactionEvent.onCategoryFilterSelect(it))
+                },
+                onDismiss = {
+                    viewModel.onEvent(TransactionEvent.onDismissFilterSheet)
+                }
             )
         }
     }

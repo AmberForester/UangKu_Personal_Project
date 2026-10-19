@@ -1,8 +1,6 @@
 package com.example.uangku.feature.transaction.presentation
 
 import com.example.uangku.feature.category.domain.Category
-import com.example.uangku.core.domain.Type
-import java.util.Date
 
 sealed interface TransactionEvent {
 
@@ -13,5 +11,17 @@ sealed interface TransactionEvent {
     data object onPreviousMonth: TransactionEvent
 
     data object onNextMonth: TransactionEvent
+
+    data class onSearchQueryChange(val query: String) : TransactionEvent
+
+    data object onClearSearch : TransactionEvent
+
+    data class onCategoryFilterSelect(val category: Category?) : TransactionEvent
+
+    data object onOpenFilterSheet : TransactionEvent
+
+    data object onDismissFilterSheet : TransactionEvent
+
+    data object onResetFilter : TransactionEvent
 
 }
