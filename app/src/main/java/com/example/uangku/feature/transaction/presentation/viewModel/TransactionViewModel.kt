@@ -98,8 +98,6 @@ class TransactionViewModel (
                         )
                     }
                 }
-        }
-        viewModelScope.launch {
             periodUseCase.observeFinancialPeriod(
                 state.map { it.selectedMonth }
             )

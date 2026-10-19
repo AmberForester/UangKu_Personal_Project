@@ -74,7 +74,7 @@ fun UangKuNavGraph(
                 navArgument("id") { type = NavType.LongType }
             )
         ) { backStackEntry ->
-            val id = backStackEntry.arguments!!.getLong("id")
+            val id = backStackEntry.arguments?.getLong("id") ?: -1L
 
             TransactionFormScreen(
                 id = id,
