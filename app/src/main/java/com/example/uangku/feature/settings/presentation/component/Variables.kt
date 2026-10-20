@@ -1,6 +1,7 @@
 package com.example.uangku.feature.settings.presentation.component
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -12,6 +13,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.example.uangku.feature.backup.presentation.BackupEvent
 import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.google.android.gms.auth.api.identity.Identity
@@ -84,4 +86,23 @@ fun googleDriveAuthLauncher(
         }
 
     return googleDriveAuthorizationLauncher
+}
+
+@Composable
+fun applicationVersion(
+    context: Context
+): String {
+    val appVersion = remember {
+        val packageInfo = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.packageManager.getPackageInfo(
+                context.packageName,
+                PackageManager.PackageInfoFlags.of(0)
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            context.packageManager.getPackageInfo(context.packageName, 0)
+        }
+        packageInfo.versionName ?: "1.0.0"
+    }
+    return appVersion
 }

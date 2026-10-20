@@ -64,6 +64,7 @@ import com.example.uangku.feature.period.presentation.PeriodDialog
 import com.example.uangku.feature.period.presentation.PeriodEvent
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.settings.presentation.component.SettingsItem
+import com.example.uangku.feature.settings.presentation.component.applicationVersion
 import com.example.uangku.feature.settings.presentation.component.exportLauncher
 import com.example.uangku.feature.settings.presentation.component.googleDriveAuthLauncher
 import com.example.uangku.feature.settings.presentation.component.importLauncher
@@ -87,6 +88,7 @@ fun SettingsScreen(
 
     val exportLauncher = exportLauncher(backupViewModel)
     val importLauncher = importLauncher(backupViewModel)
+    val appVersion = applicationVersion(context)
 
     val googleDriveAuthorizationLauncher = googleDriveAuthLauncher(
         context = context,
@@ -329,7 +331,7 @@ fun SettingsScreen(
                 SettingsItem(
                     title = "UangKu",
                     description = "Aplikasi Catatan Keuangan Pribadi",
-                    trailingText = "v1.0.0",
+                    trailingText = appVersion,
                     showChevron = false,
                     icon = Icons.Default.Info,
                     iconBgColor = Color(0xFFF1F5F9),
