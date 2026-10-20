@@ -1,9 +1,17 @@
 package com.example.uangku.feature.transaction.presentation.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -33,9 +42,13 @@ import androidx.compose.ui.unit.sp
 import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormDatePicker(
@@ -48,37 +61,81 @@ fun FormDatePicker(
         SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
     }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = formatter.format(date),
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Tanggal Transaksi") },
-            shape = RoundedCornerShape(14.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = mainSkyBlue,
-                unfocusedBorderColor = secondaryBgSkyBlue,
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedLabelColor = mainSkyBlue,
-                unfocusedLabelColor = Color(0xFF64748B)
-            ),
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.DateRange,
-                    contentDescription = null,
-                    tint = mainSkyBlue
-                )
-            }
-        )
+    val today = remember { LocalDate.now() }
+    val yesterday = remember { today.minusDays(1) }
 
-        // Overlay transparan agar seluruh area field bisa diklik
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .clickable { showDialog = true }
-        )
+    val currentDate = remember(date) {
+        Instant.ofEpochMilli(date.time)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+    }
+
+    val isToday = currentDate == today
+    val isYesterday = currentDate == yesterday
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = formatter.format(date),
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Tanggal Transaksi") },
+                shape = RoundedCornerShape(14.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = mainSkyBlue,
+                    unfocusedBorderColor = secondaryBgSkyBlue,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedLabelColor = mainSkyBlue,
+                    unfocusedLabelColor = Color(0xFF64748B)
+                ),
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Outlined.DateRange,
+                        contentDescription = null,
+                        tint = mainSkyBlue
+                    )
+                }
+            )
+
+            // Overlay transparan agar seluruh area field bisa diklik
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clickable { showDialog = true }
+            )
+        }
+
+        Spacer(Modifier.height(8.dp))
+
+        // Tombol Tanggal Cepat (Hari Ini & Kemarin)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            QuickDateChip(
+                text = "Hari Ini",
+                isSelected = isToday,
+                onClick = {
+                    val dateInstance = Date.from(
+                        today.atStartOfDay(ZoneId.systemDefault()).toInstant()
+                    )
+                    onDateSelected(dateInstance)
+                }
+            )
+
+            QuickDateChip(
+                text = "Kemarin",
+                isSelected = isYesterday,
+                onClick = {
+                    val dateInstance = Date.from(
+                        yesterday.atStartOfDay(ZoneId.systemDefault()).toInstant()
+                    )
+                    onDateSelected(dateInstance)
+                }
+            )
+        }
     }
 
     if (showDialog) {
@@ -118,8 +175,15 @@ fun FormDatePicker(
             confirmButton = {
                 Button(
                     onClick = {
-                        pickerState.selectedDateMillis?.let {
-                            onDateSelected(Date(it))
+                        pickerState.selectedDateMillis?.let { utcMillis ->
+                            // Konversi UTC millis dari DatePicker ke LocalDate, lalu kembalikan ke Date lokal
+                            val localDate = Instant.ofEpochMilli(utcMillis)
+                                .atZone(ZoneId.of("UTC"))
+                                .toLocalDate()
+                            val localDateInstance = Date.from(
+                                localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()
+                            )
+                            onDateSelected(localDateInstance)
                         }
                         showDialog = false
                     },
@@ -158,5 +222,30 @@ fun FormDatePicker(
                 colors = customDatePickerColors
             )
         }
+    }
+}
+
+@Composable
+private fun QuickDateChip(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = if (isSelected) Color(0xFFE0F2FE) else Color(0xFFF8FAFC),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (isSelected) mainSkyBlue else secondaryBgSkyBlue
+        ),
+        modifier = Modifier.clickable { onClick() }
+    ) {
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            color = if (isSelected) mainSkyBlue else Color(0xFF64748B),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+        )
     }
 }

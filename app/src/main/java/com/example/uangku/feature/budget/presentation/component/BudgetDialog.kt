@@ -1,6 +1,7 @@
 package com.example.uangku.feature.budget.presentation.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -164,16 +165,51 @@ fun BudgetDialog(
                         border = BorderStroke(1.dp, Color(0xFFFED7AA)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "⚠️ Alokasi melebihi pemasukan bulan ini (Tersedia: ${currencyFormatter(availableAmount)}). Tetap tersimpan sebagai rencana anggaran.",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                fontSize = 12.sp,
-                                lineHeight = 17.sp
-                            ),
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFFC2410C), // Teks oranye gelap
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = "⚠️ Alokasi melebihi pemasukan bulan ini. Tetap tersimpan sebagai rencana anggaran.",
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    fontSize = 12.sp,
+                                    lineHeight = 17.sp
+                                ),
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFFC2410C)
+                            )
+                            if (availableAmount > 0) {
+                                Spacer(Modifier.height(8.dp))
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "Tersedia: ${currencyFormatter(availableAmount)}",
+                                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFFC2410C),
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Surface(
+                                        shape = RoundedCornerShape(8.dp),
+                                        color = Color(0xFFEA580C),
+                                        modifier = Modifier.clickable {
+                                            onAmountChange(availableAmount.toLong().toString())
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "Gunakan Semua",
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.White,
+                                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 } else {
                     Surface(
@@ -182,13 +218,37 @@ fun BudgetDialog(
                         border = BorderStroke(1.dp, Color(0xFFBAE6FD)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "💡 Maksimal alokasi tersedia: ${currencyFormatter(availableAmount)}",
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            fontWeight = FontWeight.Medium,
-                            color = mainSkyBlue,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 12.dp, top = 6.dp, end = 6.dp, bottom = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "💡 Tersedia: ${currencyFormatter(availableAmount)}",
+                                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                                fontWeight = FontWeight.Medium,
+                                color = mainSkyBlue,
+                                modifier = Modifier.weight(1f)
+                            )
+                            if (availableAmount > 0) {
+                                Surface(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = mainSkyBlue,
+                                    modifier = Modifier.clickable {
+                                        onAmountChange(availableAmount.toLong().toString())
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Gunakan Semua",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 

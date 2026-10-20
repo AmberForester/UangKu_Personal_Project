@@ -48,6 +48,7 @@ import com.example.uangku.core.ui.component.toDateFormat
 import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
+import com.example.uangku.core.ui.theme.redComponent
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.domain.Transaction
 import com.example.uangku.feature.transaction.presentation.TransactionState
@@ -81,7 +82,10 @@ fun TransactionContent(
                 val firstDate = transactions.first().date
 
                 item {
-                    TransactionDateHeader(date = firstDate)
+                    TransactionDateHeader(
+                        date = firstDate,
+                        transactions = transactions
+                    )
                 }
 
                 item {
@@ -209,18 +213,60 @@ fun TransactionItem(
 
 @Composable
 fun TransactionDateHeader(
-    date: Date
+    date: Date,
+    transactions: List<Transaction>
 ) {
-    Text(
-        text = formatHeaderDate(date),
-        style = MaterialTheme.typography.labelLarge.copy(
-            fontSize = 12.5.sp
-        ),
-        fontWeight = FontWeight.Bold,
-        color = Color(0xFF64748B),
+    val dailyIncome = transactions
+        .filter { it.type == Type.INCOME }
+        .sumOf { it.amount }
+
+    val dailyExpense = transactions
+        .filter { it.type == Type.EXPENSE }
+        .sumOf { it.amount }
+
+    Row(
         modifier = Modifier
-            .padding(start = 24.dp, bottom = 6.dp)
-    )
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // 1. Teks Tanggal / Hari
+        Text(
+            text = formatHeaderDate(date),
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontSize = 12.sp
+            ),
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF64748B),
+            modifier = Modifier.weight(1f, fill = false)
+        )
+
+        Spacer(Modifier.width(8.dp))
+
+        // 2. Ringkasan Pemasukan & Pengeluaran Harian
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            if (dailyIncome > 0) {
+                Text(
+                    text = "+${currencyMinimalFormatter(dailyIncome)}",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = successGreen
+                )
+            }
+            if (dailyExpense > 0) {
+                Text(
+                    text = "-${currencyMinimalFormatter(dailyExpense)}",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = redComponent
+                )
+            }
+        }
+    }
 }
 
 private fun formatHeaderDate(date: Date): String {
