@@ -77,7 +77,7 @@ fun SettingsItem(
                     fontSize = 15.sp
                 ),
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF0F172A),
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -95,7 +95,7 @@ fun SettingsItem(
                     color = when {
                         isConnected -> successGreen
                         isDisconnected -> generalRed
-                        else -> Color(0xFF64748B)
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
                     },
                     fontWeight = if (isConnected || isDisconnected) FontWeight.Medium else FontWeight.Normal,
                     maxLines = 1,
@@ -110,7 +110,7 @@ fun SettingsItem(
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 13.sp
                 ),
-                color = Color(0xFF64748B),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 6.dp)
             )
         }
@@ -119,7 +119,7 @@ fun SettingsItem(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = Color(0xFF94A3B8),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
         }

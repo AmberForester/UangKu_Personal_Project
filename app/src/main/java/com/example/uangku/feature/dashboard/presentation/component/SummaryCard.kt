@@ -3,6 +3,7 @@ package com.example.uangku.feature.dashboard.presentation.component
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,10 +42,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
-import com.example.uangku.core.ui.theme.lightSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.mainSkyBlue
+import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import com.example.uangku.feature.transaction.domain.TransactionSummary
@@ -52,11 +52,21 @@ import com.example.uangku.feature.transaction.domain.TransactionSummary
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SummaryCard(
+    modifier: Modifier = Modifier,
     summary: TransactionSummary,
     financialPeriod: FinancialPeriod? = null,
-    modifier: Modifier = Modifier
 ) {
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
+
+    val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF0369A1), Color(0xFF0C4A6E))
+    } else {
+        listOf(
+            mainSkyBlue.copy(0.7f),
+            secondaryLightSkyBlue
+        )
+    }
 
     Box(
         modifier = modifier
@@ -67,10 +77,15 @@ fun SummaryCard(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 14.dp), // Memberikan ruang agar badge bisa mengambang di atas bibir kartu
+                .padding(top = 14.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = RoundedCornerShape(20.dp)
+                ),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
@@ -84,10 +99,7 @@ fun SummaryCard(
                         .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                         .background(
                             Brush.linearGradient(
-                                colors = listOf(
-                                    mainSkyBlue.copy(0.7f),
-                                    secondaryLightSkyBlue
-                                )
+                                colors = gradientColors
                             )
                         )
                 ) {
@@ -98,7 +110,7 @@ fun SummaryCard(
                             .align(Alignment.TopEnd)
                             .offset(x = 20.dp, y = (-10).dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.25f))
+                            .background(Color.White.copy(alpha = if (isDark) 0.1f else 0.25f))
                     )
 
                     Row(
@@ -114,7 +126,7 @@ fun SummaryCard(
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontSize = 14.sp
                                 ),
-                                color = Color(0xFF334155),
+                                color = if (isDark) Color(0xFFBAE6FD) else Color(0xFF334155),
                                 fontWeight = FontWeight.Normal
                             )
 
@@ -130,7 +142,7 @@ fun SummaryCard(
                                     fontSize = 24.sp
                                 ),
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF0F172A)
+                                color = if (isDark) Color.White else Color(0xFF0F172A)
                             )
                         }
 
@@ -141,18 +153,18 @@ fun SummaryCard(
                             Icon(
                                 imageVector = if (isBalanceVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                 contentDescription = if (isBalanceVisible) "Sembunyikan Saldo" else "Tampilkan Saldo",
-                                tint = Color(0xFF334155),
+                                tint = if (isDark) Color(0xFFBAE6FD) else Color(0xFF334155),
                                 modifier = Modifier.size(22.dp)
                             )
                         }
                     }
                 }
 
-                // Bagian Bawah: Putih (Pemasukan Bulanan & Pengeluaran Bulanan)
+                // Bagian Bawah: (Pemasukan Bulanan & Pengeluaran Bulanan)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 20.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -165,7 +177,7 @@ fun SummaryCard(
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontSize = 12.sp
                             ),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                         Spacer(Modifier.height(4.dp))
@@ -189,7 +201,7 @@ fun SummaryCard(
                         modifier = Modifier
                             .height(36.dp)
                             .padding(horizontal = 12.dp),
-                        color = Color(0xFFE2E8F0)
+                        color = MaterialTheme.colorScheme.outline
                     )
 
                     // Kolom Pengeluaran Bulanan
@@ -201,7 +213,7 @@ fun SummaryCard(
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontSize = 12.sp
                             ),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                         Spacer(Modifier.height(4.dp))

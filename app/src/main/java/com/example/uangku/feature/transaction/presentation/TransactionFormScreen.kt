@@ -48,8 +48,6 @@ import androidx.navigation.NavController
 import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.component.ThousandsSeparatorVisualTransformation
 import com.example.uangku.core.ui.component.TopAppBar
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.presentation.component.FormCategoryDropdown
@@ -107,11 +105,11 @@ fun TransactionFormScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = secondaryBgSkyBlue,
+                        color = MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(20.dp)
                     ),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(
@@ -122,7 +120,7 @@ fun TransactionFormScreen(
                     Text(
                         text = "Nominal Transaksi",
                         style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
-                        color = Color(0xFF64748B),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium
                     )
 
@@ -164,7 +162,7 @@ fun TransactionFormScreen(
                                         style = MaterialTheme.typography.headlineMedium.copy(
                                             fontSize = 28.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = Color(0xFFCBD5E1)
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                                         )
                                     )
                                 }
@@ -183,11 +181,11 @@ fun TransactionFormScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = secondaryBgSkyBlue,
+                        color = MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(20.dp)
                     ),
                 shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column(
@@ -225,12 +223,14 @@ fun TransactionFormScreen(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = mainSkyBlue,
-                            unfocusedBorderColor = secondaryBgSkyBlue,
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedLabelColor = mainSkyBlue,
-                            unfocusedLabelColor = Color(0xFF64748B)
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                            focusedLabelColor = MaterialTheme.colorScheme.primary,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
                 }
@@ -255,8 +255,8 @@ fun TransactionFormScreen(
                 enabled = isSaveEnabled,
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = mainSkyBlue,
-                    contentColor = Color.White,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     disabledContainerColor = Color(0xFFCBD5E1),
                     disabledContentColor = Color.White
                 )

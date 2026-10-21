@@ -30,22 +30,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.greenBg
 import com.example.uangku.core.ui.theme.GreenComponent
+import com.example.uangku.core.ui.theme.greenBg
+import com.example.uangku.core.ui.theme.lightOrangeBg
+import com.example.uangku.core.ui.theme.lightOrangeComponent
 import com.example.uangku.core.ui.theme.orangeBg
 import com.example.uangku.core.ui.theme.orangeComponent
 import com.example.uangku.core.ui.theme.redBg
 import com.example.uangku.core.ui.theme.redComponent
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
-import com.example.uangku.core.ui.theme.lightOrangeBg
-import com.example.uangku.core.ui.theme.lightOrangeComponent
 import com.example.uangku.feature.budget.domain.BudgetSummary
 
 @Composable
@@ -62,6 +59,8 @@ fun BudgetItem(
         }
     }
 
+    val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+
     val progressColor = when {
         budget.isOverBudget -> redComponent
         budget.progress >= 0.75f -> orangeComponent
@@ -69,11 +68,15 @@ fun BudgetItem(
         else -> GreenComponent
     }
 
-    val boxBgColor = when {
-        budget.isOverBudget -> redBg
-        budget.progress >= 0.75f -> orangeBg
-        budget.progress >= 0.5f -> lightOrangeBg
-        else -> greenBg
+    val boxBgColor = if (isDark) {
+        progressColor.copy(alpha = 0.2f)
+    } else {
+        when {
+            budget.isOverBudget -> redBg
+            budget.progress >= 0.75f -> orangeBg
+            budget.progress >= 0.5f -> lightOrangeBg
+            else -> greenBg
+        }
     }
 
     Card(
@@ -81,12 +84,12 @@ fun BudgetItem(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = secondaryBgSkyBlue,
+                color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(18.dp)
             ),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -107,7 +110,7 @@ fun BudgetItem(
                         fontSize = 16.sp
                     ),
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A),
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -143,7 +146,7 @@ fun BudgetItem(
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 contentDescription = "Edit Anggaran",
-                                tint = Color(0xFF64748B),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(18.dp)
                             )
                         }
@@ -164,7 +167,7 @@ fun BudgetItem(
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 12.5.sp
                         ),
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     OutlinedButton(
@@ -172,11 +175,11 @@ fun BudgetItem(
                         shape = RoundedCornerShape(20.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = mainSkyBlue
+                            contentColor = MaterialTheme.colorScheme.primary
                         ),
                         border = androidx.compose.foundation.BorderStroke(
                             width = 1.dp,
-                            color = mainSkyBlue.copy(alpha = 0.5f)
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                         ),
                         modifier = Modifier.height(34.dp)
                     ) {
@@ -204,7 +207,7 @@ fun BudgetItem(
                         .height(8.dp)
                         .clip(RoundedCornerShape(4.dp)),
                     color = progressColor,
-                    trackColor = secondaryBgSkyBlue
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -220,7 +223,7 @@ fun BudgetItem(
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 12.sp
                         ),
-                        color = Color(0xFF64748B),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -237,7 +240,7 @@ fun BudgetItem(
                             fontSize = 12.sp
                         ),
                         fontWeight = FontWeight.SemiBold,
-                        color = if (budget.isOverBudget) redComponent else Color(0xFF334155),
+                        color = if (budget.isOverBudget) redComponent else MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

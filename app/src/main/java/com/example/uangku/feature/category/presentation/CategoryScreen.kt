@@ -15,7 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,7 +77,7 @@ fun CategoryScreen(
                 text = "${state.filteredCategory.size} Kategori $typeLabel",
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.5.sp),
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF64748B),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 24.dp, bottom = 8.dp)
             )
 

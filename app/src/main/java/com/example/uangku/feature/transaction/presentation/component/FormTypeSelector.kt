@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 
@@ -38,16 +37,21 @@ fun FormTypeSelector(
     onTypeSelected: (Type) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+
+    val expenseBg = if (isDark) generalRed.copy(alpha = 0.2f) else Color(0xFFFEE2E2)
+    val incomeBg = if (isDark) successGreen.copy(alpha = 0.2f) else Color(0xFFDCFCE7)
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = secondaryBgSkyBlue,
+                color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(18.dp)
             ),
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
@@ -61,7 +65,7 @@ fun FormTypeSelector(
                 title = "Pengeluaran",
                 icon = Icons.Default.ArrowUpward,
                 isSelected = selectedType == Type.EXPENSE,
-                selectedBgColor = Color(0xFFFEE2E2),
+                selectedBgColor = expenseBg,
                 selectedTextColor = generalRed,
                 onClick = { onTypeSelected(Type.EXPENSE) },
                 modifier = Modifier.weight(1f)
@@ -72,7 +76,7 @@ fun FormTypeSelector(
                 title = "Pemasukan",
                 icon = Icons.Default.ArrowDownward,
                 isSelected = selectedType == Type.INCOME,
-                selectedBgColor = Color(0xFFDCFCE7),
+                selectedBgColor = incomeBg,
                 selectedTextColor = successGreen,
                 onClick = { onTypeSelected(Type.INCOME) },
                 modifier = Modifier.weight(1f)
@@ -107,7 +111,7 @@ private fun TypeTabItem(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = if (isSelected) selectedTextColor else Color(0xFF64748B),
+                tint = if (isSelected) selectedTextColor else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(17.dp)
             )
 
@@ -119,7 +123,7 @@ private fun TypeTabItem(
                     fontSize = 14.sp
                 ),
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                color = if (isSelected) selectedTextColor else Color(0xFF64748B)
+                color = if (isSelected) selectedTextColor else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

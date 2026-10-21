@@ -12,17 +12,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = darkSkyBlue,
+    onPrimary = darkBgSlate,
+    primaryContainer = darkSkyBlueContainer,
+    onPrimaryContainer = Color(0xFFBAE6FD),
+
+    background = darkBgSlate,
+    onBackground = darkTextPrimary,
+
+    surface = darkSurfaceSlate,
+    onSurface = darkTextPrimary,
+    surfaceVariant = darkBorderSlate,
+    onSurfaceVariant = darkTextSecondary,
+
+    outline = darkBorderSlate,
+    outlineVariant = darkSurfaceSlate
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
+    primary = mainSkyBlue,
+    onPrimary = Color.White,
+    primaryContainer = secondaryBgSkyBlue,
+    onPrimaryContainer = mainSkyBlue,
+
     background = mainBgSkyBlue,
-    surface = Color.White
+    onBackground = Color(0xFF0F172A),
+
+    surface = Color.White,
+    onSurface = Color(0xFF0F172A),
+    surfaceVariant = Color(0xFFF1F5F9),
+    onSurfaceVariant = Color(0xFF64748B),
+
+    outline = secondaryBgSkyBlue,
+    outlineVariant = Color(0xFFF1F5F9)
 )
 
 @Composable
@@ -48,3 +70,4 @@ fun UangKuTheme(
         content = content
     )
 }
+

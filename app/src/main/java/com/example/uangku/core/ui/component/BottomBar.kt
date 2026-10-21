@@ -9,19 +9,17 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
 
 @Composable
 fun UangKuNavigationBar(
@@ -42,20 +40,20 @@ fun UangKuNavigationBar(
 
     Column {
         HorizontalDivider(
-            color = Color(0xFFE2E8F0),
+            color = MaterialTheme.colorScheme.outline,
             thickness = 0.8.dp
         )
 
         NavigationBar(
-            containerColor = Color.White,
+            containerColor = MaterialTheme.colorScheme.surface,
             tonalElevation = 0.dp
         ) {
             val itemColors = NavigationBarItemDefaults.colors(
-                selectedIconColor = mainSkyBlue,
-                selectedTextColor = mainSkyBlue,
-                unselectedIconColor = Color(0xFF94A3B8),
-                unselectedTextColor = Color(0xFF94A3B8),
-                indicatorColor = secondaryLightSkyBlue.copy(alpha = 0.45f)
+                selectedIconColor = MaterialTheme.colorScheme.primary,
+                selectedTextColor = MaterialTheme.colorScheme.primary,
+                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.65f)
             )
 
             NavigationBarItem(

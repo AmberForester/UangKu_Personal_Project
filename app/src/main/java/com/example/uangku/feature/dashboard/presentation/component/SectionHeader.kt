@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.mainSkyBlue
 
 @Composable
 fun SectionHeader(
@@ -35,7 +34,7 @@ fun SectionHeader(
             Text(
                 text = "Lihat Semua",
                 style = MaterialTheme.typography.bodySmall,
-                color = mainSkyBlue,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 13.sp
             )
         }

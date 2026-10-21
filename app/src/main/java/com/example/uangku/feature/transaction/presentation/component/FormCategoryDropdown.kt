@@ -18,6 +18,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -34,8 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.category.domain.Category
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,17 +64,19 @@ fun FormCategoryDropdown(
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.Label,
                     contentDescription = null,
-                    tint = if (selectedCategory != null) mainSkyBlue else Color(0xFF94A3B8),
+                    tint = if (selectedCategory != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
                 )
             },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = mainSkyBlue,
-                unfocusedBorderColor = secondaryBgSkyBlue,
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedLabelColor = mainSkyBlue,
-                unfocusedLabelColor = Color(0xFF64748B)
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
             ),
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
@@ -86,8 +87,8 @@ fun FormCategoryDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             shape = RoundedCornerShape(16.dp),
-            containerColor = Color.White,
-            border = BorderStroke(1.dp, secondaryBgSkyBlue),
+            containerColor = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shadowElevation = 6.dp
         ) {
             if (categories.isEmpty()) {
@@ -95,8 +96,8 @@ fun FormCategoryDropdown(
                     text = {
                         Text(
                             text = "Belum ada kategori",
-                            style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFF94A3B8)
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
                     onClick = { expanded = false }
@@ -109,20 +110,20 @@ fun FormCategoryDropdown(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
-                                color = if (isSelected) Color(0xFFF0F9FF) else Color.Transparent
+                                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                             ),
                         contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp),
                         leadingIcon = {
                             Surface(
                                 shape = CircleShape,
-                                color = if (isSelected) Color(0xFFE0F2FE) else Color(0xFFF1F5F9),
+                                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
                                 modifier = Modifier.size(30.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Outlined.Label,
                                         contentDescription = null,
-                                        tint = if (isSelected) mainSkyBlue else Color(0xFF64748B),
+                                        tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.size(16.dp)
                                     )
                                 }
@@ -133,7 +134,7 @@ fun FormCategoryDropdown(
                                 text = category.name,
                                 fontSize = 14.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                color = if (isSelected) Color(0xFF0F172A) else Color(0xFF334155)
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                             )
                         },
                         trailingIcon = {
@@ -141,7 +142,7 @@ fun FormCategoryDropdown(
                                 Icon(
                                     imageVector = Icons.Default.Check,
                                     contentDescription = "Selected",
-                                    tint = mainSkyBlue,
+                                    tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(18.dp)
                                 )
                             }
@@ -154,7 +155,7 @@ fun FormCategoryDropdown(
 
                     if (index < categories.lastIndex) {
                         HorizontalDivider(
-                            color = Color(0xFFF1F5F9),
+                            color = MaterialTheme.colorScheme.outline,
                             thickness = 1.dp,
                             modifier = Modifier.padding(horizontal = 14.dp)
                         )

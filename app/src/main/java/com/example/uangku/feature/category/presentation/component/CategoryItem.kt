@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
-import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.category.domain.Category
@@ -67,14 +66,14 @@ fun CategoryItem(
             text = category.name,
             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 15.sp),
             fontWeight = FontWeight.SemiBold,
-            color = Color(0xFF0F172A),
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )
 
         // Tombol Edit
         Surface(
             shape = CircleShape,
-            color = Color(0xFFF0F9FF),
+            color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.size(34.dp)
         ) {
             IconButton(
@@ -84,7 +83,7 @@ fun CategoryItem(
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Edit Kategori",
-                    tint = mainSkyBlue,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(17.dp)
                 )
             }
@@ -95,7 +94,7 @@ fun CategoryItem(
         // Tombol Hapus
         Surface(
             shape = CircleShape,
-            color = Color(0xFFFEE2E2),
+            color = generalRed.copy(alpha = 0.15f),
             modifier = Modifier.size(34.dp)
         ) {
             IconButton(

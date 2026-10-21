@@ -24,15 +24,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.domain.TransactionSummary
@@ -48,11 +45,11 @@ fun ShowTransactionSummary(
             .padding(horizontal = 20.dp)
             .border(
                 width = 1.dp,
-                color = secondaryBgSkyBlue,
+                color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(20.dp)
             ),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -77,7 +74,7 @@ fun ShowTransactionSummary(
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontSize = 12.sp
                             ),
-                            color = Color(0xFF64748B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium
                         )
 
@@ -85,13 +82,13 @@ fun ShowTransactionSummary(
 
                         Surface(
                             shape = RoundedCornerShape(6.dp),
-                            color = Color(0xFFE0F2FE)
+                            color = MaterialTheme.colorScheme.primaryContainer
                         ) {
                             Text(
                                 text = "Total",
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = mainSkyBlue,
+                                color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             )
                         }
@@ -105,7 +102,7 @@ fun ShowTransactionSummary(
                             fontSize = 19.sp
                         ),
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0F172A)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -113,7 +110,7 @@ fun ShowTransactionSummary(
             Spacer(Modifier.height(12.dp))
 
             HorizontalDivider(
-                color = Color(0xFFF1F5F9),
+                color = MaterialTheme.colorScheme.outline,
                 thickness = 1.dp,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -147,7 +144,7 @@ fun ShowTransactionSummary(
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontSize = 11.sp
                             ),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -184,7 +181,7 @@ fun ShowTransactionSummary(
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontSize = 11.sp
                             ),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -211,7 +208,7 @@ fun ShowTransactionSummary(
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 11.sp
                         ),
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     Spacer(Modifier.height(3.dp))
@@ -222,7 +219,7 @@ fun ShowTransactionSummary(
                             fontSize = 13.sp
                         ),
                         fontWeight = FontWeight.Bold,
-                        color = if (monthlySummary.balance >= 0) mainSkyBlue else generalRed,
+                        color = if (monthlySummary.balance >= 0) MaterialTheme.colorScheme.primary else generalRed,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

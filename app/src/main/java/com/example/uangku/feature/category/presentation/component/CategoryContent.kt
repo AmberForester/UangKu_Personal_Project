@@ -26,13 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.category.domain.Category
 import com.example.uangku.feature.category.presentation.CategoryState
 
@@ -55,11 +52,11 @@ fun CategoryContent(
                         .fillMaxWidth()
                         .border(
                             width = 1.dp,
-                            color = secondaryBgSkyBlue,
+                            color = MaterialTheme.colorScheme.outline,
                             shape = RoundedCornerShape(20.dp)
                         ),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
                     Column(
@@ -76,7 +73,7 @@ fun CategoryContent(
 
                             if (index < state.filteredCategory.lastIndex) {
                                 HorizontalDivider(
-                                    color = Color(0xFFF1F5F9),
+                                    color = MaterialTheme.colorScheme.outline,
                                     thickness = 1.dp,
                                     modifier = Modifier.padding(start = 68.dp, end = 16.dp)
                                 )
@@ -102,14 +99,14 @@ fun CategoryEmptyState() {
     ) {
         Surface(
             shape = CircleShape,
-            color = Color(0xFFE0F2FE),
+            color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.size(72.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Outlined.FolderOpen,
                     contentDescription = null,
-                    tint = mainSkyBlue,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(36.dp)
                 )
             }
@@ -121,7 +118,7 @@ fun CategoryEmptyState() {
             text = "Belum Ada Kategori",
             style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF0F172A)
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(Modifier.height(6.dp))
@@ -129,7 +126,7 @@ fun CategoryEmptyState() {
         Text(
             text = "Ketuk tombol + di bawah untuk menambahkan kategori baru pada pos ini.",
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-            color = Color(0xFF64748B),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     }

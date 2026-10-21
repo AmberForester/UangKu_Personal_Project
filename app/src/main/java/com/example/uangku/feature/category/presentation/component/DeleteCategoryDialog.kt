@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,8 +47,8 @@ fun DeleteCategoryDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
-            border = BorderStroke(1.dp, secondaryBgSkyBlue),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -63,7 +62,7 @@ fun DeleteCategoryDialog(
                 ) {
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFFFEE2E2),
+                        color = generalRed.copy(alpha = 0.15f),
                         modifier = Modifier.size(42.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
@@ -83,12 +82,12 @@ fun DeleteCategoryDialog(
                             text = "Hapus Kategori",
                             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "Konfirmasi penghapusan",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -99,7 +98,7 @@ fun DeleteCategoryDialog(
                     text = "Apakah kamu yakin ingin menghapus kategori \"$name\"?",
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF1E293B)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(Modifier.height(6.dp))
@@ -107,7 +106,7 @@ fun DeleteCategoryDialog(
                 Text(
                     text = "Menghapus kategori ini juga akan menghapus budget dan seluruh riwayat transaksi yang terkait dengan kategori \"$name\". Tindakan ini tidak dapat dibatalkan.",
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 18.sp
                 )
 
@@ -126,7 +125,7 @@ fun DeleteCategoryDialog(
                     ) {
                         Text(
                             text = "Batal",
-                            color = Color(0xFF64748B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         )

@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -47,10 +48,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.greenBg
 import com.example.uangku.core.ui.theme.GreenComponent
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
+import com.example.uangku.core.ui.theme.ThemeMode
+import com.example.uangku.core.ui.theme.greenBg
 import com.example.uangku.core.ui.theme.redBg
 import com.example.uangku.core.ui.theme.redComponent
 import com.example.uangku.feature.backup.presentation.BackupEffect
@@ -64,6 +64,7 @@ import com.example.uangku.feature.period.presentation.PeriodDialog
 import com.example.uangku.feature.period.presentation.PeriodEvent
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.settings.presentation.component.SettingsItem
+import com.example.uangku.feature.settings.presentation.component.ThemeSelectionDialog
 import com.example.uangku.feature.settings.presentation.component.applicationVersion
 import com.example.uangku.feature.settings.presentation.component.exportLauncher
 import com.example.uangku.feature.settings.presentation.component.googleDriveAuthLauncher
@@ -76,11 +77,13 @@ fun SettingsScreen(
     navController: NavController,
     periodViewModel: PeriodViewModel,
     backupViewModel: BackupViewModel,
-    googleDriveAuth: GoogleDriveAuth
+    googleDriveAuth: GoogleDriveAuth,
+    settingsViewModel: SettingsViewModel
 ) {
     val context = LocalContext.current
     val periodState by periodViewModel.state.collectAsState()
     val backupState by backupViewModel.state.collectAsState()
+    val settingsState by settingsViewModel.state.collectAsState()
     var showPeriodDialog by remember { mutableStateOf(false) }
     var showRestoreConfirmationDialog by remember { mutableStateOf(false) }
     var showDisconnectDriveDialog by remember { mutableStateOf(false) }
@@ -96,6 +99,10 @@ fun SettingsScreen(
             backupViewModel.onEvent(BackupEvent.CheckAuth)
         }
     )
+
+//    val currentTheme by themeDataStore.themeMode.collectAsState(initial = ThemeMode.LIGHT)
+    val currentTheme = settingsState.themeMode
+    var showThemeDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         periodViewModel.onEvent(PeriodEvent.onScreenOpen)
@@ -186,11 +193,11 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = secondaryBgSkyBlue,
+                        color = MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(18.dp)
                     ),
                 shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column {
@@ -199,13 +206,13 @@ fun SettingsScreen(
                         description = "Atur tanggal awal periode",
                         trailingText = "Tgl ${periodState.selectedStartDay}",
                         icon = Icons.Default.DateRange,
-                        iconBgColor = Color(0xFFE0F2FE),
-                        iconTintColor = mainSkyBlue,
+                        iconBgColor = MaterialTheme.colorScheme.primaryContainer,
+                        iconTintColor = MaterialTheme.colorScheme.primary,
                         onClick = { showPeriodDialog = true }
                     )
 
                     HorizontalDivider(
-                        color = Color(0xFFF1F5F9),
+                        color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 68.dp)
                     )
 
@@ -217,6 +224,22 @@ fun SettingsScreen(
                         iconTintColor = Color(0xFFFB6400),
                         onClick = {
                             navController.navigate("category")
+                        }
+                    )
+
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.padding(start = 68.dp)
+                    )
+
+                    SettingsItem(
+                        title = "Tema Aplikasi",
+                        description = currentTheme?.label ?: "",
+                        icon = Icons.Outlined.DarkMode,
+                        iconBgColor = Color(0xFFEDE9FE),
+                        iconTintColor = Color(0xFF7C3AED),
+                        onClick = {
+                            showThemeDialog = true
                         }
                     )
                 }
@@ -232,11 +255,11 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = secondaryBgSkyBlue,
+                        color = MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(18.dp)
                     ),
                 shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 Column {
@@ -272,7 +295,7 @@ fun SettingsScreen(
                     )
 
                     HorizontalDivider(
-                        color = Color(0xFFF1F5F9),
+                        color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 68.dp)
                     )
 
@@ -282,7 +305,7 @@ fun SettingsScreen(
                     )
 
                     HorizontalDivider(
-                        color = Color(0xFFF1F5F9),
+                        color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 68.dp)
                     )
 
@@ -296,7 +319,7 @@ fun SettingsScreen(
                     )
 
                     HorizontalDivider(
-                        color = Color(0xFFF1F5F9),
+                        color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 68.dp)
                     )
 
@@ -321,11 +344,11 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = secondaryBgSkyBlue,
+                        color = MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(18.dp)
                     ),
                 shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
                 SettingsItem(
@@ -334,8 +357,8 @@ fun SettingsScreen(
                     trailingText = appVersion,
                     showChevron = false,
                     icon = Icons.Default.Info,
-                    iconBgColor = Color(0xFFF1F5F9),
-                    iconTintColor = Color(0xFF64748B),
+                    iconBgColor = MaterialTheme.colorScheme.surfaceVariant,
+                    iconTintColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     onClick = {}
                 )
             }
@@ -372,6 +395,16 @@ fun SettingsScreen(
                 }
             )
         }
+
+        ThemeSelectionDialog(
+            showDialog = showThemeDialog,
+            currentTheme = currentTheme ?: ThemeMode.LIGHT,
+            onThemeSelected = { selected ->
+                settingsViewModel.onEvent(SettingsEvent.OnThemeSelected(selected))
+                showThemeDialog = false
+            },
+            onDismiss = { showThemeDialog = false }
+        )
     }
 }
 
@@ -383,7 +416,7 @@ private fun SectionLabel(text: String) {
             fontSize = 12.5.sp
         ),
         fontWeight = FontWeight.Bold,
-        color = Color(0xFF64748B),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
     )
 }

@@ -32,7 +32,6 @@ import com.example.uangku.core.ui.component.currencyFormatter
 import com.example.uangku.core.ui.theme.lightSkyBlue
 import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.redComponent
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.budget.domain.BudgetOverview
@@ -65,17 +64,24 @@ fun BudgetOverviewItem(
             "Teralokasi $allocationPercent% dari total pemasukan"
     }
 
+    val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+    val gradientColors = if (isDark) {
+        listOf(Color(0xFF075985), Color(0xFF0C4A6E))
+    } else {
+        listOf(lightSkyBlue, secondaryLightSkyBlue)
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = secondaryBgSkyBlue,
+                color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(20.dp)
             ),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -89,10 +95,7 @@ fun BudgetOverviewItem(
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                     .background(
                         Brush.linearGradient(
-                            colors = listOf(
-                                lightSkyBlue,
-                                secondaryLightSkyBlue
-                            )
+                            colors = gradientColors
                         )
                     )
             ) {
@@ -103,7 +106,7 @@ fun BudgetOverviewItem(
                         .align(Alignment.TopEnd)
                         .offset(x = 20.dp, y = (-20).dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.25f))
+                        .background(Color.White.copy(alpha = if (isDark) 0.1f else 0.25f))
                 )
 
                 Column(
@@ -116,7 +119,7 @@ fun BudgetOverviewItem(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 13.sp
                         ),
-                        color = Color(0xFF334155)
+                        color = if (isDark) Color(0xFFBAE6FD) else Color(0xFF334155)
                     )
 
                     Spacer(Modifier.height(4.dp))
@@ -127,7 +130,7 @@ fun BudgetOverviewItem(
                             fontSize = 24.sp
                         ),
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0F172A)
+                        color = if (isDark) Color.White else Color(0xFF0F172A)
                     )
 
                     Spacer(Modifier.height(12.dp))
@@ -142,9 +145,9 @@ fun BudgetOverviewItem(
                         color = if (overview.allocated > overview.income) {
                             redComponent
                         } else {
-                            mainSkyBlue
+                            if (isDark) Color(0xFF38BDF8) else mainSkyBlue
                         },
-                        trackColor = Color.White.copy(alpha = 0.5f)
+                        trackColor = Color.White.copy(alpha = if (isDark) 0.2f else 0.5f)
                     )
 
                     Spacer(Modifier.height(6.dp))
@@ -154,17 +157,17 @@ fun BudgetOverviewItem(
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontSize = 11.5.sp
                         ),
-                        color = Color(0xFF334155),
+                        color = if (isDark) Color(0xFFBAE6FD) else Color(0xFF334155),
                         fontWeight = FontWeight.Medium
                     )
                 }
             }
 
-            // Bagian Bawah: Putih Bersih (Pemasukan Bulanan vs Total Teralokasi)
+            // Bagian Bawah: (Pemasukan Bulanan vs Total Teralokasi)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(horizontal = 20.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -177,7 +180,7 @@ fun BudgetOverviewItem(
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 12.sp
                         ),
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     Spacer(Modifier.height(4.dp))
@@ -197,7 +200,7 @@ fun BudgetOverviewItem(
                     modifier = Modifier
                         .height(36.dp)
                         .padding(horizontal = 12.dp),
-                    color = Color(0xFFE2E8F0)
+                    color = MaterialTheme.colorScheme.outline
                 )
 
                 // Kolom Teralokasi
@@ -209,7 +212,7 @@ fun BudgetOverviewItem(
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 12.sp
                         ),
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     Spacer(Modifier.height(4.dp))
@@ -220,7 +223,7 @@ fun BudgetOverviewItem(
                             fontSize = 15.sp
                         ),
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF0F172A)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }

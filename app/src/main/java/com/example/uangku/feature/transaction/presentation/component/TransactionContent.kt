@@ -45,9 +45,8 @@ import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
 import com.example.uangku.core.ui.component.toDateFormat
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
+import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.redComponent
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.domain.Transaction
@@ -95,11 +94,11 @@ fun TransactionContent(
                             .padding(horizontal = 20.dp)
                             .border(
                                 width = 1.dp,
-                                color = secondaryBgSkyBlue,
+                                color = MaterialTheme.colorScheme.outline,
                                 shape = RoundedCornerShape(18.dp)
                             ),
                         shape = RoundedCornerShape(18.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Column(
@@ -114,7 +113,7 @@ fun TransactionContent(
                                 )
                                 if (index < transactions.lastIndex) {
                                     HorizontalDivider(
-                                        color = Color(0xFFF1F5F9),
+                                        color = MaterialTheme.colorScheme.outline,
                                         thickness = 1.dp,
                                         modifier = Modifier.padding(start = 54.dp)
                                     )
@@ -151,7 +150,7 @@ fun TransactionItem(
         Surface(
             modifier = Modifier.size(42.dp),
             shape = CircleShape,
-            color = if (isIncome) Color(0xFFE8F5E9) else Color(0xFFF1F5F9)
+            color = if (isIncome) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
         ) {
             Box(
                 contentAlignment = Alignment.Center
@@ -159,7 +158,7 @@ fun TransactionItem(
                 Icon(
                     imageVector = if (isIncome) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
                     contentDescription = null,
-                    tint = if (isIncome) successGreen else Color(0xFF64748B),
+                    tint = if (isIncome) successGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -177,7 +176,7 @@ fun TransactionItem(
                     fontSize = 14.5.sp
                 ),
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF0F172A),
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -190,7 +189,7 @@ fun TransactionItem(
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 12.sp
                     ),
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -238,7 +237,7 @@ fun TransactionDateHeader(
                 fontSize = 12.sp
             ),
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF64748B),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(1f, fill = false)
         )
 
