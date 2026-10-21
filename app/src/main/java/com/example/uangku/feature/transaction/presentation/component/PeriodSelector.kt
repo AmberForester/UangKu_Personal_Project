@@ -24,12 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -53,11 +50,11 @@ fun PeriodSelector(
             .padding(horizontal = 20.dp)
             .border(
                 width = 1.dp,
-                color = secondaryBgSkyBlue,
+                color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(20.dp)
             ),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -69,7 +66,7 @@ fun PeriodSelector(
         ) {
             Surface(
                 shape = CircleShape,
-                color = Color(0xFFF1F5F9),
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.size(34.dp)
             ) {
                 IconButton(
@@ -79,7 +76,7 @@ fun PeriodSelector(
                     Icon(
                         imageVector = Icons.Default.ChevronLeft,
                         contentDescription = "Previous period",
-                        tint = mainSkyBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -95,13 +92,13 @@ fun PeriodSelector(
                         fontSize = 14.sp
                     ),
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
             Surface(
                 shape = CircleShape,
-                color = Color(0xFFF1F5F9),
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.size(34.dp)
             ) {
                 IconButton(
@@ -111,7 +108,7 @@ fun PeriodSelector(
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = "Next period",
-                        tint = mainSkyBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }

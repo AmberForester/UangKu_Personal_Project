@@ -19,6 +19,7 @@ import com.example.uangku.feature.dashboard.presentation.DashboardScreen
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.settings.presentation.SettingsScreen
+import com.example.uangku.feature.settings.presentation.SettingsViewModel
 import com.example.uangku.feature.transaction.presentation.TransactionFormScreen
 import com.example.uangku.feature.transaction.presentation.TransactionScreen
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
@@ -36,7 +37,8 @@ fun UangKuNavGraph(
     periodViewModel: PeriodViewModel,
     dashboardViewModel: DashboardViewModel,
     backupViewModel: BackupViewModel,
-    googleDriveAuth: GoogleDriveAuth
+    googleDriveAuth: GoogleDriveAuth,
+    settingsViewModel: SettingsViewModel
 
 ){
     val navController = rememberNavController()
@@ -101,7 +103,8 @@ fun UangKuNavGraph(
                 navController = navController,
                 periodViewModel = periodViewModel,
                 backupViewModel = backupViewModel,
-                googleDriveAuth = googleDriveAuth
+                googleDriveAuth = googleDriveAuth,
+                settingsViewModel = settingsViewModel
             )
         }
     }

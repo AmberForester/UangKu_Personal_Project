@@ -34,7 +34,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.backup.domain.automatic.BackupFrequency
@@ -65,14 +64,14 @@ fun AutoBackupSection(
         ) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = Color(0xFFE0F2FE),
+                color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier.size(38.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Default.Sync,
                         contentDescription = null,
-                        tint = mainSkyBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -89,7 +88,7 @@ fun AutoBackupSection(
                         fontSize = 15.sp
                     ),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF0F172A)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(Modifier.height(2.dp))
@@ -111,7 +110,7 @@ fun AutoBackupSection(
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 12.sp
                         ),
-                        color = if (state.autoBackupSettings.enabled) successGreen else Color(0xFF64748B)
+                        color = if (state.autoBackupSettings.enabled) successGreen else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -133,7 +132,7 @@ fun AutoBackupSection(
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Color.White,
-                        checkedTrackColor = mainSkyBlue,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary,
                         uncheckedThumbColor = Color.White,
                         uncheckedTrackColor = Color(0xFFCBD5E1)
                     )
@@ -144,7 +143,7 @@ fun AutoBackupSection(
         // Pilihan Frekuensi Backup (Radio Button) jika aktif
         if (state.isGoogleDriveAuthorized && state.autoBackupSettings.enabled) {
             HorizontalDivider(
-                color = Color(0xFFF1F5F9),
+                color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -159,7 +158,7 @@ fun AutoBackupSection(
                         fontSize = 12.sp
                     ),
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
@@ -179,8 +178,8 @@ fun AutoBackupSection(
                                 onEvent(BackupEvent.SetAutoBackupFrequency(frequency = frequency))
                             },
                             colors = RadioButtonDefaults.colors(
-                                selectedColor = mainSkyBlue,
-                                unselectedColor = Color(0xFF94A3B8)
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         )
 
@@ -197,7 +196,7 @@ fun AutoBackupSection(
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 13.5.sp
                             ),
-                            color = Color(0xFF1E293B)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }

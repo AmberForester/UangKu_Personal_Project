@@ -23,6 +23,7 @@ import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -35,12 +36,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -83,18 +81,20 @@ fun FormDatePicker(
                 label = { Text("Tanggal Transaksi") },
                 shape = RoundedCornerShape(14.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = mainSkyBlue,
-                    unfocusedBorderColor = secondaryBgSkyBlue,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedLabelColor = mainSkyBlue,
-                    unfocusedLabelColor = Color(0xFF64748B)
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 ),
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.DateRange,
                         contentDescription = null,
-                        tint = mainSkyBlue
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             )
@@ -144,29 +144,29 @@ fun FormDatePicker(
         )
 
         val customDatePickerColors = DatePickerDefaults.colors(
-            containerColor = Color.White,
-            titleContentColor = Color(0xFF0F172A),
-            headlineContentColor = Color(0xFF0F172A),
-            weekdayContentColor = Color(0xFF64748B),
-            subheadContentColor = Color(0xFF0F172A),
-            navigationContentColor = mainSkyBlue,
-            yearContentColor = Color(0xFF0F172A),
-            currentYearContentColor = mainSkyBlue,
-            selectedYearContentColor = Color.White,
-            selectedYearContainerColor = mainSkyBlue,
-            dayContentColor = Color(0xFF0F172A),
-            selectedDayContentColor = Color.White,
-            selectedDayContainerColor = mainSkyBlue,
-            todayContentColor = mainSkyBlue,
-            todayDateBorderColor = mainSkyBlue,
-            dividerColor = Color(0xFFF1F5F9)
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            headlineContentColor = MaterialTheme.colorScheme.onSurface,
+            weekdayContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            subheadContentColor = MaterialTheme.colorScheme.onSurface,
+            navigationContentColor = MaterialTheme.colorScheme.primary,
+            yearContentColor = MaterialTheme.colorScheme.onSurface,
+            currentYearContentColor = MaterialTheme.colorScheme.primary,
+            selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
+            selectedYearContainerColor = MaterialTheme.colorScheme.primary,
+            dayContentColor = MaterialTheme.colorScheme.onSurface,
+            selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
+            selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+            todayContentColor = MaterialTheme.colorScheme.primary,
+            todayDateBorderColor = MaterialTheme.colorScheme.primary,
+            dividerColor = MaterialTheme.colorScheme.outline
         )
 
         DatePickerDialog(
             modifier = Modifier
                 .border(
                     width = 1.dp,
-                    color = secondaryBgSkyBlue,
+                    color = MaterialTheme.colorScheme.outline,
                     shape = RoundedCornerShape(24.dp)
                 ),
             shape = RoundedCornerShape(24.dp),
@@ -189,8 +189,8 @@ fun FormDatePicker(
                     },
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = mainSkyBlue,
-                        contentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     modifier = Modifier.padding(end = 12.dp, bottom = 8.dp)
                 ) {
@@ -209,7 +209,7 @@ fun FormDatePicker(
                 ) {
                     Text(
                         text = "Batal",
-                        color = Color(0xFF64748B),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
                     )
@@ -233,10 +233,10 @@ private fun QuickDateChip(
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = if (isSelected) Color(0xFFE0F2FE) else Color(0xFFF8FAFC),
+        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
         border = BorderStroke(
             width = 1.dp,
-            color = if (isSelected) mainSkyBlue else secondaryBgSkyBlue
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
         ),
         modifier = Modifier.clickable { onClick() }
     ) {
@@ -244,7 +244,7 @@ private fun QuickDateChip(
             text = text,
             fontSize = 12.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-            color = if (isSelected) mainSkyBlue else Color(0xFF64748B),
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
         )
     }

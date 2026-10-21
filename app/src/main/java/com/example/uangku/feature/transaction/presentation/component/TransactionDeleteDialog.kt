@@ -31,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,8 +50,8 @@ fun TransactionDeleteDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
-            border = BorderStroke(1.dp, secondaryBgSkyBlue),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -66,7 +65,7 @@ fun TransactionDeleteDialog(
                 ) {
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFFFEE2E2),
+                        color = generalRed.copy(alpha = 0.15f),
                         modifier = Modifier.size(46.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
@@ -86,13 +85,13 @@ fun TransactionDeleteDialog(
                             text = title,
                             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(2.dp))
                         Text(
                             text = "Tindakan ini tidak dapat dibatalkan",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -105,7 +104,7 @@ fun TransactionDeleteDialog(
                         fontSize = 13.5.sp,
                         lineHeight = 20.sp
                     ),
-                    color = Color(0xFF334155)
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(Modifier.height(22.dp))
@@ -124,7 +123,7 @@ fun TransactionDeleteDialog(
                     ) {
                         Text(
                             text = "Batal",
-                            color = Color(0xFF64748B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         )

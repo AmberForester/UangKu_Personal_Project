@@ -26,6 +26,7 @@ import com.example.uangku.feature.google_drive.domain.GoogleDriveUseCase
 import com.example.uangku.feature.period.data.PeriodDataStore
 import com.example.uangku.feature.period.data.PeriodRepositoryImpl
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.setting.data.ThemeDataStore
 import com.example.uangku.feature.transaction.data.TransactionRepoImpl
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 
@@ -99,4 +100,7 @@ class AppContainer (
         repository = autoBackupSettingsRepository,
         scheduler = autoBackupScheduler
     )
+
+    //theme
+    val themeDataStore = ThemeDataStore(context)
 }

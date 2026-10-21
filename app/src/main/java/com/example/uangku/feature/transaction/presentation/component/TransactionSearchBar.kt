@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,9 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.theme.generalRed
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
-import com.example.uangku.core.ui.theme.secondaryLightSkyBlue
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.category.domain.Category
 
@@ -73,10 +69,10 @@ fun TransactionSearchBar(
                     .weight(1f)
                     .height(48.dp),
                 shape = RoundedCornerShape(14.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = if (searchQuery.isNotBlank()) mainSkyBlue else secondaryBgSkyBlue
+                    color = if (searchQuery.isNotBlank()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                 )
             ) {
                 Row(
@@ -88,7 +84,7 @@ fun TransactionSearchBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Cari",
-                        tint = if (searchQuery.isNotBlank()) mainSkyBlue else Color(0xFF94A3B8),
+                        tint = if (searchQuery.isNotBlank()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(18.dp)
                     )
 
@@ -105,7 +101,7 @@ fun TransactionSearchBar(
                                     fontSize = 13.5.sp,
                                     lineHeight = 18.sp
                                 ),
-                                color = Color(0xFF94A3B8),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1
                             )
                         }
@@ -114,12 +110,12 @@ fun TransactionSearchBar(
                             onValueChange = onSearchQueryChange,
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            cursorBrush = SolidColor(mainSkyBlue),
+                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                             textStyle = TextStyle(
                                 fontSize = 14.sp,
                                 lineHeight = 18.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFF0F172A)
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         )
                     }
@@ -132,7 +128,7 @@ fun TransactionSearchBar(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Hapus teks",
-                                tint = Color(0xFF64748B),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(15.dp)
                             )
                         }
@@ -145,10 +141,10 @@ fun TransactionSearchBar(
             // 2. Tombol Filter Kategori (Presisi 44dp selaras dengan kolom pencarian)
             Surface(
                 shape = RoundedCornerShape(14.dp),
-                color = if (hasFilter) mainSkyBlue else Color.White,
+                color = if (hasFilter) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
                 border = BorderStroke(
                     width = 1.dp,
-                    color = if (hasFilter) mainSkyBlue else secondaryBgSkyBlue
+                    color = if (hasFilter) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
                 ),
                 modifier = Modifier
                     .size(48.dp)
@@ -159,7 +155,7 @@ fun TransactionSearchBar(
                     Icon(
                         imageVector = Icons.Outlined.FilterAlt,
                         contentDescription = "Filter Kategori",
-                        tint = if (hasFilter) Color.White else Color(0xFF475569),
+                        tint = if (hasFilter) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(25.dp)
                     )
                 }
@@ -181,8 +177,8 @@ fun TransactionSearchBar(
                 ) {
                     Surface(
                         shape = RoundedCornerShape(20.dp),
-                        color = Color(0xFFF0F9FF),
-                        border = BorderStroke(1.dp, secondaryLightSkyBlue)
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
@@ -201,12 +197,12 @@ fun TransactionSearchBar(
                                 text = "Kategori: ${selectedCategory.name}",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = mainSkyBlue
+                                color = MaterialTheme.colorScheme.primary
                             )
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Hapus filter kategori",
-                                tint = mainSkyBlue,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(14.dp)
                                     .clickable { onClearCategoryFilter() }

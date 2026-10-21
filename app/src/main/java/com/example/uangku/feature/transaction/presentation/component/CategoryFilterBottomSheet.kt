@@ -44,8 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.theme.generalRed
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.category.domain.Category
 
@@ -75,9 +73,9 @@ fun CategoryFilterBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        dragHandle = { BottomSheetDefaults.DragHandle(color = Color(0xFFCBD5E1)) }
+        dragHandle = { BottomSheetDefaults.DragHandle(color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)) }
     ) {
         Column(
             modifier = Modifier
@@ -94,14 +92,14 @@ fun CategoryFilterBottomSheet(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFFE0F2FE),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier.size(40.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Outlined.Tune,
                                 contentDescription = null,
-                                tint = mainSkyBlue,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -114,12 +112,12 @@ fun CategoryFilterBottomSheet(
                             text = "Filter Kategori",
                             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "Pilih kategori untuk disaring",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -169,7 +167,7 @@ fun CategoryFilterBottomSheet(
             }
 
             Spacer(Modifier.height(14.dp))
-            HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
 
             // 3. Daftar Pilihan Kategori (Scrollable)
             LazyColumn(
@@ -185,13 +183,13 @@ fun CategoryFilterBottomSheet(
                         title = "Semua Kategori",
                         subtitle = "Tampilkan seluruh transaksi",
                         isSelected = isAllSelected,
-                        indicatorColor = mainSkyBlue,
+                        indicatorColor = MaterialTheme.colorScheme.primary,
                         onClick = {
                             onSelectCategory(null)
                             onDismiss()
                         }
                     )
-                    HorizontalDivider(color = Color(0xFFF8FAFC), thickness = 0.8.dp)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), thickness = 0.8.dp)
                 }
 
                 items(filteredList, key = { it.id ?: it.name }) { category ->
@@ -208,7 +206,7 @@ fun CategoryFilterBottomSheet(
                             onDismiss()
                         }
                     )
-                    HorizontalDivider(color = Color(0xFFF8FAFC), thickness = 0.8.dp)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), thickness = 0.8.dp)
                 }
             }
 
@@ -226,10 +224,10 @@ private fun FilterTabChip(
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = if (isSelected) mainSkyBlue else Color(0xFFF8FAFC),
+        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
         border = BorderStroke(
             width = 1.dp,
-            color = if (isSelected) mainSkyBlue else secondaryBgSkyBlue
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
         ),
         modifier = modifier
             .height(38.dp)
@@ -242,7 +240,7 @@ private fun FilterTabChip(
                     fontSize = 12.sp,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                 ),
-                color = if (isSelected) Color.White else Color(0xFF475569)
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -276,26 +274,26 @@ private fun CategorySelectionRow(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                color = if (isSelected) mainSkyBlue else Color(0xFF0F172A)
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
-                color = Color(0xFF94A3B8)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
         if (isSelected) {
             Surface(
                 shape = CircleShape,
-                color = Color(0xFFE0F2FE),
+                color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier.size(24.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "Terpilih",
-                        tint = mainSkyBlue,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(14.dp)
                     )
                 }

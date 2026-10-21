@@ -6,8 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uangku.core.navigation.UangKuNavGraph
+import com.example.uangku.core.ui.theme.ThemeMode
 import com.example.uangku.core.ui.theme.UangKuTheme
 import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.example.uangku.feature.backup.presentation.BackupViewModelFactory
@@ -19,6 +23,8 @@ import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModelFactory
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModelFactory
+import com.example.uangku.feature.settings.presentation.SettingsViewModel
+import com.example.uangku.feature.settings.presentation.SettingsViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionViewModel
@@ -34,7 +40,15 @@ class MainActivity : ComponentActivity() {
         val appContainer =(application as App).appContainer
 
         setContent {
-            UangKuTheme {
+            val themeMode by appContainer.themeDataStore.themeMode
+                .collectAsState(initial = ThemeMode.LIGHT)
+
+            val isDark = when (themeMode) {
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK -> true
+            }
+            UangKuTheme (darkTheme = isDark) {
                 val categoryViewModel: CategoryViewModel = viewModel(
                     factory = CategoryViewModelFactory(
                         appContainer.categoryUseCase
@@ -80,6 +94,12 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
+                val settingsViewModel: SettingsViewModel = viewModel(
+                    factory = SettingsViewModelFactory(
+                        themeDataStore = appContainer.themeDataStore
+                    )
+                )
+
                 UangKuNavGraph(
                     categoryViewModel = categoryViewModel,
                     transactionViewModel = transactionViewModel,
@@ -88,7 +108,8 @@ class MainActivity : ComponentActivity() {
                     periodViewModel = periodViewModel,
                     dashboardViewModel = dashboardViewModel,
                     backupViewModel = backupViewModel,
-                    googleDriveAuth = appContainer.googleDriveAuth
+                    googleDriveAuth = appContainer.googleDriveAuth,
+                    settingsViewModel = settingsViewModel
                 )
             }
         }

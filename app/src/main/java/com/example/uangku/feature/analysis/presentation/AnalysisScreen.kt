@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
-import com.example.uangku.core.ui.theme.mainSkyBlue
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -70,14 +68,14 @@ fun ComingSoon(modifier: Modifier = Modifier) {
     ) {
         Surface(
             shape = CircleShape,
-            color = Color(0xFFE0F2FE),
+            color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.size(80.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Outlined.Analytics,
                     contentDescription = null,
-                    tint = mainSkyBlue,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -89,7 +87,7 @@ fun ComingSoon(modifier: Modifier = Modifier) {
             text = "Segera Hadir!",
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF0F172A)
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(Modifier.height(6.dp))
@@ -100,7 +98,7 @@ fun ComingSoon(modifier: Modifier = Modifier) {
                 fontSize = 13.5.sp,
                 lineHeight = 20.sp
             ),
-            color = Color(0xFF64748B),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     }

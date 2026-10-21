@@ -27,14 +27,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.uangku.core.domain.Type
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 import com.example.uangku.core.ui.theme.successGreen
 import com.example.uangku.feature.transaction.domain.Transaction
@@ -65,12 +63,12 @@ fun RecentTransactionSection(
                 .fillMaxWidth()
                 .border(
                     width = 1.dp,
-                    color = secondaryBgSkyBlue,
+                    color = MaterialTheme.colorScheme.outline,
                     shape = RoundedCornerShape(20.dp)
                 ),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
@@ -84,7 +82,7 @@ fun RecentTransactionSection(
                     Text(
                         text = "Belum ada transaksi di periode ini",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else {
@@ -98,7 +96,7 @@ fun RecentTransactionSection(
                         TransactionItem(transaction = transaction)
                         if (index < displayList.lastIndex) {
                             HorizontalDivider(
-                                color = Color(0xFFF1F5F9),
+                                color = MaterialTheme.colorScheme.outline,
                                 thickness = 1.dp,
                                 modifier = Modifier.padding(start = 54.dp)
                             )
@@ -146,7 +144,7 @@ private fun TransactionItem(
         Surface(
             modifier = Modifier.size(42.dp),
             shape = CircleShape,
-            color = if (isIncome) Color(0xFFE8F5E9) else Color(0xFFF1F5F9)
+            color = if (isIncome) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
         ) {
             Box(
                 contentAlignment = Alignment.Center
@@ -154,7 +152,7 @@ private fun TransactionItem(
                 Icon(
                     imageVector = if (isIncome) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
                     contentDescription = null,
-                    tint = if (isIncome) successGreen else Color(0xFF64748B),
+                    tint = if (isIncome) successGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -172,7 +170,7 @@ private fun TransactionItem(
                     fontSize = 15.sp
                 ),
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF0F172A),
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -184,7 +182,7 @@ private fun TransactionItem(
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 12.sp
                 ),
-                color = Color(0xFF64748B),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

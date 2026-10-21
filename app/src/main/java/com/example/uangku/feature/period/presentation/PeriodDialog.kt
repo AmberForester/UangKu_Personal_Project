@@ -35,14 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,8 +61,8 @@ fun PeriodDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
-            border = BorderStroke(1.dp, secondaryBgSkyBlue),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -77,14 +74,14 @@ fun PeriodDialog(
                 // 1. Icon Avatar
                 Surface(
                     shape = CircleShape,
-                    color = Color(0xFFE0F2FE),
+                    color = MaterialTheme.colorScheme.primaryContainer,
                     modifier = Modifier.size(52.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Outlined.DateRange,
                             contentDescription = null,
-                            tint = mainSkyBlue,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(26.dp)
                         )
                     }
@@ -97,7 +94,7 @@ fun PeriodDialog(
                     text = "Periode Keuangan Bulanan",
                     style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0F172A),
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
 
@@ -106,7 +103,7 @@ fun PeriodDialog(
                 Text(
                     text = "Pilih tanggal awal siklus keuangan setiap bulan.",
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                    color = Color(0xFF64748B),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
 
@@ -125,7 +122,7 @@ fun PeriodDialog(
 
                         Surface(
                             shape = CircleShape,
-                            color = if (isSelected) mainSkyBlue else Color(0xFFF8FAFC),
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                             modifier = Modifier
                                 .aspectRatio(1f)
                                 .clickable { selected = date }
@@ -137,7 +134,7 @@ fun PeriodDialog(
                                         fontSize = 13.sp,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                                     ),
-                                    color = if (isSelected) Color.White else Color(0xFF1E293B)
+                                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         }
@@ -150,8 +147,8 @@ fun PeriodDialog(
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFFF0F9FF),
-                    border = BorderStroke(1.dp, Color(0xFFBAE6FD))
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
                     val endDay = if (selected == 1) 31 else selected - 1
                     Text(
@@ -159,7 +156,7 @@ fun PeriodDialog(
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                         fontWeight = FontWeight.Medium,
                         fontSize = 12.sp,
-                        color = mainSkyBlue,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                     )
@@ -180,7 +177,7 @@ fun PeriodDialog(
                     ) {
                         Text(
                             text = "Batal",
-                            color = Color(0xFF64748B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         )
@@ -190,8 +187,8 @@ fun PeriodDialog(
                         onClick = { onConfirmDialog(selected) },
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = mainSkyBlue,
-                            contentColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         )
                     ) {
                         Text(

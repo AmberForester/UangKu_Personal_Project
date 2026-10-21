@@ -38,8 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.example.uangku.core.ui.component.ThousandsSeparatorVisualTransformation
 import com.example.uangku.core.ui.component.currencyFormatter
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.core.ui.theme.generalRed
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,6 +52,8 @@ fun BudgetDialog(
     onSave: () -> Unit,
     onReset: () -> Unit
 ) {
+    val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+
     BasicAlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -63,8 +63,8 @@ fun BudgetDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
-            border = BorderStroke(1.dp, secondaryBgSkyBlue),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -78,14 +78,14 @@ fun BudgetDialog(
                 ) {
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFFE0F2FE),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier.size(46.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Outlined.AccountBalanceWallet,
                                 contentDescription = null,
-                                tint = mainSkyBlue,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -98,13 +98,13 @@ fun BudgetDialog(
                             text = categoryName,
                             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(2.dp))
                         Text(
                             text = "Atur alokasi anggaran bulanan",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -128,7 +128,7 @@ fun BudgetDialog(
                         Text(
                             text = "Rp ",
                             fontWeight = FontWeight.Bold,
-                            color = mainSkyBlue
+                            color = MaterialTheme.colorScheme.primary
                         )
                     },
                     shape = RoundedCornerShape(14.dp),
@@ -144,12 +144,14 @@ fun BudgetDialog(
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = mainSkyBlue,
-                        unfocusedBorderColor = secondaryBgSkyBlue,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedLabelColor = mainSkyBlue,
-                        unfocusedLabelColor = Color(0xFF64748B),
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
                         errorBorderColor = generalRed,
                     )
                 )
@@ -158,11 +160,11 @@ fun BudgetDialog(
                 val currentInput = amount.toDoubleOrNull() ?: 0.0
                 val isExceeding = currentInput > availableAmount
 
-                if(isExceeding){
+                if (isExceeding) {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = Color(0xFFFFF7ED), // Oranye pastel lembut
-                        border = BorderStroke(1.dp, Color(0xFFFED7AA)),
+                        color = if (isDark) Color(0xFF451A03) else Color(0xFFFFF7ED),
+                        border = BorderStroke(1.dp, if (isDark) Color(0xFF7C2D12) else Color(0xFFFED7AA)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
@@ -177,7 +179,7 @@ fun BudgetDialog(
                                     lineHeight = 17.sp
                                 ),
                                 fontWeight = FontWeight.Medium,
-                                color = Color(0xFFC2410C)
+                                color = if (isDark) Color(0xFFFDBA74) else Color(0xFFC2410C)
                             )
                             if (availableAmount > 0) {
                                 Spacer(Modifier.height(8.dp))
@@ -189,12 +191,12 @@ fun BudgetDialog(
                                         text = "Tersedia: ${currencyFormatter(availableAmount)}",
                                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
                                         fontWeight = FontWeight.SemiBold,
-                                        color = Color(0xFFC2410C),
+                                        color = if (isDark) Color(0xFFFDBA74) else Color(0xFFC2410C),
                                         modifier = Modifier.weight(1f)
                                     )
                                     Surface(
                                         shape = RoundedCornerShape(8.dp),
-                                        color = Color(0xFFEA580C),
+                                        color = if (isDark) Color(0xFFC2410C) else Color(0xFFEA580C),
                                         modifier = Modifier.clickable {
                                             onAmountChange(availableAmount.toLong().toString())
                                         }
@@ -214,8 +216,8 @@ fun BudgetDialog(
                 } else {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = Color(0xFFF0F9FF),
-                        border = BorderStroke(1.dp, Color(0xFFBAE6FD)),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
@@ -228,13 +230,13 @@ fun BudgetDialog(
                                 text = "💡 Tersedia: ${currencyFormatter(availableAmount)}",
                                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                                 fontWeight = FontWeight.Medium,
-                                color = mainSkyBlue,
+                                color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.weight(1f)
                             )
                             if (availableAmount > 0) {
                                 Surface(
                                     shape = RoundedCornerShape(8.dp),
-                                    color = mainSkyBlue,
+                                    color = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.clickable {
                                         onAmountChange(availableAmount.toLong().toString())
                                     }
@@ -243,7 +245,7 @@ fun BudgetDialog(
                                         text = "Gunakan Semua",
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.White,
+                                        color = MaterialTheme.colorScheme.onPrimary,
                                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                                     )
                                 }
@@ -280,7 +282,7 @@ fun BudgetDialog(
                     ) {
                         Text(
                             text = "Batal",
-                            color = Color(0xFF64748B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         )
@@ -291,8 +293,8 @@ fun BudgetDialog(
                         enabled = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = mainSkyBlue,
-                            contentColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                             disabledContainerColor = Color(0xFFCBD5E1),
                             disabledContentColor = Color.White
                         )

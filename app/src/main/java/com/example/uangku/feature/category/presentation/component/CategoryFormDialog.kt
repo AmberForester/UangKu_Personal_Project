@@ -37,8 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.example.uangku.core.domain.Type
-import com.example.uangku.core.ui.theme.mainSkyBlue
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
 import com.example.uangku.feature.transaction.presentation.component.FormTypeSelector
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,8 +64,8 @@ fun CategoryFormDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
-            border = BorderStroke(1.dp, secondaryBgSkyBlue),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             shadowElevation = 8.dp
         ) {
             Column(
@@ -81,14 +79,14 @@ fun CategoryFormDialog(
                 ) {
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFFE0F2FE),
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         modifier = Modifier.size(42.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Outlined.Label,
                                 contentDescription = null,
-                                tint = mainSkyBlue,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -101,12 +99,12 @@ fun CategoryFormDialog(
                             text = title,
                             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF0F172A)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = if (isEdit) "Ubah nama kategori" else "Tambahkan kategori transaksi baru",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            color = Color(0xFF64748B)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -126,12 +124,14 @@ fun CategoryFormDialog(
                         capitalization = KeyboardCapitalization.Words
                     ),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = mainSkyBlue,
-                        unfocusedBorderColor = secondaryBgSkyBlue,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedLabelColor = mainSkyBlue,
-                        unfocusedLabelColor = Color(0xFF64748B)
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
 
@@ -143,7 +143,7 @@ fun CategoryFormDialog(
                         text = "Jenis Kategori",
                         style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF64748B),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(bottom = 6.dp)
                     )
 
@@ -168,7 +168,7 @@ fun CategoryFormDialog(
                     ) {
                         Text(
                             text = "Batal",
-                            color = Color(0xFF64748B),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         )
@@ -179,8 +179,8 @@ fun CategoryFormDialog(
                         enabled = name.isNotBlank(),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = mainSkyBlue,
-                            contentColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                             disabledContainerColor = Color(0xFFCBD5E1),
                             disabledContentColor = Color.White
                         )

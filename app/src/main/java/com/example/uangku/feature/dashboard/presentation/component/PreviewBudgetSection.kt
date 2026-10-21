@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -32,13 +31,12 @@ import androidx.compose.ui.unit.sp
 import com.example.uangku.core.ui.component.currencyMinimalFormatter
 import com.example.uangku.core.ui.theme.GreenComponent
 import com.example.uangku.core.ui.theme.greenBg
+import com.example.uangku.core.ui.theme.lightOrangeBg
+import com.example.uangku.core.ui.theme.lightOrangeComponent
 import com.example.uangku.core.ui.theme.orangeBg
 import com.example.uangku.core.ui.theme.orangeComponent
 import com.example.uangku.core.ui.theme.redBg
 import com.example.uangku.core.ui.theme.redComponent
-import com.example.uangku.core.ui.theme.secondaryBgSkyBlue
-import com.example.uangku.core.ui.theme.lightOrangeBg
-import com.example.uangku.core.ui.theme.lightOrangeComponent
 import com.example.uangku.feature.budget.domain.BudgetSummary
 
 @Composable
@@ -71,12 +69,12 @@ fun PreviewBudgetSection(
                     .padding(horizontal = 20.dp)
                     .border(
                         width = 1.dp,
-                        color = secondaryBgSkyBlue,
+                        color = MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(20.dp)
                     ),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -89,7 +87,7 @@ fun PreviewBudgetSection(
                     Text(
                         text = "Belum ada budget diatur",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF64748B)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -111,6 +109,8 @@ fun PreviewBudgetSection(
 fun BudgetCard(
     budget: BudgetSummary
 ) {
+    val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+
     val progressColor = when {
         budget.isOverBudget -> redComponent
         budget.progress >= 0.75f -> orangeComponent
@@ -118,11 +118,15 @@ fun BudgetCard(
         else -> GreenComponent
     }
 
-    val boxBgColor = when {
-        budget.isOverBudget -> redBg
-        budget.progress >= 0.75f -> orangeBg
-        budget.progress >= 0.5f -> lightOrangeBg
-        else -> greenBg
+    val boxBgColor = if (isDark) {
+        progressColor.copy(alpha = 0.2f)
+    } else {
+        when {
+            budget.isOverBudget -> redBg
+            budget.progress >= 0.75f -> orangeBg
+            budget.progress >= 0.5f -> lightOrangeBg
+            else -> greenBg
+        }
     }
 
     Card(
@@ -130,12 +134,12 @@ fun BudgetCard(
             .width(220.dp)
             .border(
                 width = 1.dp,
-                color = secondaryBgSkyBlue,
+                color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(18.dp)
             ),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -154,7 +158,7 @@ fun BudgetCard(
                         fontSize = 15.sp
                     ),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF0F172A),
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
@@ -188,7 +192,7 @@ fun BudgetCard(
                     .height(8.dp)
                     .clip(RoundedCornerShape(4.dp)),
                 color = progressColor,
-                trackColor = secondaryBgSkyBlue
+                trackColor = MaterialTheme.colorScheme.surfaceVariant
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -206,7 +210,7 @@ fun BudgetCard(
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 12.sp
                 ),
-                color = Color(0xFF64748B),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

@@ -22,8 +22,8 @@ fun TopAppBar(
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color.Transparent, // Menyatu transparan dengan background halaman
-            titleContentColor = Color(0xFF0F172A),
-            navigationIconContentColor = Color(0xFF0F172A)
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground
         ),
         title = {
             Text(
