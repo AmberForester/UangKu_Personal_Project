@@ -104,7 +104,7 @@ fun TransactionContent(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                                .padding(horizontal = 16.dp, vertical = 0.dp)
                         ) {
                             transactions.forEachIndexed { index, transaction ->
                                 TransactionItem(
@@ -143,7 +143,7 @@ fun TransactionItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick(transaction) }
-            .padding(vertical = 11.dp),
+            .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Icon Circle Avatar

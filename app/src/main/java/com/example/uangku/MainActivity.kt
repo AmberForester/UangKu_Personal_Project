@@ -21,6 +21,8 @@ import com.example.uangku.feature.category.presentation.CategoryViewModel
 import com.example.uangku.feature.category.presentation.CategoryViewModelFactory
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModelFactory
+import com.example.uangku.feature.export_excel.presentation.ExportExcelViewModel
+import com.example.uangku.feature.export_excel.presentation.ExportExcelViewModelFactory
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModelFactory
 import com.example.uangku.feature.settings.presentation.SettingsViewModel
@@ -100,6 +102,13 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
+                val exportExcelViewModel: ExportExcelViewModel = viewModel(
+                    factory = ExportExcelViewModelFactory(
+                        exportTransactionsUseCase = appContainer.exportTransactionsUseCase,
+                        excelExportRepository = appContainer.excelExportRepository
+                    )
+                )
+
                 UangKuNavGraph(
                     categoryViewModel = categoryViewModel,
                     transactionViewModel = transactionViewModel,
@@ -109,7 +118,8 @@ class MainActivity : ComponentActivity() {
                     dashboardViewModel = dashboardViewModel,
                     backupViewModel = backupViewModel,
                     googleDriveAuth = appContainer.googleDriveAuth,
-                    settingsViewModel = settingsViewModel
+                    settingsViewModel = settingsViewModel,
+                    exportExcelViewModel = exportExcelViewModel
                 )
             }
         }

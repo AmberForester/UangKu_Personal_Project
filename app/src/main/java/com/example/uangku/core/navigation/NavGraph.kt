@@ -17,6 +17,7 @@ import com.example.uangku.feature.category.presentation.CategoryScreen
 import com.example.uangku.feature.category.presentation.CategoryViewModel
 import com.example.uangku.feature.dashboard.presentation.DashboardScreen
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
+import com.example.uangku.feature.export_excel.presentation.ExportExcelViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.settings.presentation.SettingsScreen
 import com.example.uangku.feature.settings.presentation.SettingsViewModel
@@ -38,8 +39,8 @@ fun UangKuNavGraph(
     dashboardViewModel: DashboardViewModel,
     backupViewModel: BackupViewModel,
     googleDriveAuth: GoogleDriveAuth,
-    settingsViewModel: SettingsViewModel
-
+    settingsViewModel: SettingsViewModel,
+    exportExcelViewModel: ExportExcelViewModel
 ){
     val navController = rememberNavController()
 
@@ -104,7 +105,8 @@ fun UangKuNavGraph(
                 periodViewModel = periodViewModel,
                 backupViewModel = backupViewModel,
                 googleDriveAuth = googleDriveAuth,
-                settingsViewModel = settingsViewModel
+                settingsViewModel = settingsViewModel,
+                exportExcelViewModel = exportExcelViewModel
             )
         }
     }

@@ -2,10 +2,13 @@ package com.example.uangku.feature.settings.presentation
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -24,6 +27,7 @@ import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.TableChart
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material3.Card
@@ -59,6 +63,10 @@ import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.example.uangku.feature.backup.presentation.component.AutoBackupSection
 import com.example.uangku.feature.backup.presentation.component.DisconnectGoogleDriveDialog
 import com.example.uangku.feature.backup.presentation.component.RestoreDialog
+import com.example.uangku.feature.export_excel.presentation.ExportExcelDialog
+import com.example.uangku.feature.export_excel.presentation.ExportExcelEffect
+import com.example.uangku.feature.export_excel.presentation.ExportExcelEvent
+import com.example.uangku.feature.export_excel.presentation.ExportExcelViewModel
 import com.example.uangku.feature.google_drive.data.GoogleDriveAuth
 import com.example.uangku.feature.period.presentation.PeriodDialog
 import com.example.uangku.feature.period.presentation.PeriodEvent
@@ -78,12 +86,14 @@ fun SettingsScreen(
     periodViewModel: PeriodViewModel,
     backupViewModel: BackupViewModel,
     googleDriveAuth: GoogleDriveAuth,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel,
+    exportExcelViewModel: ExportExcelViewModel
 ) {
     val context = LocalContext.current
     val periodState by periodViewModel.state.collectAsState()
     val backupState by backupViewModel.state.collectAsState()
     val settingsState by settingsViewModel.state.collectAsState()
+    val exportExcelState by exportExcelViewModel.state.collectAsState()
     var showPeriodDialog by remember { mutableStateOf(false) }
     var showRestoreConfirmationDialog by remember { mutableStateOf(false) }
     var showDisconnectDriveDialog by remember { mutableStateOf(false) }
@@ -92,6 +102,16 @@ fun SettingsScreen(
     val exportLauncher = exportLauncher(backupViewModel)
     val importLauncher = importLauncher(backupViewModel)
     val appVersion = applicationVersion(context)
+
+    val saveExcelLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument(
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    ) { uri ->
+        if (uri != null) {
+            exportExcelViewModel.onEvent(ExportExcelEvent.OnFileSavedToUri(uri))
+        }
+    }
 
     val googleDriveAuthorizationLauncher = googleDriveAuthLauncher(
         context = context,
@@ -103,6 +123,29 @@ fun SettingsScreen(
 //    val currentTheme by themeDataStore.themeMode.collectAsState(initial = ThemeMode.LIGHT)
     val currentTheme = settingsState.themeMode
     var showThemeDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        exportExcelViewModel.effect.collect { effect ->
+            when (effect) {
+                is ExportExcelEffect.LaunchSaveFilePicker -> {
+                    saveExcelLauncher.launch(effect.defaultFileName)
+                }
+                is ExportExcelEffect.ShareExcel -> {
+                    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        putExtra(Intent.EXTRA_STREAM, effect.uri)
+                        putExtra(Intent.EXTRA_SUBJECT, "Laporan Transaksi UangKu")
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    val chooser = Intent.createChooser(sendIntent, "Bagikan Laporan Excel")
+                    context.startActivity(chooser)
+                }
+                is ExportExcelEffect.ShowToast -> {
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         periodViewModel.onEvent(PeriodEvent.onScreenOpen)
@@ -233,15 +276,19 @@ fun SettingsScreen(
                     )
 
                     SettingsItem(
-                        title = "Tema Aplikasi",
-                        description = currentTheme?.label ?: "",
-                        icon = Icons.Outlined.DarkMode,
-                        iconBgColor = Color(0xFFEDE9FE),
-                        iconTintColor = Color(0xFF7C3AED),
-                        onClick = {
-                            showThemeDialog = true
-                        }
+                        title = "Ekspor ke Excel",
+                        description = "Unduh & bagikan laporan transaksi (.xlsx)",
+                        icon = Icons.Default.TableChart,
+                        iconBgColor = Color(0xFFDCFCE7),
+                        iconTintColor = Color(0xFF15803D),
+                        onClick = { exportExcelViewModel.onEvent(ExportExcelEvent.ShowDialog) }
                     )
+
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.padding(start = 68.dp)
+                    )
+
                 }
             }
 
@@ -351,6 +398,23 @@ fun SettingsScreen(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
+
+                SettingsItem(
+                    title = "Tema Aplikasi",
+                    description = currentTheme?.label ?: "",
+                    icon = Icons.Outlined.DarkMode,
+                    iconBgColor = Color(0xFFEDE9FE),
+                    iconTintColor = Color(0xFF7C3AED),
+                    onClick = {
+                        showThemeDialog = true
+                    }
+                )
+
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.padding(start = 68.dp)
+                )
+
                 SettingsItem(
                     title = "UangKu",
                     description = "Aplikasi Catatan Keuangan Pribadi",
@@ -405,6 +469,17 @@ fun SettingsScreen(
             },
             onDismiss = { showThemeDialog = false }
         )
+
+        if (exportExcelState.isDialogVisible) {
+            ExportExcelDialog(
+                selectedOption = exportExcelState.selectedOption,
+                isLoading = exportExcelState.isLoading,
+                onOptionSelected = { exportExcelViewModel.onEvent(ExportExcelEvent.SelectOption(it)) },
+                onSaveToDevice = { exportExcelViewModel.onEvent(ExportExcelEvent.ConfirmSave) },
+                onShare = { exportExcelViewModel.onEvent(ExportExcelEvent.ConfirmShare) },
+                onDismiss = { exportExcelViewModel.onEvent(ExportExcelEvent.DismissDialog) }
+            )
+        }
     }
 }
 

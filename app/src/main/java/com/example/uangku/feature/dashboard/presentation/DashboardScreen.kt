@@ -23,6 +23,7 @@ import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.dashboard.presentation.component.PreviewBudgetSection
 import com.example.uangku.feature.dashboard.presentation.component.SummaryCard
+import com.example.uangku.feature.transaction.presentation.component.AddTransactionButton
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -49,11 +50,17 @@ fun DashboardScreen(
                 navController = navController,
                 current = "dashboard"
             )
+        },
+        floatingActionButton = {
+            AddTransactionButton(
+                onClick = { navController.navigate("transaction_form/-1") }
+            )
         }
     ) {  padding ->
 
         Column (
-            modifier = Modifier.padding(padding)
+            modifier = Modifier
+                .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(Modifier.height(4.dp))
