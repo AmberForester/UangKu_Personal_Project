@@ -22,6 +22,8 @@ import com.example.uangku.feature.budget.data.BudgetRepoImpl
 import com.example.uangku.feature.budget.domain.BudgetUseCase
 import com.example.uangku.feature.category.data.CategoryRepoImpl
 import com.example.uangku.feature.category.domain.CategoryUseCase
+import com.example.uangku.feature.export_excel.data.ExcelExportRepoImpl
+import com.example.uangku.feature.export_excel.domain.ExportTransactionsUseCase
 import com.example.uangku.feature.google_drive.domain.GoogleDriveUseCase
 import com.example.uangku.feature.period.data.PeriodDataStore
 import com.example.uangku.feature.period.data.PeriodRepositoryImpl
@@ -103,4 +105,12 @@ class AppContainer (
 
     //theme
     val themeDataStore = ThemeDataStore(context)
+
+    //excel export
+    val excelExportRepository = ExcelExportRepoImpl(context)
+    val exportTransactionsUseCase = ExportTransactionsUseCase(
+        transactionRepository = transactionRepository,
+        periodUseCase = periodUseCase,
+        excelExportRepository = excelExportRepository
+    )
 }
