@@ -1,13 +1,18 @@
 package com.example.uangku.feature.savings.domain
 
+import com.example.uangku.core.database.DateSerializer
+import kotlinx.serialization.Serializable
 import java.util.Date
 
+@Serializable
 data class SavingGoal (
 
     val id: Long? = null,
     val title: String,
     val targetAmount: Double? = null,
     val currentAmount: Double = 0.0,
+
+    @Serializable(with = DateSerializer::class)
     val targetDate: Date? = null
 ) {
     val progress: Float?
