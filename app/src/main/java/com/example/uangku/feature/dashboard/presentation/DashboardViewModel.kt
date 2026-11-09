@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uangku.feature.budget.domain.BudgetUseCase
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.savings.domain.SavingsUseCase
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,8 @@ class DashboardViewModel(
 
     private val periodUseCase: PeriodUseCase,
     private val transactionUseCase: TransactionUseCase,
-    private val budgetUseCase: BudgetUseCase
+    private val budgetUseCase: BudgetUseCase,
+    private val savingsUseCase: SavingsUseCase
 
 ) : ViewModel() {
 
@@ -34,6 +36,7 @@ class DashboardViewModel(
                 loadFinancialPeriod()
                 loadBudgetSummaries()
                 loadRecentTransactions()
+                loadSavings()
                 Log.d("this month", _state.value.month.toString())
             }
         }
@@ -90,6 +93,23 @@ class DashboardViewModel(
                     it.copy(
                         recentTransactions = transactions
                     )
+                }
+            }
+        }
+    }
+
+    private fun loadSavings() {
+        viewModelScope.launch {
+            savingsUseCase.getMostRecentActiveGoal().collect { goal ->
+                _state.update {
+                    it.copy(mostRecentSavingGoal = goal)
+                }
+            }
+        }
+        viewModelScope.launch {
+            savingsUseCase.getTotalLockedSavings().collect { total ->
+                _state.update {
+                    it.copy(totalSavings = total)
                 }
             }
         }

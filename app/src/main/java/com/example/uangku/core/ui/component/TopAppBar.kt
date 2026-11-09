@@ -1,5 +1,6 @@
 package com.example.uangku.core.ui.component
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -17,7 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 @Composable
 fun TopAppBar(
     title: String,
-    onBackClick: (() -> Unit)? = null
+    onBackClick: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -43,6 +45,7 @@ fun TopAppBar(
                     )
                 }
             }
-        }
+        },
+        actions = actions
     )
 }

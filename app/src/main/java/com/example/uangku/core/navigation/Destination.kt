@@ -18,5 +18,11 @@ sealed class Destination (
 
     data object TransactionForm : Destination("transaction_form/{id}")
 
+    data object Savings : Destination("savings")
+
+    data object SavingsDetail : Destination("savings_detail/{goalId}") {
+        fun createRoute(goalId: Long): String = "savings_detail/$goalId"
+    }
+
 
 }

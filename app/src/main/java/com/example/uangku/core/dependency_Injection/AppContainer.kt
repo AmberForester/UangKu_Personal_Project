@@ -28,6 +28,9 @@ import com.example.uangku.feature.google_drive.domain.GoogleDriveUseCase
 import com.example.uangku.feature.period.data.PeriodDataStore
 import com.example.uangku.feature.period.data.PeriodRepositoryImpl
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.savings.data.SavingRepoImpl
+import com.example.uangku.feature.savings.domain.SavingsRepository
+import com.example.uangku.feature.savings.domain.SavingsUseCase
 import com.example.uangku.feature.setting.data.ThemeDataStore
 import com.example.uangku.feature.transaction.data.TransactionRepoImpl
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
@@ -42,6 +45,8 @@ class AppContainer (
             AppDatabase::class.java,
             "uangku_database"
         )
+        .addMigrations(AppDatabase.MIGRATION_1_2)
+        .fallbackToDestructiveMigration()
         .addCallback(DatabaseCallback())
         .build()
 
@@ -112,5 +117,12 @@ class AppContainer (
         transactionRepository = transactionRepository,
         periodUseCase = periodUseCase,
         excelExportRepository = excelExportRepository
+    )
+
+    // savings
+    private val savingsDao = database.savingsDao()
+    private val savingsRepository: SavingsRepository = SavingRepoImpl(savingsDao)
+    val savingsUseCase = SavingsUseCase(
+        savingsRepository = savingsRepository
     )
 }

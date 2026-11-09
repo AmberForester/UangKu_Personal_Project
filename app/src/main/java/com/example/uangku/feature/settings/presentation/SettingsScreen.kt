@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.TableChart
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material.icons.outlined.DarkMode
@@ -287,6 +288,17 @@ fun SettingsScreen(
                     HorizontalDivider(
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 68.dp)
+                    )
+
+                    SettingsItem(
+                        title = "TabunganKu!",
+                        description = "Buat target dan kelola tabunganmu",
+                        icon = Icons.Default.Savings,
+                        iconBgColor = MaterialTheme.colorScheme.primaryContainer,
+                        iconTintColor = MaterialTheme.colorScheme.primary,
+                        onClick = {
+                            navController.navigate("savings")
+                        }
                     )
 
                 }

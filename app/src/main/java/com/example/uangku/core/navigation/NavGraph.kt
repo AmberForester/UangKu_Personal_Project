@@ -19,6 +19,9 @@ import com.example.uangku.feature.dashboard.presentation.DashboardScreen
 import com.example.uangku.feature.dashboard.presentation.DashboardViewModel
 import com.example.uangku.feature.export_excel.presentation.ExportExcelViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModel
+import com.example.uangku.feature.savings.presentation.SavingsDetailScreen
+import com.example.uangku.feature.savings.presentation.SavingsScreen
+import com.example.uangku.feature.savings.presentation.SavingsViewModel
 import com.example.uangku.feature.settings.presentation.SettingsScreen
 import com.example.uangku.feature.settings.presentation.SettingsViewModel
 import com.example.uangku.feature.transaction.presentation.TransactionFormScreen
@@ -40,7 +43,8 @@ fun UangKuNavGraph(
     backupViewModel: BackupViewModel,
     googleDriveAuth: GoogleDriveAuth,
     settingsViewModel: SettingsViewModel,
-    exportExcelViewModel: ExportExcelViewModel
+    exportExcelViewModel: ExportExcelViewModel,
+    savingsViewModel: SavingsViewModel
 ){
     val navController = rememberNavController()
 
@@ -107,6 +111,30 @@ fun UangKuNavGraph(
                 googleDriveAuth = googleDriveAuth,
                 settingsViewModel = settingsViewModel,
                 exportExcelViewModel = exportExcelViewModel
+            )
+        }
+
+        composable(Destination.Savings.route) {
+            SavingsScreen(
+                viewModel = savingsViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToDetail = { goalId ->
+                    navController.navigate(Destination.SavingsDetail.createRoute(goalId))
+                }
+            )
+        }
+
+        composable(
+            route = Destination.SavingsDetail.route,
+            arguments = listOf(
+                navArgument("goalId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val goalId = backStackEntry.arguments?.getLong("goalId") ?: -1L
+            SavingsDetailScreen(
+                goalId = goalId,
+                viewModel = savingsViewModel,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

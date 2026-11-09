@@ -25,6 +25,8 @@ import com.example.uangku.feature.export_excel.presentation.ExportExcelViewModel
 import com.example.uangku.feature.export_excel.presentation.ExportExcelViewModelFactory
 import com.example.uangku.feature.period.presentation.PeriodViewModel
 import com.example.uangku.feature.period.presentation.PeriodViewModelFactory
+import com.example.uangku.feature.savings.presentation.SavingsViewModel
+import com.example.uangku.feature.savings.presentation.SavingsViewModelFactory
 import com.example.uangku.feature.settings.presentation.SettingsViewModel
 import com.example.uangku.feature.settings.presentation.SettingsViewModelFactory
 import com.example.uangku.feature.transaction.presentation.viewModel.TransactionFormViewModel
@@ -84,7 +86,8 @@ class MainActivity : ComponentActivity() {
                     factory = DashboardViewModelFactory(
                         periodUseCase = appContainer.periodUseCase,
                         transactionUseCase = appContainer.transactionUseCase,
-                        budgetUseCase = appContainer.budgetUseCase
+                        budgetUseCase = appContainer.budgetUseCase,
+                        savingsUseCase = appContainer.savingsUseCase
                     )
                 )
 
@@ -109,6 +112,12 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
+                val savingsViewModel: SavingsViewModel = viewModel(
+                    factory = SavingsViewModelFactory(
+                        savingsUseCase = appContainer.savingsUseCase
+                    )
+                )
+
                 UangKuNavGraph(
                     categoryViewModel = categoryViewModel,
                     transactionViewModel = transactionViewModel,
@@ -119,7 +128,8 @@ class MainActivity : ComponentActivity() {
                     backupViewModel = backupViewModel,
                     googleDriveAuth = appContainer.googleDriveAuth,
                     settingsViewModel = settingsViewModel,
-                    exportExcelViewModel = exportExcelViewModel
+                    exportExcelViewModel = exportExcelViewModel,
+                    savingsViewModel = savingsViewModel
                 )
             }
         }
