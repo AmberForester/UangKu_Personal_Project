@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.uangku.feature.budget.domain.BudgetSummary
 import com.example.uangku.feature.period.domain.FinancialPeriod
+import com.example.uangku.feature.savings.domain.SavingGoal
 import com.example.uangku.feature.transaction.domain.Transaction
 import com.example.uangku.feature.transaction.domain.TransactionSummary
 import java.time.YearMonth
@@ -15,6 +16,11 @@ data class DashboardState (
     val summary: TransactionSummary = TransactionSummary(),
     val month: YearMonth = YearMonth.now(),
     val budgets: List<BudgetSummary> = emptyList(),
-    val recentTransactions: List<Transaction> = emptyList()
+    val recentTransactions: List<Transaction> = emptyList(),
+    val mostRecentSavingGoal: SavingGoal? = null,
+    val totalSavings: Double = 0.0
 
-)
+) {
+    val availableToSpend: Double
+        get() = summary.balance - totalSavings
+}

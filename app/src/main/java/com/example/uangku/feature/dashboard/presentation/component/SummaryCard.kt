@@ -54,6 +54,7 @@ import com.example.uangku.feature.transaction.domain.TransactionSummary
 fun SummaryCard(
     modifier: Modifier = Modifier,
     summary: TransactionSummary,
+    availableBalance: Double = summary.balance,
     financialPeriod: FinancialPeriod? = null,
 ) {
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
@@ -134,7 +135,7 @@ fun SummaryCard(
 
                             Text(
                                 text = if (isBalanceVisible) {
-                                    currencyFormatter(summary.balance)
+                                    currencyFormatter(availableBalance)
                                 } else {
                                     "••••••••"
                                 },

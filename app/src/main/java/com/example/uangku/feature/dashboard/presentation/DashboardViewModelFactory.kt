@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.uangku.feature.budget.domain.BudgetUseCase
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.savings.domain.SavingsUseCase
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -13,7 +14,8 @@ class DashboardViewModelFactory (
 
     private val periodUseCase: PeriodUseCase,
     private val transactionUseCase: TransactionUseCase,
-    private val budgetUseCase: BudgetUseCase
+    private val budgetUseCase: BudgetUseCase,
+    private val savingsUseCase: SavingsUseCase
 
 ): ViewModelProvider.Factory {
 
@@ -23,7 +25,7 @@ class DashboardViewModelFactory (
     ): T {
 
         if (modelClass.isAssignableFrom(DashboardViewModel::class.java)) {
-            return DashboardViewModel(periodUseCase, transactionUseCase, budgetUseCase) as T
+            return DashboardViewModel(periodUseCase, transactionUseCase, budgetUseCase, savingsUseCase) as T
         }
 
         throw IllegalArgumentException(

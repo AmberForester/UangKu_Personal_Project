@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.dashboard.presentation.component.PreviewBudgetSection
+import com.example.uangku.feature.dashboard.presentation.component.PreviewSavingsSection
 import com.example.uangku.feature.dashboard.presentation.component.SummaryCard
 import com.example.uangku.feature.transaction.presentation.component.AddTransactionButton
 
@@ -67,6 +68,7 @@ fun DashboardScreen(
 
             SummaryCard(
                 summary = state.summary,
+                availableBalance = state.availableToSpend,
                 financialPeriod = state.financialPeriod
             )
 
@@ -75,6 +77,14 @@ fun DashboardScreen(
             PreviewBudgetSection(
                 budgets = state.budgets,
                 onSeeAllClick = { navController.navigate("budget") }
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            PreviewSavingsSection(
+                savingGoal = state.mostRecentSavingGoal,
+                onSeeAllClick = { navController.navigate("savings") },
+                onGoalClick = { goalId -> navController.navigate("savings_detail/$goalId") }
             )
 
             Spacer(Modifier.height(16.dp))
