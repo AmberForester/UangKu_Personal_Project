@@ -6,6 +6,7 @@ import com.example.uangku.core.domain.Type
 import com.example.uangku.feature.category.domain.CategoryRepository
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.transaction.domain.Transaction
 import com.example.uangku.feature.transaction.domain.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -180,6 +181,23 @@ class BudgetUseCase (
 
         return (totalIncome - totalAllocated)
             .coerceAtLeast(0.0)
+    }
+
+    suspend fun getCurrentPeriod(): FinancialPeriod {
+        return periodUseCase.getCurrentFinancialPeriod()
+    }
+
+    suspend fun getCategoryTransactionsForCurrentPeriod(categoryId: Int): Flow<List<Transaction>> {
+        val period = periodUseCase.getCurrentFinancialPeriod()
+        val (startDate, endDate) = getPeriodDateRange(period)
+
+        return transactionRepository.getTransactions().map { transactions ->
+            transactions.filter {
+                it.categoryId == categoryId &&
+                        it.date >= startDate &&
+                        it.date < endDate
+            }.sortedByDescending { it.date }
+        }
     }
 
     private fun getPeriodDateRange(

@@ -22,4 +22,10 @@ interface BudgetEvent {
 
     data object onReset: BudgetEvent
 
+    data class OnDetailScreenOpen(
+        val categoryId: Int
+    ) : BudgetEvent
+
+    data object OnDetailScreenClose : BudgetEvent
+
 }

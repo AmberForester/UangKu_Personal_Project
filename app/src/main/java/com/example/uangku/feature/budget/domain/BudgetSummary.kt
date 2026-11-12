@@ -22,6 +22,12 @@ data class BudgetSummary (
             return (spent / budgetAmount).coerceIn(0.0, 1.0).toFloat()
         }
 
+    val percentage: Int
+        get() {
+            if(budgetAmount <= 0.0) return 0
+            return ((spent / budgetAmount) * 100).toInt()
+        }
+
     val isOverBudget: Boolean
         get() = remaining < 0
 
