@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.uangku.core.navigation.Destination
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.budget.presentation.component.BudgetDialog
@@ -70,7 +71,10 @@ fun BudgetScreen(
 
                 BudgetItem(
                     budget = budget,
-                    onEditClick = { viewModel.onEvent(BudgetEvent.onItemClick(budget)) }
+                    onEditClick = { viewModel.onEvent(BudgetEvent.onItemClick(budget)) },
+                    onClick = {
+                        navController.navigate(Destination.BudgetDetail.createRoute(budget.categoryId))
+                    }
                 )
             }
         }
@@ -101,12 +105,13 @@ fun ShowDialog(
                     BudgetEvent.onDismissDialog
                 )
             },
-            availableAmount = state.availableAmount,
             onSave = {
                 viewModel.onEvent(
                     BudgetEvent.onSaveClick
                 )
             },
+            availableAmount = state.availableAmount,
+//            budgetId = selected.budgetId,
             onReset = {
                 viewModel.onEvent(
                     BudgetEvent.onReset

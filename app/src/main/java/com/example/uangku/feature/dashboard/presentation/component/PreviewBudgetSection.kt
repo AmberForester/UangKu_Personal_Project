@@ -2,6 +2,7 @@ package com.example.uangku.feature.dashboard.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,8 @@ import com.example.uangku.feature.budget.domain.BudgetSummary
 @Composable
 fun PreviewBudgetSection(
     budgets: List<BudgetSummary>,
-    onSeeAllClick: () -> Unit
+    onSeeAllClick: () -> Unit,
+    onBudgetClick: ((Int) -> Unit)? = null
 ) {
     val activeBudgets = budgets.filter { it.budgetAmount != 0.0 }
 
@@ -98,7 +100,10 @@ fun PreviewBudgetSection(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(activeBudgets, key = { it.categoryId }) { budget ->
-                    BudgetCard(budget = budget)
+                    BudgetCard(
+                        budget = budget,
+                        onClick = onBudgetClick?.let { { it(budget.categoryId) } }
+                    )
                 }
             }
         }
@@ -107,12 +112,14 @@ fun PreviewBudgetSection(
 
 @Composable
 fun BudgetCard(
-    budget: BudgetSummary
+    budget: BudgetSummary,
+    onClick: (() -> Unit)? = null
 ) {
     val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+    val isBudgetMaxedOrOver = budget.percentage >= 100 || budget.isOverBudget || budget.progress >= 1f
 
     val progressColor = when {
-        budget.isOverBudget -> redComponent
+        isBudgetMaxedOrOver -> redComponent
         budget.progress >= 0.75f -> orangeComponent
         budget.progress >= 0.5f -> lightOrangeComponent
         else -> GreenComponent
@@ -122,7 +129,7 @@ fun BudgetCard(
         progressColor.copy(alpha = 0.2f)
     } else {
         when {
-            budget.isOverBudget -> redBg
+            isBudgetMaxedOrOver -> redBg
             budget.progress >= 0.75f -> orangeBg
             budget.progress >= 0.5f -> lightOrangeBg
             else -> greenBg
@@ -135,16 +142,20 @@ fun BudgetCard(
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(18.dp)
+                shape = RoundedCornerShape(20.dp)
             ),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
+            modifier = Modifier
+                .then(
+                    if (onClick != null) Modifier.clickable { onClick() } else Modifier
+                )
+                .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             // Header Baris: Nama Kategori & Badge Persentase
             Row(
@@ -174,7 +185,7 @@ fun BudgetCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "${(budget.progress * 100).toInt()}%",
+                        text = "${budget.percentage}%",
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
                         color = progressColor

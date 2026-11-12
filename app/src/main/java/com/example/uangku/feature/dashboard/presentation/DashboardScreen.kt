@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.uangku.core.navigation.Destination
 import com.example.uangku.core.ui.component.TopAppBar
 import com.example.uangku.core.ui.component.UangKuNavigationBar
 import com.example.uangku.feature.dashboard.presentation.component.PreviewBudgetSection
@@ -76,7 +77,10 @@ fun DashboardScreen(
 
             PreviewBudgetSection(
                 budgets = state.budgets,
-                onSeeAllClick = { navController.navigate("budget") }
+                onSeeAllClick = { navController.navigate("budget") },
+                onBudgetClick = { categoryId ->
+                    navController.navigate(Destination.BudgetDetail.createRoute(categoryId))
+                }
             )
 
             Spacer(Modifier.height(16.dp))

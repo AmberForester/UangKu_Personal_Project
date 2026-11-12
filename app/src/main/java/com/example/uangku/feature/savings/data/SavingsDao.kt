@@ -46,4 +46,20 @@ interface SavingsDao {
 
     @Query("DELETE FROM saving_logs WHERE id = :id")
     suspend fun deleteLog(id: Long)
+
+    // === BACKUP & RESTORE ===
+    @Query("SELECT * FROM saving_logs ORDER BY id ASC")
+    fun getAllLogs(): Flow<List<SavingLogEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGoals(goals: List<SavingGoalEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLogs(logs: List<SavingLogEntity>)
+
+    @Query("DELETE FROM saving_logs")
+    suspend fun deleteAllLogs()
+
+    @Query("DELETE FROM saving_goals")
+    suspend fun deleteAllGoals()
 }

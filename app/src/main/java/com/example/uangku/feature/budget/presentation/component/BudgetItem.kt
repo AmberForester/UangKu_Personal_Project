@@ -2,6 +2,7 @@ package com.example.uangku.feature.budget.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,8 +48,10 @@ import com.example.uangku.feature.budget.domain.BudgetSummary
 
 @Composable
 fun BudgetItem(
+    modifier: Modifier = Modifier,
     budget: BudgetSummary,
-    onEditClick: (BudgetSummary) -> Unit
+    onEditClick: (BudgetSummary) -> Unit,
+    onClick: (() -> Unit)? = null,
 ) {
     fun formatWithSpace(amount: Double): String {
         val formatted = currencyMinimalFormatter(amount)
@@ -60,9 +63,10 @@ fun BudgetItem(
     }
 
     val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
+    val isBudgetMaxedOrOver = budget.percentage >= 100 || budget.isOverBudget || budget.progress >= 1f
 
     val progressColor = when {
-        budget.isOverBudget -> redComponent
+        isBudgetMaxedOrOver -> redComponent
         budget.progress >= 0.75f -> orangeComponent
         budget.progress >= 0.5f -> lightOrangeComponent
         else -> GreenComponent
@@ -72,7 +76,7 @@ fun BudgetItem(
         progressColor.copy(alpha = 0.2f)
     } else {
         when {
-            budget.isOverBudget -> redBg
+            isBudgetMaxedOrOver -> redBg
             budget.progress >= 0.75f -> orangeBg
             budget.progress >= 0.5f -> lightOrangeBg
             else -> greenBg
@@ -80,14 +84,14 @@ fun BudgetItem(
     }
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(18.dp)
+                shape = RoundedCornerShape(20.dp)
             ),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -96,6 +100,9 @@ fun BudgetItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(
+                    if (onClick != null) Modifier.clickable { onClick() } else Modifier
+                )
                 .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             // Header Baris: Kategori & Aksi/Badge
@@ -129,7 +136,7 @@ fun BudgetItem(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "${(budget.progress * 100).toInt()}%",
+                                text = "${budget.percentage}%",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = progressColor
@@ -240,7 +247,7 @@ fun BudgetItem(
                             fontSize = 12.sp
                         ),
                         fontWeight = FontWeight.SemiBold,
-                        color = if (budget.isOverBudget) redComponent else MaterialTheme.colorScheme.onSurface,
+                        color = if (isBudgetMaxedOrOver) redComponent else MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.uangku.feature.budget.domain.Budget
 import com.example.uangku.feature.budget.domain.BudgetSummary
 import com.example.uangku.feature.budget.domain.BudgetUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -22,6 +23,9 @@ class BudgetViewModel(
 
     private val _state = MutableStateFlow(BudgetState())
     val state = _state.asStateFlow()
+
+    private var loadBudgetsJob: Job? = null
+    private var detailJob: Job? = null
 
     fun onEvent(event: BudgetEvent) {
         when (event) {
@@ -70,26 +74,73 @@ class BudgetViewModel(
             BudgetEvent.onReset -> {
                 resetBudget()
             }
-        }
-    }
 
-    private fun loadBudgets() {
-        viewModelScope.launch {
-            budgetUseCase.getBudgetSummaries().collect { budgets ->
+            is BudgetEvent.OnDetailScreenOpen -> {
+                loadBudgetDetail(event.categoryId)
+            }
+
+            BudgetEvent.OnDetailScreenClose -> {
+                detailJob?.cancel()
+                detailJob = null
                 _state.update {
                     it.copy(
-                        budgets = budgets
+                        currentDetailBudget = null,
+                        detailTransactions = emptyList(),
+                        isDetailLoading = false
                     )
                 }
             }
         }
+    }
 
-        viewModelScope.launch {
-            budgetUseCase.getBudgetOverview().collect { overview ->
-                _state.update {
-                    it.copy(
-                        budgetOverview = overview
-                    )
+    private fun loadBudgets() {
+        loadBudgetsJob?.cancel()
+        loadBudgetsJob = viewModelScope.launch {
+            launch {
+                budgetUseCase.getBudgetSummaries().collect { budgets ->
+                    _state.update {
+                        it.copy(
+                            budgets = budgets
+                        )
+                    }
+                }
+            }
+
+            launch {
+                budgetUseCase.getBudgetOverview().collect { overview ->
+                    _state.update {
+                        it.copy(
+                            budgetOverview = overview
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadBudgetDetail(categoryId: Int) {
+        detailJob?.cancel()
+        detailJob = viewModelScope.launch {
+            _state.update { it.copy(isDetailLoading = true) }
+
+            val period = budgetUseCase.getCurrentPeriod()
+            _state.update { it.copy(currentPeriod = period) }
+
+            launch {
+                budgetUseCase.getBudgetSummaries().collect { list ->
+                    val current = list.find { it.categoryId == categoryId }
+                    _state.update { it.copy(currentDetailBudget = current) }
+                }
+            }
+
+            launch {
+                budgetUseCase.getCategoryTransactionsForCurrentPeriod(categoryId).collect { txs ->
+                    _state.update {
+                        it.copy(
+                            detailTransactions = txs,
+                            isDetailLoading = false
+                        )
+                    }
                 }
             }
         }
@@ -146,7 +197,7 @@ class BudgetViewModel(
             _state.update {
                 it.copy(
                     selectedBudget = budget,
-                    amount = budget.budgetAmount.toInt().toString(),
+                    amount = if (budget.budgetAmount > 0.0) budget.budgetAmount.toInt().toString() else "",
                     availableAmount = availableAmount,
                     errorMessage = null,
                     showDialog = true

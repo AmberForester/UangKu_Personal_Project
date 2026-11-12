@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import com.example.uangku.feature.analysis.presentation.AnalysisScreen
 import com.example.uangku.feature.google_drive.data.GoogleDriveAuth
 import com.example.uangku.feature.backup.presentation.BackupViewModel
+import com.example.uangku.feature.budget.presentation.BudgetDetailScreen
 import com.example.uangku.feature.budget.presentation.BudgetScreen
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
 import com.example.uangku.feature.category.presentation.CategoryScreen
@@ -95,6 +96,23 @@ fun UangKuNavGraph(
                viewModel = budgetViewModel,
                navController = navController
            )
+        }
+
+        composable(
+            route = Destination.BudgetDetail.route,
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: -1
+            BudgetDetailScreen(
+                categoryId = categoryId,
+                viewModel = budgetViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToTransaction = { txId ->
+                    navController.navigate("transaction_form/$txId")
+                }
+            )
         }
 
         composable (Destination.Analysis.route) {

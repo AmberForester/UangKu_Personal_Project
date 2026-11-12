@@ -12,6 +12,10 @@ sealed class Destination (
 
     data object Budget : Destination("budget")
 
+    data object BudgetDetail : Destination("budget_detail/{categoryId}") {
+        fun createRoute(categoryId: Int): String = "budget_detail/$categoryId"
+    }
+
     data object Analysis : Destination("analysis")
 
     data object Settings : Destination("settings")
@@ -23,6 +27,5 @@ sealed class Destination (
     data object SavingsDetail : Destination("savings_detail/{goalId}") {
         fun createRoute(goalId: Long): String = "savings_detail/$goalId"
     }
-
 
 }
