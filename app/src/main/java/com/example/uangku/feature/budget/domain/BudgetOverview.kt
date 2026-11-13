@@ -1,9 +1,8 @@
 package com.example.uangku.feature.budget.domain
 
-data class  BudgetOverview(
-
+data class BudgetOverview(
     val income: Double,
     val allocated: Double,
-    val available: Double
-
+    val available: Double,
+    val saved: Double = 0.0
 )

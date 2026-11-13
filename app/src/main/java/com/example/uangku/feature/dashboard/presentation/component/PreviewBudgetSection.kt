@@ -209,12 +209,8 @@ fun BudgetCard(
             Spacer(modifier = Modifier.height(10.dp))
 
             // Nominal Pengeluaran / Total Anggaran
-            val spentText = currencyMinimalFormatter(budget.spent).let {
-                if (it.startsWith("Rp") && !it.startsWith("Rp ")) it.replaceFirst("Rp", "Rp ") else it
-            }
-            val totalText = currencyMinimalFormatter(budget.budgetAmount).let {
-                if (it.startsWith("Rp") && !it.startsWith("Rp ")) it.replaceFirst("Rp", "Rp ") else it
-            }
+            val spentText = currencyMinimalFormatter(budget.spent)
+            val totalText = currencyMinimalFormatter(budget.budgetAmount)
 
             Text(
                 text = "$spentText / $totalText",

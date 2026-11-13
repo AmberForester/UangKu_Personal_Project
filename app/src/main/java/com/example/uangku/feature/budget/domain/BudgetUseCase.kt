@@ -6,6 +6,8 @@ import com.example.uangku.core.domain.Type
 import com.example.uangku.feature.category.domain.CategoryRepository
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.savings.domain.SavingType
+import com.example.uangku.feature.savings.domain.SavingsRepository
 import com.example.uangku.feature.transaction.domain.Transaction
 import com.example.uangku.feature.transaction.domain.TransactionRepository
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +23,8 @@ class BudgetUseCase (
     private val budgetRepository: BudgetRepository,
     private val transactionRepository: TransactionRepository,
     private val categoryRepository: CategoryRepository,
-    private val periodUseCase: PeriodUseCase
+    private val periodUseCase: PeriodUseCase,
+    private val savingsRepository: SavingsRepository
 
 ){
 
@@ -130,8 +133,9 @@ class BudgetUseCase (
 
             budgetRepository.getBudgets(),
             transactionRepository.getTransactions(),
+            savingsRepository.getAllLogs()
 
-        ) { budgets, transactions ->
+        ) { budgets, transactions, logs ->
 
             val income = transactions
                 .filter { it.type == Type.INCOME &&
@@ -140,15 +144,21 @@ class BudgetUseCase (
                 }
                 .sumOf { it.amount }
 
+            val periodLogs = logs.filter { it.date >= startDate && it.date < endDate }
+            val deposits = periodLogs.filter { it.type == SavingType.DEPOSIT }.sumOf { it.amount }
+            val withdrawals = periodLogs.filter { it.type == SavingType.WITHDRAW }.sumOf { it.amount }
+            val saved = (deposits - withdrawals).coerceAtLeast(0.0)
+
             val allocated = budgets
                 .sumOf { it.amount ?: 0.0 }
 
-            val available = (income - allocated).coerceAtLeast(0.0)
+            val available = (income - saved - allocated).coerceAtLeast(0.0)
 
             BudgetOverview(
                 income = income,
                 allocated = allocated,
-                available = available
+                available = available,
+                saved = saved
             )
         }
     }
@@ -165,6 +175,8 @@ class BudgetUseCase (
 
         val budgets = budgetRepository.getBudgets().first()
 
+        val logs = savingsRepository.getAllLogs().first()
+
         val totalIncome = transactions
             .filter {
                 it.type == Type.INCOME &&
@@ -173,13 +185,18 @@ class BudgetUseCase (
             }
             .sumOf { it.amount }
 
+        val periodLogs = logs.filter { it.date >= startDate && it.date < endDate }
+        val deposits = periodLogs.filter { it.type == SavingType.DEPOSIT }.sumOf { it.amount }
+        val withdrawals = periodLogs.filter { it.type == SavingType.WITHDRAW }.sumOf { it.amount }
+        val saved = (deposits - withdrawals).coerceAtLeast(0.0)
+
         val totalAllocated = budgets
             .filter { it.id != budgetId }
             .sumOf {
                 it.amount ?: 0.0
             }
 
-        return (totalIncome - totalAllocated)
+        return (totalIncome - saved - totalAllocated)
             .coerceAtLeast(0.0)
     }
 
