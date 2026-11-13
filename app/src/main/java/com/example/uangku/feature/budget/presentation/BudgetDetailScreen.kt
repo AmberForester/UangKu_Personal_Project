@@ -329,15 +329,6 @@ private fun DetailBudgetSummaryCard(
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    fun formatWithSpace(amount: Double): String {
-        val formatted = currencyMinimalFormatter(amount)
-        return if (formatted.startsWith("Rp") && !formatted.startsWith("Rp ")) {
-            formatted.replaceFirst("Rp", "Rp ")
-        } else {
-            formatted
-        }
-    }
-
     val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
     val isBudgetMaxedOrOver = budget.percentage >= 100 || budget.isOverBudget || budget.progress >= 1f
 
@@ -445,7 +436,7 @@ private fun DetailBudgetSummaryCard(
                     )
                     Spacer(Modifier.height(3.dp))
                     Text(
-                        text = formatWithSpace(budget.spent),
+                        text = currencyMinimalFormatter(budget.spent),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (isBudgetMaxedOrOver) redComponent else MaterialTheme.colorScheme.onSurface
@@ -460,7 +451,7 @@ private fun DetailBudgetSummaryCard(
                     )
                     Spacer(Modifier.height(3.dp))
                     Text(
-                        text = if (budget.budgetAmount > 0.0) formatWithSpace(budget.budgetAmount) else "Belum diatur",
+                        text = if (budget.budgetAmount > 0.0) currencyMinimalFormatter(budget.budgetAmount) else "Belum diatur",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -510,9 +501,9 @@ private fun DetailBudgetSummaryCard(
 
                 // Baris Status Sisa atau Kelebihan Anggaran
                 val remainingText = if (budget.isOverBudget) {
-                    "Melebihi anggaran ${formatWithSpace(-budget.remaining)}"
+                    "Melebihi anggaran ${currencyMinimalFormatter(-budget.remaining)}"
                 } else {
-                    "Sisa anggaran ${formatWithSpace(budget.remaining)}"
+                    "Sisa anggaran ${currencyMinimalFormatter(budget.remaining)}"
                 }
 
                 Row(

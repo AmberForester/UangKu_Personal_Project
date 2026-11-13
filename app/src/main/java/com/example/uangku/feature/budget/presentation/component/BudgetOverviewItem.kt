@@ -2,6 +2,8 @@ package com.example.uangku.feature.budget.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,12 +13,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -28,7 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uangku.core.ui.component.currencyFormatter
+import com.example.uangku.core.ui.component.currencyMinimalFormatter
 import com.example.uangku.core.ui.theme.lightSkyBlue
 import com.example.uangku.core.ui.theme.mainSkyBlue
 import com.example.uangku.core.ui.theme.redComponent
@@ -38,28 +47,36 @@ import com.example.uangku.feature.budget.domain.BudgetOverview
 
 @Composable
 fun BudgetOverviewItem(
-    overview: BudgetOverview
+    overview: BudgetOverview,
+    onNavigateToSavings: (() -> Unit)? = null
 ) {
+    val availableToBudget = (overview.income - overview.saved).coerceAtLeast(0.0)
 
-    val allocationProgress = if (overview.income > 0) {
-        (overview.allocated / overview.income).coerceIn(0.0, 1.0).toFloat()
+    val allocationProgress = if (overview.income == 0.0) {
+        0f
+    } else if (availableToBudget > 0) {
+        (overview.allocated / availableToBudget).coerceIn(0.0, 1.0).toFloat()
     } else if (overview.allocated > 0) {
         1.0f
-    }else {
+    } else {
         0f
     }
 
-    val allocationPercent = if (overview.income > 0) {
-        ((overview.allocated / overview.income) * 100).toInt()
+    val allocationPercent = if (availableToBudget > 0) {
+        ((overview.allocated / availableToBudget) * 100).toInt()
     } else {
         0
     }
 
     val allocationText = when {
         overview.income == 0.0 && overview.allocated > 0 ->
-            "Teralokasi ${currencyFormatter(overview.allocated)} (Belum ada pemasukan)"
-        overview.allocated  > overview.income ->
-            "Teralokasi $allocationPercent% dari total pemasukan (Melebihi pemasukan)"
+            "Rencana anggaran disiapkan (Belum ada pemasukan)"
+        availableToBudget == 0.0 && overview.allocated > 0 ->
+            "Teralokasi ${currencyMinimalFormatter(overview.allocated)} (Melebihi dana tersedia)"
+        overview.allocated > availableToBudget ->
+            "Teralokasi $allocationPercent% dari dana tersedia (Melebihi dana tersedia)"
+        overview.saved > 0 ->
+            "Teralokasi $allocationPercent% dari total dana diluar tabungan"
         else ->
             "Teralokasi $allocationPercent% dari total pemasukan"
     }
@@ -125,7 +142,7 @@ fun BudgetOverviewItem(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = currencyFormatter(overview.available),
+                        text = currencyMinimalFormatter(overview.available),
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontSize = 24.sp
                         ),
@@ -135,14 +152,14 @@ fun BudgetOverviewItem(
 
                     Spacer(Modifier.height(12.dp))
 
-                    // Progress bar alokasi dari pemasukan
+                    // Progress bar alokasi dari dana yang tersedia untuk budget
                     LinearProgressIndicator(
                         progress = { allocationProgress },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(6.dp)
                             .clip(RoundedCornerShape(3.dp)),
-                        color = if (overview.allocated > overview.income) {
+                        color = if (overview.income > 0.0 && overview.allocated > availableToBudget) {
                             redComponent
                         } else {
                             if (isDark) Color(0xFF38BDF8) else mainSkyBlue
@@ -186,7 +203,7 @@ fun BudgetOverviewItem(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = "+${currencyFormatter(overview.income)}",
+                        text = "+${currencyMinimalFormatter(overview.income)}",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontSize = 15.sp
                         ),
@@ -218,13 +235,87 @@ fun BudgetOverviewItem(
                     Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = currencyFormatter(overview.allocated),
+                        text = currencyMinimalFormatter(overview.allocated),
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontSize = 15.sp
                         ),
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
+                }
+            }
+
+            // Baris Khusus Tabungan (hanya tampil jika ada dana yang disetor ke tabungan di periode ini)
+            if (overview.saved > 0) {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface)
+                        .then(
+                            if (onNavigateToSavings != null) {
+                                Modifier.clickable { onNavigateToSavings() }
+                            } else Modifier
+                        )
+                        .padding(horizontal = 20.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Default.Savings,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+
+                        Spacer(Modifier.width(10.dp))
+
+                        Column {
+                            val savedPercent = if (overview.income > 0) {
+                                " (${((overview.saved / overview.income) * 100).toInt()}%)"
+                            } else ""
+
+                            Text(
+                                text = "Disisihkan ke Tabungan$savedPercent:",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.5.sp),
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = currencyMinimalFormatter(overview.saved),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    if (onNavigateToSavings != null) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = "Lihat Tabungan",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 }
             }
         }

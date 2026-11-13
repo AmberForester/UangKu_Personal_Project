@@ -38,6 +38,12 @@ class SavingRepoImpl (
         }
     }
 
+    override fun getAllLogs(): Flow<List<SavingLog>> {
+        return savingsDao.getAllLogs().map { list ->
+            list.map { it.toDomain() }
+        }
+    }
+
     override suspend fun insertLog(log: SavingLog) {
         savingsDao.insertLog(log.toEntity())
     }

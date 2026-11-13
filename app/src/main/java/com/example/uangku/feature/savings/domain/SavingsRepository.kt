@@ -18,6 +18,8 @@ interface SavingsRepository {
     // Log
     fun getLogsByGoalId(goalId: Long): Flow<List<SavingLog>>
 
+    fun getAllLogs(): Flow<List<SavingLog>>
+
     suspend fun insertLog(log: SavingLog)
 
     suspend fun deleteLog(id: Long)

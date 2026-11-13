@@ -53,15 +53,6 @@ fun BudgetItem(
     onEditClick: (BudgetSummary) -> Unit,
     onClick: (() -> Unit)? = null,
 ) {
-    fun formatWithSpace(amount: Double): String {
-        val formatted = currencyMinimalFormatter(amount)
-        return if (formatted.startsWith("Rp") && !formatted.startsWith("Rp ")) {
-            formatted.replaceFirst("Rp", "Rp ")
-        } else {
-            formatted
-        }
-    }
-
     val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
     val isBudgetMaxedOrOver = budget.percentage >= 100 || budget.isOverBudget || budget.progress >= 1f
 
@@ -226,7 +217,7 @@ fun BudgetItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${formatWithSpace(budget.spent)} / ${formatWithSpace(budget.budgetAmount)}",
+                        text = "${currencyMinimalFormatter(budget.spent)} / ${currencyMinimalFormatter(budget.budgetAmount)}",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 12.sp
                         ),
@@ -236,9 +227,9 @@ fun BudgetItem(
                     )
 
                     val remainingText = if (budget.isOverBudget) {
-                        "Lebih ${formatWithSpace(-budget.remaining)}"
+                        "Lebih ${currencyMinimalFormatter(-budget.remaining)}"
                     } else {
-                        "Sisa ${formatWithSpace(budget.remaining)}"
+                        "Sisa ${currencyMinimalFormatter(budget.remaining)}"
                     }
 
                     Text(

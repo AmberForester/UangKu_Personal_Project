@@ -65,10 +65,23 @@ class AppContainer (
     private val transactionRepository = TransactionRepoImpl(transactionDao)
     val transactionUseCase = TransactionUseCase(transactionRepository, periodUseCase)
 
+    // savings
+    private val savingsDao = database.savingsDao()
+    private val savingsRepository: SavingsRepository = SavingRepoImpl(savingsDao)
+    val savingsUseCase = SavingsUseCase(
+        savingsRepository = savingsRepository
+    )
+
     //budget
     private val budgetDao = database.budgetDao()
     private val budgetRepository = BudgetRepoImpl(budgetDao)
-    val budgetUseCase = BudgetUseCase(budgetRepository, transactionRepository, categoryRepository, periodUseCase)
+    val budgetUseCase = BudgetUseCase(
+        budgetRepository = budgetRepository,
+        transactionRepository = transactionRepository,
+        categoryRepository = categoryRepository,
+        periodUseCase = periodUseCase,
+        savingsRepository = savingsRepository
+    )
 
     // manual back up and restore
     private val backupFileManager = FileManagerImpl(
@@ -117,12 +130,5 @@ class AppContainer (
         transactionRepository = transactionRepository,
         periodUseCase = periodUseCase,
         excelExportRepository = excelExportRepository
-    )
-
-    // savings
-    private val savingsDao = database.savingsDao()
-    private val savingsRepository: SavingsRepository = SavingRepoImpl(savingsDao)
-    val savingsUseCase = SavingsUseCase(
-        savingsRepository = savingsRepository
     )
 }

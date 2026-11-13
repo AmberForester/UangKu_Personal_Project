@@ -62,7 +62,12 @@ fun BudgetScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                BudgetOverviewItem(overview = state.budgetOverview)
+                BudgetOverviewItem(
+                    overview = state.budgetOverview,
+                    onNavigateToSavings = {
+                        navController.navigate(Destination.Savings.route)
+                    }
+                )
             }
 
             items(state.budgets){ budget ->
