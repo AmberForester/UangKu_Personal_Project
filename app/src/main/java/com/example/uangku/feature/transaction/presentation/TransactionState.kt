@@ -22,6 +22,8 @@ data class TransactionState (
 
     val monthlySummary: TransactionSummary = TransactionSummary(),
     val overallSummary: TransactionSummary = TransactionSummary(),
+    val totalSavings: Double = 0.0,
+    val monthlySavings: Double = 0.0,
 
     val searchQuery: String = "",
     val selectedCategory: Category? = null,
@@ -29,6 +31,12 @@ data class TransactionState (
     val categories: List<Category> = emptyList()
 
 ) {
+    val availableBalance: Double
+        get() = overallSummary.balance - totalSavings
+
+    val availableMonthlyBalance: Double
+        get() = monthlySummary.balance - monthlySavings
+
     val filteredTransactions: List<Transaction>
         get() = transactions.filter { transaction ->
             val matchesSearch = searchQuery.isBlank() ||

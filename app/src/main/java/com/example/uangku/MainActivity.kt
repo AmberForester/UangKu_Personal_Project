@@ -62,7 +62,8 @@ class MainActivity : ComponentActivity() {
                     factory = TransactionViewModelFactory(
                         appContainer.transactionUseCase,
                         appContainer.periodUseCase,
-                        appContainer.categoryUseCase
+                        appContainer.categoryUseCase,
+                        appContainer.savingsUseCase
                     )
                 )
                 val transactionFormViewModel: TransactionFormViewModel = viewModel(

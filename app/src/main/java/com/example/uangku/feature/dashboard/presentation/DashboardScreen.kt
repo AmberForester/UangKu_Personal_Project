@@ -75,20 +75,20 @@ fun DashboardScreen(
 
             Spacer(Modifier.height(14.dp))
 
+            PreviewSavingsSection(
+                savingGoal = state.mostRecentSavingGoal,
+                onSeeAllClick = { navController.navigate("savings") },
+                onGoalClick = { goalId -> navController.navigate("savings_detail/$goalId") }
+            )
+
+            Spacer(Modifier.height(16.dp))
+
             PreviewBudgetSection(
                 budgets = state.budgets,
                 onSeeAllClick = { navController.navigate("budget") },
                 onBudgetClick = { categoryId ->
                     navController.navigate(Destination.BudgetDetail.createRoute(categoryId))
                 }
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            PreviewSavingsSection(
-                savingGoal = state.mostRecentSavingGoal,
-                onSeeAllClick = { navController.navigate("savings") },
-                onGoalClick = { goalId -> navController.navigate("savings_detail/$goalId") }
             )
 
             Spacer(Modifier.height(16.dp))

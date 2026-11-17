@@ -103,7 +103,9 @@ fun TransactionScreen(
             // 3. Ringkasan Keuangan Bulanan (Tetap utuh, tidak terfilter)
             ShowTransactionSummary(
                 monthlySummary = state.monthlySummary,
-                overallSummary = state.overallSummary
+                overallSummary = state.overallSummary,
+                totalSavings = state.totalSavings,
+                monthlySavings = state.monthlySavings
             )
 
             Spacer(Modifier.height(16.dp))

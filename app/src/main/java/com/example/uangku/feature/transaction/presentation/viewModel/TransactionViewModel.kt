@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uangku.feature.category.domain.CategoryUseCase
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.savings.domain.SavingsUseCase
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 import com.example.uangku.feature.transaction.presentation.TransactionEvent
 import com.example.uangku.feature.transaction.presentation.TransactionState
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,7 +26,8 @@ class TransactionViewModel (
 
     private val transactionUseCase: TransactionUseCase,
     private val periodUseCase: PeriodUseCase,
-    private val categoryUseCase: CategoryUseCase
+    private val categoryUseCase: CategoryUseCase,
+    private val savingsUseCase: SavingsUseCase
 
 ) : ViewModel() {
 
@@ -37,6 +40,8 @@ class TransactionViewModel (
         observeMonthlySummary()
         observeFinancialPeriod()
         observeCategories()
+        observeSavings()
+        observeMonthlySavings()
     }
 
     fun onEvent(event: TransactionEvent) {
@@ -100,6 +105,35 @@ class TransactionViewModel (
                     it.copy(categories = categories)
                 }
             }
+        }
+    }
+
+    private fun observeSavings() {
+        viewModelScope.launch {
+            savingsUseCase.getTotalLockedSavings().collect { total ->
+                _state.update {
+                    it.copy(totalSavings = total)
+                }
+            }
+        }
+    }
+
+    private fun observeMonthlySavings() {
+        viewModelScope.launch {
+            state.map { it.financialPeriod }
+                .distinctUntilChanged()
+                .flatMapLatest { period ->
+                    if (period != null) {
+                        savingsUseCase.getSavedAmountForPeriod(period)
+                    } else {
+                        flowOf(0.0)
+                    }
+                }
+                .collect { saved ->
+                    _state.update {
+                        it.copy(monthlySavings = saved)
+                    }
+                }
         }
     }
 
