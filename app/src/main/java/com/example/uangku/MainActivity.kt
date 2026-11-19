@@ -13,6 +13,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uangku.core.navigation.UangKuNavGraph
 import com.example.uangku.core.ui.theme.ThemeMode
 import com.example.uangku.core.ui.theme.UangKuTheme
+import com.example.uangku.feature.analysis.presentation.AnalysisViewModel
+import com.example.uangku.feature.analysis.presentation.AnalysisViewModelFactory
 import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.example.uangku.feature.backup.presentation.BackupViewModelFactory
 import com.example.uangku.feature.budget.presentation.BudgetViewModel
@@ -119,6 +121,13 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
+                val analysisViewModel: AnalysisViewModel = viewModel(
+                    factory = AnalysisViewModelFactory(
+                        analysisUseCase = appContainer.analysisUseCase,
+                        periodUseCase = appContainer.periodUseCase
+                    )
+                )
+
                 UangKuNavGraph(
                     categoryViewModel = categoryViewModel,
                     transactionViewModel = transactionViewModel,
@@ -130,7 +139,8 @@ class MainActivity : ComponentActivity() {
                     googleDriveAuth = appContainer.googleDriveAuth,
                     settingsViewModel = settingsViewModel,
                     exportExcelViewModel = exportExcelViewModel,
-                    savingsViewModel = savingsViewModel
+                    savingsViewModel = savingsViewModel,
+                    analysisViewModel = analysisViewModel
                 )
             }
         }

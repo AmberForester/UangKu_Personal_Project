@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.uangku.feature.analysis.presentation.AnalysisScreen
+import com.example.uangku.feature.analysis.presentation.AnalysisViewModel
+import com.example.uangku.feature.analysis.presentation.CategoryAnalysisScreen
 import com.example.uangku.feature.google_drive.data.GoogleDriveAuth
 import com.example.uangku.feature.backup.presentation.BackupViewModel
 import com.example.uangku.feature.budget.presentation.BudgetDetailScreen
@@ -45,7 +47,8 @@ fun UangKuNavGraph(
     googleDriveAuth: GoogleDriveAuth,
     settingsViewModel: SettingsViewModel,
     exportExcelViewModel: ExportExcelViewModel,
-    savingsViewModel: SavingsViewModel
+    savingsViewModel: SavingsViewModel,
+    analysisViewModel: AnalysisViewModel
 ){
     val navController = rememberNavController()
 
@@ -117,7 +120,25 @@ fun UangKuNavGraph(
 
         composable (Destination.Analysis.route) {
             AnalysisScreen(
+                viewModel = analysisViewModel,
                 navController = navController
+            )
+        }
+
+        composable(
+            route = Destination.CategoryAnalysis.route,
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: -1
+            CategoryAnalysisScreen(
+                categoryId = categoryId,
+                viewModel = analysisViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToTransaction = { txId ->
+                    navController.navigate("transaction_form/$txId")
+                }
             )
         }
 

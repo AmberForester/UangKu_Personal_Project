@@ -216,7 +216,7 @@ fun SettingsScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(title = "Pengaturan")
+            TopAppBar(title = "Lainnya")
         },
         bottomBar = {
             UangKuNavigationBar(navController = navController, current = "settings")
