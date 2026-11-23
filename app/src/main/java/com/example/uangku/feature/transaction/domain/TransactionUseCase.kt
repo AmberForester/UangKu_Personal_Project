@@ -60,7 +60,7 @@ class TransactionUseCase (
 
         return repository.getRecentTransactions(limit)
             .map { transactions ->
-                transactions.sortedByDescending { it.date }
+                transactions.sortedWith(compareByDescending<Transaction> { it.date }.thenByDescending { it.id ?: 0L })
             }
 
     }

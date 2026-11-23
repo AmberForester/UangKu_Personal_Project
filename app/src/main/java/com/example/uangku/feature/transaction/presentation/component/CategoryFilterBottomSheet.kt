@@ -51,16 +51,36 @@ private enum class FilterTab {
     ALL, EXPENSE, INCOME
 }
 
+private data class TopRowConfig(
+    val title: String,
+    val subtitle: String,
+    val isSelected: Boolean,
+    val indicatorColor: Color
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryFilterBottomSheet(
     categories: List<Category>,
+    selectedType: Type?,
     selectedCategory: Category?,
-    onSelectCategory: (Category?) -> Unit,
+    onFilterSelect: (Type?, Category?) -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var activeTab by remember { mutableStateOf(FilterTab.ALL) }
+    var activeTab by remember(selectedType, selectedCategory) {
+        mutableStateOf(
+            when (selectedType) {
+                Type.EXPENSE -> FilterTab.EXPENSE
+                Type.INCOME -> FilterTab.INCOME
+                null -> when (selectedCategory?.type) {
+                    Type.EXPENSE -> FilterTab.EXPENSE
+                    Type.INCOME -> FilterTab.INCOME
+                    null -> FilterTab.ALL
+                }
+            }
+        )
+    }
 
     val filteredList = remember(activeTab, categories) {
         when (activeTab) {
@@ -69,6 +89,8 @@ fun CategoryFilterBottomSheet(
             FilterTab.INCOME -> categories.filter { it.type == Type.INCOME }
         }
     }
+
+    val hasActiveFilter = selectedType != null || selectedCategory != null
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -109,23 +131,23 @@ fun CategoryFilterBottomSheet(
 
                     Column {
                         Text(
-                            text = "Filter Kategori",
+                            text = "Filter Transaksi",
                             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = "Pilih kategori untuk disaring",
+                            text = "Saring berdasarkan jenis atau kategori",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
 
-                if (selectedCategory != null) {
+                if (hasActiveFilter) {
                     TextButton(
                         onClick = {
-                            onSelectCategory(null)
+                            onFilterSelect(null, null)
                             onDismiss()
                         }
                     ) {
@@ -141,7 +163,7 @@ fun CategoryFilterBottomSheet(
 
             Spacer(Modifier.height(16.dp))
 
-            // 2. Tab Filter Tipe Kategori (Semua, Pengeluaran, Pemasukan)
+            // 2. Tab Filter Tipe (Semua, Pengeluaran, Pemasukan)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -169,23 +191,47 @@ fun CategoryFilterBottomSheet(
             Spacer(Modifier.height(14.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
 
-            // 3. Daftar Pilihan Kategori (Scrollable)
+            // 3. Daftar Pilihan (Scrollable)
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(340.dp)
                     .padding(vertical = 4.dp)
             ) {
-                // Opsi "Semua Kategori"
+                // Opsi paling atas: "Semua Transaksi", "Semua Pengeluaran", atau "Semua Pemasukan"
                 item {
-                    val isAllSelected = selectedCategory == null
+                    val config = when (activeTab) {
+                        FilterTab.ALL -> TopRowConfig(
+                            title = "Semua Transaksi",
+                            subtitle = "Tampilkan seluruh transaksi tanpa filter",
+                            isSelected = selectedType == null && selectedCategory == null,
+                            indicatorColor = MaterialTheme.colorScheme.primary
+                        )
+                        FilterTab.EXPENSE -> TopRowConfig(
+                            title = "Semua Pengeluaran",
+                            subtitle = "Tampilkan seluruh transaksi pengeluaran",
+                            isSelected = selectedType == Type.EXPENSE && selectedCategory == null,
+                            indicatorColor = generalRed
+                        )
+                        FilterTab.INCOME -> TopRowConfig(
+                            title = "Semua Pemasukan",
+                            subtitle = "Tampilkan seluruh transaksi pemasukan",
+                            isSelected = selectedType == Type.INCOME && selectedCategory == null,
+                            indicatorColor = successGreen
+                        )
+                    }
+
                     CategorySelectionRow(
-                        title = "Semua Kategori",
-                        subtitle = "Tampilkan seluruh transaksi",
-                        isSelected = isAllSelected,
-                        indicatorColor = MaterialTheme.colorScheme.primary,
+                        title = config.title,
+                        subtitle = config.subtitle,
+                        isSelected = config.isSelected,
+                        indicatorColor = config.indicatorColor,
                         onClick = {
-                            onSelectCategory(null)
+                            when (activeTab) {
+                                FilterTab.ALL -> onFilterSelect(null, null)
+                                FilterTab.EXPENSE -> onFilterSelect(Type.EXPENSE, null)
+                                FilterTab.INCOME -> onFilterSelect(Type.INCOME, null)
+                            }
                             onDismiss()
                         }
                     )
@@ -202,7 +248,7 @@ fun CategoryFilterBottomSheet(
                         isSelected = isSelected,
                         indicatorColor = indicatorColor,
                         onClick = {
-                            onSelectCategory(category)
+                            onFilterSelect(category.type, category)
                             onDismiss()
                         }
                     )

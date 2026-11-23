@@ -5,8 +5,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -151,7 +151,7 @@ fun UangKuNavigationBar(
                 label = {
                     if (current.equals("settings", ignoreCase = true)) {
                         Text(
-                            text = "Pengaturan",
+                            text = "Lainnya",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -160,8 +160,8 @@ fun UangKuNavigationBar(
                 alwaysShowLabel = false,
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Pengaturan"
+                        imageVector = Icons.Default.Widgets,
+                        contentDescription = "Lainnya"
                     )
                 }
             )

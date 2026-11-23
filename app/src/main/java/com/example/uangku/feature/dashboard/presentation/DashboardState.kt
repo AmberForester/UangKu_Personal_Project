@@ -18,9 +18,10 @@ data class DashboardState (
     val budgets: List<BudgetSummary> = emptyList(),
     val recentTransactions: List<Transaction> = emptyList(),
     val mostRecentSavingGoal: SavingGoal? = null,
-    val totalSavings: Double = 0.0
+    val totalSavings: Double = 0.0,
+    val currentPeriodSavings: Double = 0.0
 
 ) {
     val availableToSpend: Double
-        get() = summary.balance - totalSavings
+        get() = summary.balance - currentPeriodSavings
 }

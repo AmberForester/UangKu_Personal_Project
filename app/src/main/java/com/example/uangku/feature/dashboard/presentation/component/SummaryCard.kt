@@ -57,7 +57,7 @@ fun SummaryCard(
     availableBalance: Double = summary.balance,
     financialPeriod: FinancialPeriod? = null,
 ) {
-    var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
+    var isBalanceVisible by rememberSaveable { mutableStateOf(false) }
 
     val isDark = MaterialTheme.colorScheme.background != com.example.uangku.core.ui.theme.mainBgSkyBlue
     val gradientColors = if (isDark) {
@@ -187,7 +187,7 @@ fun SummaryCard(
                             text = if (isBalanceVisible) {
                                 "+${currencyMinimalFormatter(summary.income)}"
                             } else {
-                                "+••••"
+                                "••••••"
                             },
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 15.sp
@@ -223,7 +223,7 @@ fun SummaryCard(
                             text = if (isBalanceVisible) {
                                 "-${currencyMinimalFormatter(summary.expense)}"
                             } else {
-                                "-••••"
+                                "••••••"
                             },
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 15.sp

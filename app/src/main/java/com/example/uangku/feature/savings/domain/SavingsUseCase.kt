@@ -1,7 +1,12 @@
 package com.example.uangku.feature.savings.domain
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.example.uangku.feature.period.domain.FinancialPeriod
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import java.time.ZoneId
 import java.util.Date
 
 class SavingsUseCase (
@@ -9,6 +14,33 @@ class SavingsUseCase (
 ) {
     fun getAllGoals(): Flow<List<SavingGoal>> {
         return savingsRepository.getAllGoals()
+    }
+
+    fun getAllLogs(): Flow<List<SavingLog>> {
+        return savingsRepository.getAllLogs()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getSavedAmountForPeriod(period: FinancialPeriod): Flow<Double> {
+        val zoneId = ZoneId.systemDefault()
+        val startDate = Date.from(
+            period.startDate
+                .atStartOfDay(zoneId)
+                .toInstant()
+        )
+        val endDate = Date.from(
+            period.endDate
+                .plusDays(1)
+                .atStartOfDay(zoneId)
+                .toInstant()
+        )
+
+        return savingsRepository.getAllLogs().map { logs ->
+            val periodLogs = logs.filter { it.date >= startDate && it.date < endDate }
+            val deposits = periodLogs.filter { it.type == SavingType.DEPOSIT }.sumOf { it.amount }
+            val withdrawals = periodLogs.filter { it.type == SavingType.WITHDRAW }.sumOf { it.amount }
+            (deposits - withdrawals).coerceAtLeast(0.0)
+        }
     }
 
     fun getGoalById(id: Long): Flow<SavingGoal?> {

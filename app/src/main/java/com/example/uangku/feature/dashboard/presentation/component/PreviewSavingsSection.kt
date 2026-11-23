@@ -17,15 +17,21 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +51,8 @@ fun PreviewSavingsSection(
     onGoalClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var isAmountVisible by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -98,7 +106,11 @@ fun PreviewSavingsSection(
                         )
                     }
                 } else {
-                    ActiveSavingGoalContent(goal = savingGoal)
+                    ActiveSavingGoalContent(
+                        goal = savingGoal,
+                        isAmountVisible = isAmountVisible,
+                        onToggleVisibility = { isAmountVisible = !isAmountVisible }
+                    )
                 }
             }
         }
@@ -107,7 +119,9 @@ fun PreviewSavingsSection(
 
 @Composable
 private fun ActiveSavingGoalContent(
-    goal: SavingGoal
+    goal: SavingGoal,
+    isAmountVisible: Boolean,
+    onToggleVisibility: () -> Unit
 ) {
     val progress = goal.progress ?: 0f
     val animatedProgress by animateFloatAsState(targetValue = progress, label = "preview_progress")
@@ -117,7 +131,7 @@ private fun ActiveSavingGoalContent(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 11.dp)
     ) {
-        // Baris Utama: Avatar Icon, Title + Target / Status, dan Nominal Terkumpul
+        // Baris Utama: Avatar Icon, Title + Target / Status, dan Nominal Terkumpul + Tombol Mata
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -157,7 +171,9 @@ private fun ActiveSavingGoalContent(
 
                 val subtitle = when {
                     goal.isTargetReached -> "Target tercapai"
-                    goal.targetAmount != null -> "Target ${currencyMinimalFormatter(goal.targetAmount)}"
+                    goal.targetAmount != null -> {
+                        if (isAmountVisible) "Target ${currencyMinimalFormatter(goal.targetAmount)}" else "Target ••••••"
+                    }
                     else -> "Tabungan aktif"
                 }
 
@@ -172,13 +188,31 @@ private fun ActiveSavingGoalContent(
 
             Spacer(Modifier.width(8.dp))
 
-            // Nominal Terkumpul (di sisi kanan, persis posisi nominal transaksi)
-            Text(
-                text = currencyMinimalFormatter(goal.currentAmount),
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                fontWeight = FontWeight.SemiBold,
-                color = if (goal.isTargetReached) successGreen else MaterialTheme.colorScheme.primary
-            )
+            // Nominal Terkumpul + Tombol Mata
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (isAmountVisible) currencyMinimalFormatter(goal.currentAmount) else "••••••••",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (goal.isTargetReached) successGreen else MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(Modifier.width(20.dp))
+
+                IconButton(
+                    onClick = onToggleVisibility,
+                    modifier = Modifier.size(28.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isAmountVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        contentDescription = if (isAmountVisible) "Sembunyikan Nominal" else "Tampilkan Nominal",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
         }
 
         // Progress Bar (jika memiliki target nominal)
@@ -209,7 +243,7 @@ private fun ActiveSavingGoalContent(
                 goal.remaining?.let { remaining ->
                     if (remaining > 0) {
                         Text(
-                            text = "Sisa ${currencyMinimalFormatter(remaining)}",
+                            text = if (isAmountVisible) "Sisa ${currencyMinimalFormatter(remaining)}" else "Sisa ••••••",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

@@ -1,5 +1,6 @@
 package com.example.uangku.feature.transaction.presentation
 
+import com.example.uangku.core.domain.Type
 import com.example.uangku.feature.category.domain.Category
 
 sealed interface TransactionEvent {
@@ -16,7 +17,13 @@ sealed interface TransactionEvent {
 
     data object onClearSearch : TransactionEvent
 
+    data class onFilterSelect(val type: Type?, val category: Category?) : TransactionEvent
+
     data class onCategoryFilterSelect(val category: Category?) : TransactionEvent
+
+    data object onClearTypeFilter : TransactionEvent
+
+    data object onClearCategoryFilter : TransactionEvent
 
     data object onOpenFilterSheet : TransactionEvent
 

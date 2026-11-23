@@ -37,8 +37,13 @@ import com.example.uangku.feature.transaction.domain.TransactionSummary
 @Composable
 fun ShowTransactionSummary(
     monthlySummary: TransactionSummary,
-    overallSummary: TransactionSummary
+    overallSummary: TransactionSummary,
+    totalSavings: Double = 0.0,
+    monthlySavings: Double = 0.0
 ) {
+    val availableBalance = overallSummary.balance - totalSavings
+    val availableMonthlyBalance = monthlySummary.balance - monthlySavings
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +62,7 @@ fun ShowTransactionSummary(
                 .fillMaxWidth()
                 .padding(vertical = 14.dp),
         ) {
-            // BAGIAN 1: TOTAL SALDO (OVERALL - SEPANJANG WAKTU)
+            // BAGIAN 1: TOTAL SALDO (OVERALL - SEPANJANG WAKTU, DIKURANGI TABUNGAN)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,7 +102,7 @@ fun ShowTransactionSummary(
                     Spacer(Modifier.height(3.dp))
 
                     Text(
-                        text = currencyFormatter(overallSummary.balance),
+                        text = currencyFormatter(availableBalance),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontSize = 19.sp
                         ),
@@ -214,12 +219,12 @@ fun ShowTransactionSummary(
                     Spacer(Modifier.height(3.dp))
 
                     Text(
-                        text = currencyMinimalFormatter(monthlySummary.balance),
+                        text = currencyMinimalFormatter(availableMonthlyBalance),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 13.sp
                         ),
                         fontWeight = FontWeight.Bold,
-                        color = if (monthlySummary.balance >= 0) MaterialTheme.colorScheme.primary else generalRed,
+                        color = if (availableMonthlyBalance >= 0) MaterialTheme.colorScheme.primary else generalRed,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

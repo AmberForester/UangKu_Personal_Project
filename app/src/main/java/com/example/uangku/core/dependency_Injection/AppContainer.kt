@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.room.Room
 import com.example.uangku.core.database.AppDatabase
 import com.example.uangku.core.database.DatabaseCallback
+import com.example.uangku.feature.analysis.domain.AnalysisUseCase
 import com.example.uangku.feature.backup.data.automatic.AutoBackupPreferences
 import com.example.uangku.feature.backup.data.automatic.AutoBackupScheduler
 import com.example.uangku.feature.backup.data.automatic.AutoBackupWorkerFactory
@@ -81,6 +82,13 @@ class AppContainer (
         categoryRepository = categoryRepository,
         periodUseCase = periodUseCase,
         savingsRepository = savingsRepository
+    )
+
+    //analysis
+    val analysisUseCase = AnalysisUseCase(
+        transactionRepository = transactionRepository,
+        periodUseCase = periodUseCase,
+        savingsUseCase = savingsUseCase
     )
 
     // manual back up and restore

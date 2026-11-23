@@ -18,6 +18,10 @@ sealed class Destination (
 
     data object Analysis : Destination("analysis")
 
+    data object CategoryAnalysis : Destination("category_analysis/{categoryId}") {
+        fun createRoute(categoryId: Int): String = "category_analysis/$categoryId"
+    }
+
     data object Settings : Destination("settings")
 
     data object TransactionForm : Destination("transaction_form/{id}")

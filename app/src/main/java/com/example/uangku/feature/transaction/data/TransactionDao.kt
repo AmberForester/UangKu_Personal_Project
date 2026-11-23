@@ -14,14 +14,14 @@ interface TransactionDao {
 
     @Query("SELECT * " +
             "FROM transaction_view " +
-            "ORDER BY date DESC")
+            "ORDER BY date DESC, id DESC")
     fun getTransactions(): Flow<List<TransactionView>>
 
     @Query("SELECT * " +
             "FROM transaction_view " +
             "WHERE date >= :startDate " +
             "AND date < :endDate " +
-            "ORDER BY date DESC")
+            "ORDER BY date DESC, id DESC")
     fun getTransactions(
         startDate: Date,
         endDate: Date
@@ -29,7 +29,7 @@ interface TransactionDao {
 
     @Query("SELECT * " +
             "FROM transaction_view " +
-            "ORDER BY date DESC" +
+            "ORDER BY date DESC, id DESC" +
             " LIMIT :limit ")
     fun getRecentTransactions(
         limit: Int

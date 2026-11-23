@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.uangku.feature.category.domain.CategoryUseCase
 import com.example.uangku.feature.period.domain.PeriodUseCase
+import com.example.uangku.feature.savings.domain.SavingsUseCase
 import com.example.uangku.feature.transaction.domain.TransactionUseCase
 
 class TransactionViewModelFactory (
 
     private val transactionUseCase: TransactionUseCase,
     private val periodUseCase: PeriodUseCase,
-    private val categoryUseCase: CategoryUseCase
+    private val categoryUseCase: CategoryUseCase,
+    private val savingsUseCase: SavingsUseCase
 
 ) : ViewModelProvider.Factory {
 
@@ -23,7 +25,12 @@ class TransactionViewModelFactory (
     ): T {
 
         if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {
-            return TransactionViewModel(transactionUseCase, periodUseCase, categoryUseCase) as T
+            return TransactionViewModel(
+                transactionUseCase,
+                periodUseCase,
+                categoryUseCase,
+                savingsUseCase
+            ) as T
         }
 
         throw IllegalArgumentException(

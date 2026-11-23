@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,12 +48,14 @@ fun TransactionSearchBar(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
+    selectedType: Type?,
     selectedCategory: Category?,
     onOpenFilter: () -> Unit,
+    onClearTypeFilter: () -> Unit,
     onClearCategoryFilter: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val hasFilter = selectedCategory != null
+    val hasFilter = selectedType != null || selectedCategory != null
 
     Column(
         modifier = modifier
@@ -63,7 +66,7 @@ fun TransactionSearchBar(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // 1. Kolom Input Pencarian (Ramping 44dp, Vertically Centered, Tanpa Clipping)
+            // 1. Kolom Input Pencarian (Ramping 48dp, Vertically Centered)
             Surface(
                 modifier = Modifier
                     .weight(1f)
@@ -101,26 +104,26 @@ fun TransactionSearchBar(
                                     fontSize = 13.5.sp,
                                     lineHeight = 18.sp
                                 ),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
+
                         BasicTextField(
                             value = searchQuery,
                             onValueChange = onSearchQueryChange,
-                            modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                             textStyle = TextStyle(
-                                fontSize = 14.sp,
-                                lineHeight = 18.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 13.5.sp,
+                                fontWeight = FontWeight.Normal,
+                                lineHeight = 18.sp
+                            ),
+                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
-                    if (searchQuery.isNotBlank()) {
+                    if (searchQuery.isNotEmpty()) {
                         IconButton(
                             onClick = onClearSearch,
                             modifier = Modifier.size(24.dp)
@@ -138,7 +141,7 @@ fun TransactionSearchBar(
 
             Spacer(Modifier.width(10.dp))
 
-            // 2. Tombol Filter Kategori (Presisi 44dp selaras dengan kolom pencarian)
+            // 2. Tombol Filter (48dp selaras dengan kolom pencarian)
             Surface(
                 shape = RoundedCornerShape(14.dp),
                 color = if (hasFilter) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
@@ -154,7 +157,7 @@ fun TransactionSearchBar(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Outlined.FilterAlt,
-                        contentDescription = "Filter Kategori",
+                        contentDescription = "Filter Transaksi",
                         tint = if (hasFilter) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(25.dp)
                     )
@@ -162,55 +165,79 @@ fun TransactionSearchBar(
             }
         }
 
-        // 3. Chip Indikator Kategori Aktif (jika ada kategori terpilih)
+        // 3. Chip Indikator Filter Aktif (Tipe dan/atau Kategori)
         AnimatedVisibility(
             visible = hasFilter,
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            if (selectedCategory != null) {
-                Row(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .background(
-                                        color = if (selectedCategory.type == Type.EXPENSE) generalRed else successGreen,
-                                        shape = CircleShape
-                                    )
-                            )
-                            Text(
-                                text = "Kategori: ${selectedCategory.name}",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Hapus filter kategori",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .size(14.dp)
-                                    .clickable { onClearCategoryFilter() }
-                            )
-                        }
-                    }
+            Row(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (selectedCategory != null) {
+                    val indicatorColor = if (selectedCategory.type == Type.EXPENSE) generalRed else successGreen
+                    val label = "Kategori: ${selectedCategory.name}"
+                    FilterChipBadge(
+                        label = label,
+                        dotColor = indicatorColor,
+                        onClear = onClearCategoryFilter
+                    )
+                } else if (selectedType != null) {
+                    val indicatorColor = if (selectedType == Type.EXPENSE) generalRed else successGreen
+                    val label = if (selectedType == Type.EXPENSE) "Semua Pengeluaran" else "Semua Pemasukan"
+                    FilterChipBadge(
+                        label = label,
+                        dotColor = indicatorColor,
+                        onClear = onClearTypeFilter
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun FilterChipBadge(
+    label: String,
+    dotColor: Color,
+    onClear: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .background(
+                        color = dotColor,
+                        shape = CircleShape
+                    )
+            )
+            Text(
+                text = label,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Hapus filter",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .size(14.dp)
+                    .clickable { onClear() }
+            )
         }
     }
 }
