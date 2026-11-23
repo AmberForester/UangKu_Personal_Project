@@ -51,7 +51,7 @@ fun PreviewSavingsSection(
     onGoalClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isAmountVisible by rememberSaveable { mutableStateOf(true) }
+    var isAmountVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -199,7 +199,7 @@ private fun ActiveSavingGoalContent(
                     color = if (goal.isTargetReached) successGreen else MaterialTheme.colorScheme.primary
                 )
 
-                Spacer(Modifier.width(2.dp))
+                Spacer(Modifier.width(20.dp))
 
                 IconButton(
                     onClick = onToggleVisibility,

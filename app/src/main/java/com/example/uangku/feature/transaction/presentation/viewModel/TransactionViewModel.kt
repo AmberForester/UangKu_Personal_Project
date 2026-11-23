@@ -70,6 +70,24 @@ class TransactionViewModel (
                 _state.update { it.copy(searchQuery = "") }
             }
 
+            is TransactionEvent.onFilterSelect -> {
+                _state.update {
+                    it.copy(
+                        selectedType = event.type,
+                        selectedCategory = event.category,
+                        isFilterSheetVisible = false
+                    )
+                }
+            }
+
+            TransactionEvent.onClearTypeFilter -> {
+                _state.update { it.copy(selectedType = null) }
+            }
+
+            TransactionEvent.onClearCategoryFilter -> {
+                _state.update { it.copy(selectedCategory = null) }
+            }
+
             is TransactionEvent.onCategoryFilterSelect -> {
                 _state.update {
                     it.copy(
@@ -91,6 +109,7 @@ class TransactionViewModel (
                 _state.update {
                     it.copy(
                         searchQuery = "",
+                        selectedType = null,
                         selectedCategory = null
                     )
                 }
@@ -167,18 +186,6 @@ class TransactionViewModel (
 
     private fun observeMonthlySummary(){
         viewModelScope.launch {
-            state.map { it.selectedMonth }
-                .distinctUntilChanged()
-                .flatMapLatest { month ->
-                    transactionUseCase.getMonthlySummary(month)
-                }
-                .collect { summary ->
-                    _state.update {
-                        it.copy(
-                            monthlySummary = summary
-                        )
-                    }
-                }
             periodUseCase.observeFinancialPeriod(
                 state.map { it.selectedMonth }
             )

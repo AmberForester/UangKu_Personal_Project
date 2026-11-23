@@ -50,20 +50,16 @@ class BudgetUseCase (
         return budgetRepository.deleteBudget(budget)
     }
 
-    suspend fun getBudgetSummaries(): Flow<List<BudgetSummary>>{
-
-        val period = periodUseCase.getCurrentFinancialPeriod()
-
-        val (startDate, endDate) = getPeriodDateRange(period)
+    fun getBudgetSummaries(): Flow<List<BudgetSummary>>{
 
         return combine(
-
+            periodUseCase.observeCurrentFinancialPeriod(),
             budgetRepository.getBudgets(),
             transactionRepository.getTransactions(),
             categoryRepository.getCategories(),
+        ) { period, budgets, transactions, categories ->
 
-        ) {
-            budgets, transactions, categories ->
+            val (startDate, endDate) = getPeriodDateRange(period)
 
             val expenseCategory = categories
                 .filter { category ->
@@ -111,7 +107,7 @@ class BudgetUseCase (
         }
     }
 
-    suspend fun getDashboardBudget(): Flow<List<BudgetSummary>> {
+    fun getDashboardBudget(): Flow<List<BudgetSummary>> {
 
         return getBudgetSummaries()
             .map { summaries ->
@@ -123,19 +119,16 @@ class BudgetUseCase (
 
     }
 
-    suspend fun getBudgetOverview(): Flow<BudgetOverview> {
-
-        val period = periodUseCase.getCurrentFinancialPeriod()
-
-        val (startDate, endDate) = getPeriodDateRange(period)
+    fun getBudgetOverview(): Flow<BudgetOverview> {
 
         return combine(
-
+            periodUseCase.observeCurrentFinancialPeriod(),
             budgetRepository.getBudgets(),
             transactionRepository.getTransactions(),
             savingsRepository.getAllLogs()
+        ) { period, budgets, transactions, logs ->
 
-        ) { budgets, transactions, logs ->
+            val (startDate, endDate) = getPeriodDateRange(period)
 
             val income = transactions
                 .filter { it.type == Type.INCOME &&
@@ -192,12 +185,9 @@ class BudgetUseCase (
 
         val totalAllocated = budgets
             .filter { it.id != budgetId }
-            .sumOf {
-                it.amount ?: 0.0
-            }
+            .sumOf { it.amount ?: 0.0 }
 
-        return (totalIncome - saved - totalAllocated)
-            .coerceAtLeast(0.0)
+        return (totalIncome - saved - totalAllocated).coerceAtLeast(0.0)
     }
 
     suspend fun getCurrentPeriod(): FinancialPeriod {

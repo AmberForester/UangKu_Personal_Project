@@ -381,7 +381,7 @@ fun TransactionFilterEmptyState(
         Spacer(Modifier.height(6.dp))
 
         Text(
-            text = "Tidak ditemukan transaksi untuk kata kunci atau kategori yang sedang dipilih.",
+            text = "Tidak ditemukan transaksi untuk kata kunci, jenis, atau kategori yang sedang dipilih.",
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 13.sp
             ),

@@ -61,7 +61,7 @@ fun TransactionScreen(
         ) {
             Spacer(Modifier.height(8.dp))
 
-            // 1. Bar Pencarian dan Tombol Filter Kategori (Berdampingan)
+            // 1. Bar Pencarian dan Tombol Filter (Berdampingan)
             TransactionSearchBar(
                 searchQuery = state.searchQuery,
                 onSearchQueryChange = {
@@ -70,12 +70,16 @@ fun TransactionScreen(
                 onClearSearch = {
                     viewModel.onEvent(TransactionEvent.onClearSearch)
                 },
+                selectedType = state.selectedType,
                 selectedCategory = state.selectedCategory,
                 onOpenFilter = {
                     viewModel.onEvent(TransactionEvent.onOpenFilterSheet)
                 },
+                onClearTypeFilter = {
+                    viewModel.onEvent(TransactionEvent.onClearTypeFilter)
+                },
                 onClearCategoryFilter = {
-                    viewModel.onEvent(TransactionEvent.onCategoryFilterSelect(null))
+                    viewModel.onEvent(TransactionEvent.onClearCategoryFilter)
                 }
             )
 
@@ -122,13 +126,14 @@ fun TransactionScreen(
             )
         }
 
-        // 5. Modal Bottom Sheet Filter Kategori
+        // 5. Modal Bottom Sheet Filter Transaksi (Jenis & Kategori)
         if (state.isFilterSheetVisible) {
             CategoryFilterBottomSheet(
                 categories = state.categories,
+                selectedType = state.selectedType,
                 selectedCategory = state.selectedCategory,
-                onSelectCategory = {
-                    viewModel.onEvent(TransactionEvent.onCategoryFilterSelect(it))
+                onFilterSelect = { type, category ->
+                    viewModel.onEvent(TransactionEvent.onFilterSelect(type, category))
                 },
                 onDismiss = {
                     viewModel.onEvent(TransactionEvent.onDismissFilterSheet)

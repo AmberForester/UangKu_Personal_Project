@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
@@ -69,6 +70,24 @@ class PeriodUseCase (
             month = month,
             startDay = periodSettings.startDay
         )
+    }
+
+    fun observeCurrentFinancialPeriod(): Flow<FinancialPeriod> {
+        return getPeriodSettings().map { settings ->
+            val today = LocalDate.now()
+            val startDate = getStartDate(
+                date = today,
+                startDay = settings.startDay
+            )
+            val nextPeriodStartDate = getNextPeriodStartDate(
+                startDate = startDate,
+                startDay = settings.startDay
+            )
+            FinancialPeriod(
+                startDate = startDate,
+                endDate = nextPeriodStartDate.minusDays(1)
+            )
+        }
     }
 
     fun observeFinancialPeriod(
