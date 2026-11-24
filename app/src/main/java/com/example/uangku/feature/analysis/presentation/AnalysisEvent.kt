@@ -10,4 +10,5 @@ sealed interface AnalysisEvent {
     data class OnSelectType(val type: Type) : AnalysisEvent
     data class OnLoadCategoryDetail(val categoryId: Int, val historyMonths: Int = 6) : AnalysisEvent
     data class OnChangeCategoryDetailHistoryMonths(val months: Int) : AnalysisEvent
+    data class OnChangeCategoryDetailSortOrder(val sortOrder: CategoryDetailSortOrder) : AnalysisEvent
 }
