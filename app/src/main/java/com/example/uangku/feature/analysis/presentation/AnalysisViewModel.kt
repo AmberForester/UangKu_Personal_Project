@@ -82,6 +82,11 @@ class AnalysisViewModel(
                     loadCategoryDetail(currentCatId, event.months)
                 }
             }
+            is AnalysisEvent.OnChangeCategoryDetailSortOrder -> {
+                _state.update {
+                    it.copy(categoryDetailSortOrder = event.sortOrder)
+                }
+            }
         }
     }
 
@@ -103,7 +108,8 @@ class AnalysisViewModel(
                 _state.update {
                     it.copy(
                         categoryDetail = detail,
-                        isLoadingCategoryDetail = false
+                        isLoadingCategoryDetail = false,
+                        categoryDetailSortOrder = CategoryDetailSortOrder.NEWEST
                     )
                 }
             }

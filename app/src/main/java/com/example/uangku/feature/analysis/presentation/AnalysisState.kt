@@ -9,6 +9,12 @@ import com.example.uangku.feature.analysis.domain.CategorySpending
 import com.example.uangku.feature.period.domain.FinancialPeriod
 import java.time.YearMonth
 
+enum class CategoryDetailSortOrder {
+    NEWEST,
+    HIGHEST_AMOUNT,
+    LOWEST_AMOUNT
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 data class AnalysisState(
     val selectedMonth: YearMonth = YearMonth.now(),
@@ -18,6 +24,7 @@ data class AnalysisState(
     val selectedCategory: CategorySpending? = null,
     val categoryDetail: CategoryAnalysisDetail? = null,
     val categoryDetailHistoryMonths: Int = 6,
+    val categoryDetailSortOrder: CategoryDetailSortOrder = CategoryDetailSortOrder.NEWEST,
     val isLoadingCategoryDetail: Boolean = false,
     val isLoading: Boolean = false
 )

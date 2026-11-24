@@ -18,10 +18,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
@@ -33,6 +39,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,6 +49,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -99,6 +107,20 @@ fun CategoryAnalysisScreen(
         } else {
             val isExpense = detail.type == Type.EXPENSE
             val themeColor = if (isExpense) MaterialTheme.colorScheme.primary else successGreen
+
+            val sortedTransactions = remember(detail.transactions, state.categoryDetailSortOrder) {
+                when (state.categoryDetailSortOrder) {
+                    CategoryDetailSortOrder.NEWEST -> detail.transactions.sortedWith(
+                        compareByDescending<Transaction> { it.date }.thenByDescending { it.id ?: 0L }
+                    )
+                    CategoryDetailSortOrder.HIGHEST_AMOUNT -> detail.transactions.sortedWith(
+                        compareByDescending<Transaction> { it.amount }.thenByDescending { it.date }
+                    )
+                    CategoryDetailSortOrder.LOWEST_AMOUNT -> detail.transactions.sortedWith(
+                        compareBy<Transaction> { it.amount }.thenByDescending { it.date }
+                    )
+                }
+            }
 
             LazyColumn(
                 modifier = Modifier
@@ -158,7 +180,7 @@ fun CategoryAnalysisScreen(
                     }
                 }
 
-                // 4. Header Daftar Transaksi Periode Ini
+                // 4. Header Daftar Transaksi Periode Ini & Pilihan Pengurutan
                 item {
                     Spacer(Modifier.height(4.dp))
                     Row(
@@ -166,55 +188,228 @@ fun CategoryAnalysisScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = "Transaksi Periode Ini",
-                            style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        Text(
-                            text = "${detail.transactions.size} transaksi",
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        Column {
+                            Text(
+                                text = "Transaksi Periode Ini",
+                                style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Text(
+                                text = "${detail.transactions.size} transaksi",
+                                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        if (detail.transactions.isNotEmpty()) {
+                            CategorySortDropdown(
+                                currentSortOrder = state.categoryDetailSortOrder,
+                                onSortOrderSelected = { order ->
+                                    viewModel.onEvent(AnalysisEvent.OnChangeCategoryDetailSortOrder(order))
+                                }
+                            )
+                        }
                     }
                 }
 
-                // 5. Daftar Transaksi Periode Ini
-                if (detail.transactions.isEmpty()) {
+                // 5. Daftar Transaksi Periode Ini (Satu Wadah Kartu Besar dengan Pemisah)
+                if (sortedTransactions.isEmpty()) {
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(14.dp),
+                            shape = RoundedCornerShape(18.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 28.dp),
+                                    .padding(vertical = 32.dp, horizontal = 20.dp),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = "Tidak ada transaksi di kategori ini pada periode ini",
-                                    style = MaterialTheme.typography.bodySmall,
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
                     }
                 } else {
-                    items(detail.transactions, key = { it.id ?: 0L }) { tx ->
-                        CategoryTransactionItem(
-                            transaction = tx,
-                            isExpense = isExpense,
-                            onClick = {
-                                tx.id?.let { onNavigateToTransaction(it) }
+                    item {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+                            shape = RoundedCornerShape(18.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 2.dp)
+                            ) {
+                                sortedTransactions.forEachIndexed { index, tx ->
+                                    CategoryTransactionItem(
+                                        transaction = tx,
+                                        isExpense = isExpense,
+                                        onClick = { tx.id?.let { onNavigateToTransaction(it) } }
+                                    )
+                                    if (index < sortedTransactions.lastIndex) {
+                                        HorizontalDivider(
+                                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                                            thickness = 1.dp,
+                                            modifier = Modifier.padding(start = 50.dp)
+                                        )
+                                    }
+                                }
                             }
-                        )
+                        }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun CategorySortDropdown(
+    currentSortOrder: CategoryDetailSortOrder,
+    onSortOrderSelected: (CategoryDetailSortOrder) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    val currentLabel = when (currentSortOrder) {
+        CategoryDetailSortOrder.NEWEST -> "Terbaru"
+        CategoryDetailSortOrder.HIGHEST_AMOUNT -> "Terbesar"
+        CategoryDetailSortOrder.LOWEST_AMOUNT -> "Terkecil"
+    }
+
+    Box(modifier = modifier) {
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            modifier = Modifier.clickable { expanded = true }
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Sort,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = currentLabel,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.width(2.dp))
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            shape = RoundedCornerShape(14.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            shadowElevation = 6.dp
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = "Terbaru",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 13.sp,
+                            fontWeight = if (currentSortOrder == CategoryDetailSortOrder.NEWEST) FontWeight.Bold else FontWeight.Normal
+                        ),
+                        color = if (currentSortOrder == CategoryDetailSortOrder.NEWEST) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                trailingIcon = if (currentSortOrder == CategoryDetailSortOrder.NEWEST) {
+                    {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                } else null,
+                onClick = {
+                    onSortOrderSelected(CategoryDetailSortOrder.NEWEST)
+                    expanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = "Nominal Terbesar",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 13.sp,
+                            fontWeight = if (currentSortOrder == CategoryDetailSortOrder.HIGHEST_AMOUNT) FontWeight.Bold else FontWeight.Normal
+                        ),
+                        color = if (currentSortOrder == CategoryDetailSortOrder.HIGHEST_AMOUNT) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                trailingIcon = if (currentSortOrder == CategoryDetailSortOrder.HIGHEST_AMOUNT) {
+                    {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                } else null,
+                onClick = {
+                    onSortOrderSelected(CategoryDetailSortOrder.HIGHEST_AMOUNT)
+                    expanded = false
+                }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = "Nominal Terkecil",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 13.sp,
+                            fontWeight = if (currentSortOrder == CategoryDetailSortOrder.LOWEST_AMOUNT) FontWeight.Bold else FontWeight.Normal
+                        ),
+                        color = if (currentSortOrder == CategoryDetailSortOrder.LOWEST_AMOUNT) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                trailingIcon = if (currentSortOrder == CategoryDetailSortOrder.LOWEST_AMOUNT) {
+                    {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                } else null,
+                onClick = {
+                    onSortOrderSelected(CategoryDetailSortOrder.LOWEST_AMOUNT)
+                    expanded = false
+                }
+            )
         }
     }
 }
@@ -421,61 +616,52 @@ private fun CategoryTransactionItem(
     val title = if (transaction.description.isNotBlank()) transaction.description else transaction.categoryName
     val amountFormatted = currencyMinimalFormatter(transaction.amount)
 
-    Card(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Surface(
+            modifier = Modifier.size(38.dp),
+            shape = CircleShape,
+            color = if (!isExpense) successGreen.copy(alpha = 0.14f) else generalRed.copy(alpha = 0.12f)
         ) {
-            Surface(
-                modifier = Modifier.size(38.dp),
-                shape = CircleShape,
-                color = if (!isExpense) successGreen.copy(alpha = 0.14f) else generalRed.copy(alpha = 0.12f)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = if (!isExpense) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
-                        contentDescription = null,
-                        tint = if (!isExpense) successGreen else generalRed,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-            }
-
-            Spacer(Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    text = dateStr,
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = if (!isExpense) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
+                    contentDescription = null,
+                    tint = if (!isExpense) successGreen else generalRed,
+                    modifier = Modifier.size(18.dp)
                 )
             }
+        }
 
+        Spacer(Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "${if (isExpense) "- " else "+ "}$amountFormatted",
+                text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                fontWeight = FontWeight.Bold,
-                color = if (!isExpense) successGreen else MaterialTheme.colorScheme.onSurface
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = dateStr,
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+
+        Text(
+            text = "${if (isExpense) "- " else "+ "}$amountFormatted",
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+            fontWeight = FontWeight.Bold,
+            color = if (!isExpense) successGreen else MaterialTheme.colorScheme.onSurface
+        )
     }
 }
